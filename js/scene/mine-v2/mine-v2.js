@@ -7,20 +7,12 @@ import { createMineV2Simulator } from './simulator.mjs';
 import { buildLabelsAndMarkers } from './labels.js';
 import { MINE_V2_CONFIG } from './config.mjs';
 import { buildFocusedLongwallScene } from './focused-longwall.js';
-import { buildTerrain } from './terrain.js';
-import { buildSurfaceCampus } from './surface-campus.js';
 import { buildCutawayGeology } from './cutaway-geology.js';
 import { buildRoadwayNetwork } from './roadway-network.js';
-import { getGradedHeight } from './terrain-profile.mjs';
 
 export async function buildMineV2(sourceMaterials) {
   const root = new THREE.Group();
   root.name = 'focusedLongwallDigitalTwin';
-
-  // —— 地表层：地形 + 工业广场 + 道路 + 车辆 ——
-  const surfaceRoot = new THREE.Group();
-  surfaceRoot.name = 'mineV2SurfaceRoot';
-  root.add(surfaceRoot);
 
   // —— 地质层：连续岩体 + 煤层 + 剖切窗口 ——
   const geologyRoot = new THREE.Group();
@@ -53,7 +45,6 @@ export async function buildMineV2(sourceMaterials) {
     simulator,
     monitorAnchors: [],
     zonePresets: {},
-    surfaceRoot,
     geologyRoot,
     undergroundRoot,
     focusedRoot,
@@ -62,23 +53,15 @@ export async function buildMineV2(sourceMaterials) {
     dispose() {},
   };
 
-  // —— 1. 地形 ——
-  const terrain = buildTerrain(materials);
-  surfaceRoot.add(terrain);
-
-  // —— 2. 地表工业广场（选煤厂、煤仓、道路、车队、挖掘机）——
-  const surfaceCampus = buildSurfaceCampus(materials, runtime, getGradedHeight);
-  surfaceRoot.add(surfaceCampus);
-
-  // —— 3. 连续岩体与地质剖切 ——
+  // —— 1. 连续岩体与地质剖切 ——
   const geology = buildCutawayGeology(materials, runtime);
   geologyRoot.add(geology);
 
-  // —— 4. 三层地下巷道网络（主斜井 + 三个水平 + 联络巷 + 硐室）——
+  // —— 2. 三层地下巷道网络（主斜井 + 三个水平 + 联络巷 + 硐室）——
   const roadwayNetwork = buildRoadwayNetwork(materials, runtime);
   undergroundRoot.add(roadwayNetwork);
 
-  // —— 5. 1206 工作面出口段详模 ——
+  // —— 3. 1206 工作面出口段详模 ——
   const focusedMine = await buildFocusedLongwallScene(materials, runtime);
   focusedRoot.add(focusedMine);
   const inspectionBounds = new THREE.Box3().setFromObject(focusedMine);
@@ -89,26 +72,22 @@ export async function buildMineV2(sourceMaterials) {
 
   // —— 视角切换：控制各层可见性 ——
   runtime.setViewMode = mode => {
-    runtime.currentViewMode = mode;
-    const isOverview = mode === 'overview';
-    const isSurface = mode === 'surface';
-    const isUnderground = mode === 'underground';
+    const normalizedMode = mode === 'overview' ? 'overview' : 'underground';
+    runtime.currentViewMode = normalizedMode;
+    const isOverview = normalizedMode === 'overview';
+    const isUnderground = normalizedMode === 'underground';
 
-    // 总览：全部可见（地表 + 地质剖面 + 巷道网络），隐藏工作面详模
-    surfaceRoot.visible = true;
-    geologyRoot.visible = isOverview || isUnderground;
-    undergroundRoot.visible = isOverview || isUnderground;
+    geologyRoot.visible = true;
+    undergroundRoot.visible = true;
     focusedRoot.visible = isUnderground;
 
-    // 地下灯光只在非地表模式显示
     undergroundRoot.traverse(child => {
-      if (child.isLight) child.visible = !isSurface;
+      if (child.isLight) child.visible = true;
     });
 
-    // 监测标记在地表模式隐藏
     runtime.monitorMarkers.forEach(marker => {
       const markerObj = marker?.isObject3D ? marker : marker?.root;
-      if (markerObj?.isObject3D) markerObj.visible = !isSurface;
+      if (markerObj?.isObject3D) markerObj.visible = true;
       if (marker?.label) marker.label.visible = isUnderground;
     });
   };

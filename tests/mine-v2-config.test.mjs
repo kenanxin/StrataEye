@@ -3,9 +3,8 @@ import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { MINE_V2_CONFIG } from '../js/scene/mine-v2/config.mjs';
-import { ROADWAY_NODES, ROADWAY_EDGES, SURFACE_ROUTES, ATLAS_EXPOSED_EDGE_IDS, getConnectedNodeIds, sampleEdge } from '../js/scene/mine-v2/topology.mjs';
+import { ROADWAY_NODES, ROADWAY_EDGES, ATLAS_EXPOSED_EDGE_IDS, getConnectedNodeIds, sampleEdge } from '../js/scene/mine-v2/topology.mjs';
 import { CAMERA_PRESETS, CONTROL_LIMITS } from '../js/scene/mine-v2/camera-presets.mjs';
-import { getTerrainHeight, getGradedHeight, resolveSurfaceRoute } from '../js/scene/mine-v2/terrain-profile.mjs';
 import { validateTopology } from '../js/scene/mine-v2/validate.mjs';
 import { buildMonitorAnchors, getOverviewLabelIds, UNDERGROUND_LABEL_IDS, WORKING_FACE_LABEL_IDS } from '../js/scene/mine-v2/monitor-layout.mjs';
 import { MODEL_ASSETS } from '../js/scene/asset-registry.js';
@@ -75,18 +74,10 @@ test('validator rejects a disconnected edge', () => {
   assert.ok(report.errors.some(message => message.includes('missing')));
 });
 
-test('terrain is deterministic and the campus pad is level', () => {
-  assert.equal(getTerrainHeight(120, -80), getTerrainHeight(120, -80));
-  assert.equal(getGradedHeight(250, -60), getGradedHeight(310, -20));
-});
-
-test('mine v2 descriptor exposes overview, surface, underground, and exit inspection modes', () => {
-  assert.deepEqual(Object.keys(CAMERA_PRESETS), ['overview', 'surface', 'underground', 'exit']);
-  assert.deepEqual(Object.keys(CONTROL_LIMITS), ['overview', 'surface', 'underground', 'exit']);
-  assert.ok(CONTROL_LIMITS.overview.maxDistance >= 400);
-  assert.ok(CONTROL_LIMITS.surface.maxDistance >= 200);
-  assert.equal(CONTROL_LIMITS.surface.minAzimuth, -Infinity);
-  assert.equal(CONTROL_LIMITS.surface.maxAzimuth, Infinity);
+test('mine v2 descriptor exposes only underground-related inspection modes', () => {
+  assert.deepEqual(Object.keys(CAMERA_PRESETS), ['overview', 'underground', 'exit']);
+  assert.deepEqual(Object.keys(CONTROL_LIMITS), ['overview', 'underground', 'exit']);
+  assert.ok(CONTROL_LIMITS.overview.maxDistance >= 90);
   assert.equal(CONTROL_LIMITS.underground.minAzimuth, -Infinity);
   assert.equal(CONTROL_LIMITS.underground.maxAzimuth, Infinity);
   assert.deepEqual(CONTROL_LIMITS.exit, CONTROL_LIMITS.underground);
@@ -128,7 +119,7 @@ test('all competition equipment rows have a V2 focus route and scene role', () =
     assert.ok(item.id in EQUIPMENT_FOCUS_ZONES, `${item.id} has no V2 focus zone`);
     assert.ok(requiredRoles.has(item.sceneObjectName), `${item.id} scene role ${item.sceneObjectName} is not in V2 role contract`);
     const zoneId = EQUIPMENT_FOCUS_ZONES[item.id];
-    assert.ok(zoneId === 'surface' || Object.keys(ZONE_PRESETS).includes(zoneId), `${item.id} has invalid focus zone ${zoneId}`);
+    assert.ok(Object.keys(ZONE_PRESETS).includes(zoneId), `${item.id} has invalid focus zone ${zoneId}`);
   }
 });
 
@@ -176,16 +167,6 @@ test('edge sampling returns exact endpoints', () => {
   const edge = ROADWAY_EDGES.find(item => item.id === 'main-incline-h1');
   assert.deepEqual(sampleEdge(edge.id, 0), ROADWAY_NODES.find(node => node.id === edge.from).position);
   assert.deepEqual(sampleEdge(edge.id, 1), ROADWAY_NODES.find(node => node.id === edge.to).position);
-});
-
-test('surface routes connect named destinations and stay terrain-relative', () => {
-  for (const route of SURFACE_ROUTES) {
-    assert.ok(route.from && route.to && route.from !== route.to);
-    assert.notDeepEqual(route.points[0], route.points.at(-1));
-    assert.ok(route.points.every(point => point.length === 3));
-    const resolved = resolveSurfaceRoute(route);
-    assert.ok(resolved.every(([x, y, z], index) => y === getGradedHeight(x, z) + route.points[index][2]));
-  }
 });
 
 test('installed licensed models point to optimized local GLB files', () => {

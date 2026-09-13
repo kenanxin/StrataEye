@@ -4,7 +4,6 @@ export const MINE_V2_CONFIG = Object.freeze({
   horizons: Object.freeze([-45, -95, -155]),
   workingFace: Object.freeze({ id: 'working-face-1206', length: 20, width: 8, height: 4 }),
   roadway: Object.freeze({ minWidth: 4.5, maxWidth: 6, defaultHeight: 4.2 }),
-  composition: Object.freeze({ surface: 0.44, transition: 0.08, underground: 0.48 }),
   performance: Object.freeze({ targetFps: 40, maxLabelsOverview: 10 }),
   requiredRoles: Object.freeze([
     'workingFace', 'coalWall', 'hydraulicSupportArray', 'shearer',

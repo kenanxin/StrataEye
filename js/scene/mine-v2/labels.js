@@ -117,7 +117,7 @@ export function buildLabelsAndMarkers(materials, runtime, simulator, anchors) {
       const baseVisible = focusedLabelId
         ? anchor.id === focusedLabelId
         : DEFAULT_UNDERGROUND_LABEL_IDS.has(anchor.id) || anchor.status === 'danger';
-      const visible = mode !== 'surface' && baseVisible;
+      const visible = baseVisible;
       label.visible = visible;
       label.userData.marker.visible = false;
       if (focusedLabelId && anchor.id === focusedLabelId) {
@@ -137,7 +137,7 @@ export function buildLabelsAndMarkers(materials, runtime, simulator, anchors) {
     focusedLabelId = anchorId ?? null;
     runtime.setLabelMode(runtime.currentViewMode ?? 'underground');
   };
-  runtime.setLabelMode('surface');
+  runtime.setLabelMode('underground');
 
   runtime.updaters.push(() => {
     const next = simulator.snapshot();

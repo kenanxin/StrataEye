@@ -12,13 +12,15 @@ test('an unavailable HDR environment cannot abort mine scene construction', () =
   assert.match(sceneSource, /async function loadMineEnvironment\(\)[\s\S]*catch \(error\)[\s\S]*return null;/);
   assert.match(sceneSource, /signature\.startsWith\('#\?RADIANCE'\)/);
   assert.match(sceneSource, /HDR response is not a Radiance image/);
-  assert.match(sceneSource, /const mine = isMineV2 \? await buildMineV2\(materials\)/);
+  assert.match(sceneSource, /const mine = await buildMineV2\(materials\)/);
+  assert.doesNotMatch(sceneSource, /buildIntegratedMine/);
 
   const environmentLoad = sceneSource.indexOf('mineEnvironment = await loadMineEnvironment()');
-  const mineBuild = sceneSource.indexOf('const mine = isMineV2 ? await buildMineV2(materials)');
+  const mineBuild = sceneSource.indexOf('const mine = await buildMineV2(materials)');
   assert.ok(environmentLoad >= 0 && mineBuild > environmentLoad);
 });
 
-test('surface view has a background fallback when the HDR is unavailable', () => {
-  assert.match(sceneSource, /mineEnvironment \|\| new THREE\.Color\(0x718087\)/);
+test('underground view has a dark background fallback when the HDR is unavailable', () => {
+  assert.match(sceneSource, /new THREE\.Color\(0x151310\)/);
+  assert.doesNotMatch(sceneSource, /switchToSurface|requestedView === 'surface'/);
 });

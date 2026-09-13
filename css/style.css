@@ -1367,39 +1367,6 @@ body.portal-expert .footer {
   line-height: 1.35;
 }
 
-.view-toggle {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 5;
-  display: flex;
-  gap: 0;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--border-accent);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-}
-.view-btn {
-  padding: 7px 20px;
-  font-size: 14px;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-  background: rgba(9, 13, 18, 0.85);
-  color: var(--text-secondary);
-  letter-spacing: 2px;
-  white-space: nowrap;
-}
-.view-btn + .view-btn { border-left: 1px solid var(--border-accent); }
-.view-btn:hover { background: rgba(243, 167, 18, 0.1); color: var(--text-primary); }
-.view-btn.active {
-  background: rgba(243, 167, 18, 0.18);
-  color: var(--amber-soft);
-  box-shadow: inset 0 0 12px rgba(243, 167, 18, 0.14);
-}
 .scene-overlay-bottom {
   position: absolute;
   bottom: 40px; left: 16px;
@@ -2952,7 +2919,6 @@ body.portal-enterprise .core-monitoring-workbench .metric-rail {
   }
 
   .disaster-btn,
-  .view-btn,
   .loop-action-btn,
   .event-queue-item,
   .logout-button {

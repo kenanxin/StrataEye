@@ -14,7 +14,6 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { loadMineMaterials } from './scene/materials.js';
-import { buildIntegratedMine } from './scene/integrated-mine.js';
 import { buildMineV2 } from './scene/mine-v2/mine-v2.js';
 import { animateRoofFieldCloud, createRoofFieldCloud, setRoofFieldCloudMode, updateRoofFieldCloud } from './scene/mine-v2/roof-field-cloud.js';
 import { EQUIPMENT } from './mine-data.js';
@@ -22,7 +21,7 @@ import { EQUIPMENT_FOCUS_ZONES } from './scene/mine-v2/equipment-focus-map.mjs';
 
 // ==================== 全局 ====================
 let scene, camera, renderer, composer, labelRenderer, controls;
-let groundGroup, undergroundGroup, surfaceGroup, indicatorGroup;
+let groundGroup, undergroundGroup, indicatorGroup;
 let groundMesh;
 let shearerBody;
 let mineRuntime;
@@ -38,7 +37,7 @@ let diagnosticsFrameCount = 0;
 let sceneInitStartedAt = 0;
 const clock = new THREE.Clock();
 const indicators = [];
-let viewMode = 'overview';
+let viewMode = 'underground';
 let targetCamPos = new THREE.Vector3();
 let targetLookAt = new THREE.Vector3();
 let isTransitioning = false;
@@ -76,8 +75,8 @@ export function initScene(containerId) {
   const w = container.clientWidth, h = container.clientHeight;
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x8d989b);
-  scene.fog = new THREE.FogExp2(0x7e898b, 0.0015);
+  scene.background = new THREE.Color(0x151310);
+  scene.fog = new THREE.FogExp2(0x151310, 0.0015);
 
   camera = new THREE.PerspectiveCamera(35, w / h, 0.5, 2000);
   camera.position.set(55, 38, 78);
@@ -152,13 +151,8 @@ function setupLighting() {
   sun.shadow.bias = -0.0001;
   scene.add(sun);
   const coolFill = new THREE.DirectionalLight(0x4488cc, 0.65);
+  coolFill.position.set(-15, 5, -10);
   scene.add(coolFill);
-  if (new URLSearchParams(window.location.search).get('scene') === 'v2') {
-    coolFill.position.set(-15, 5, -10);
-  } else {
-    // Preserve the legacy preview's historical world offset.
-    scene.position.set(-15, 5, -10);
-  }
 
   // 井下补光灯（初始隐藏）
   [
@@ -179,18 +173,16 @@ function setupLighting() {
 function buildScene(container) {
   groundGroup = new THREE.Group();
   undergroundGroup = new THREE.Group();
-  surfaceGroup = new THREE.Group();
   indicatorGroup = new THREE.Group();
 
   scene.add(groundGroup);
   scene.add(undergroundGroup);
-  scene.add(surfaceGroup);
   scene.add(indicatorGroup);
 
-  loadIntegratedMine(container);
+  loadUndergroundMine(container);
 }
 
-async function loadIntegratedMine(container) {
+async function loadUndergroundMine(container) {
   const status = document.createElement('div');
   status.className = 'mine-load-status';
   status.innerHTML = '<span></span><b>正在装载井下写实场景</b><small>岩层材质 0%</small>';
@@ -216,11 +208,9 @@ async function loadIntegratedMine(container) {
     }
     scene.environmentIntensity = 0.72;
 
-    const requestedVariant = new URLSearchParams(window.location.search).get('scene');
-    const isMineV2 = requestedVariant === 'v2';
-    scene.fog.density = isMineV2 ? 0.00022 : 0.0015;
-    const mine = isMineV2 ? await buildMineV2(materials) : buildIntegratedMine(materials);
-    window.__mineDiagnostics = { variant: isMineV2 ? 'v2' : 'legacy', validation: mine.validation ?? null };
+    scene.fog.density = 0.00022;
+    const mine = await buildMineV2(materials);
+    window.__mineDiagnostics = { variant: 'v2', validation: mine.validation ?? null };
     undergroundGroup.add(mine.root);
     mineRuntime = mine.runtime;
     diagnosticsStartedAt = performance.now();
@@ -231,20 +221,14 @@ async function loadIntegratedMine(container) {
     cameraPresets = mine.cameraPresets;
     controlLimits = mine.controlLimits;
     sceneAdapter = mine.sceneAdapter ?? null;
-    if (isMineV2) {
-      roofFieldCloud = createRoofFieldCloud();
-      mine.root.add(roofFieldCloud);
-    }
+    roofFieldCloud = createRoofFieldCloud();
+    mine.root.add(roofFieldCloud);
     shearerBody = mine.runtime.workingFaceShearer;
     if (mineRuntime) mineRuntime.requestCameraFocus = preset => applyCameraFocusPreset(preset);
-    const requestedView = new URLSearchParams(window.location.search).get('view');
-    const initialMode = isMineV2
-      ? (requestedView === 'surface' ? 'surface' : 'underground')
-      : 'overview';
-    applyCameraPreset(initialMode, true);
+    applyCameraPreset('underground', true);
     status.classList.add('ready');
     status.querySelector('b').textContent = '数字孪生场景已就绪';
-    status.querySelector('small').textContent = isMineV2 ? '地表露天采区 / 井下 1206 工作面' : '1206 综采工作面';
+    status.querySelector('small').textContent = '井下 1206 工作面';
     setTimeout(() => status.remove(), 1400);
   } catch (error) {
     console.error('井下场景加载失败', error);
@@ -888,43 +872,40 @@ function createLabels() {
 
 // ==================== 视角切换 ====================
 function applyCameraPreset(mode, immediate = false) {
-  const preset = cameraPresets?.[mode];
+  const normalizedMode = cameraPresets?.[mode] ? mode : 'underground';
+  const preset = cameraPresets?.[normalizedMode];
   if (!preset) return;
-  viewMode = mode;
+  viewMode = normalizedMode;
   targetCamPos.fromArray(preset.position);
   targetLookAt.fromArray(preset.target);
   camera.fov = preset.fov;
   camera.updateProjectionMatrix();
-  const limits = controlLimits?.[mode];
-  controls.minDistance = limits?.minDistance ?? (mode === 'overview' ? 34 : 12);
-  controls.maxDistance = limits?.maxDistance ?? (mode === 'overview' ? 135 : 90);
-  const isCutawayView = mode === 'overview' || mode === 'underground';
+  const limits = controlLimits?.[normalizedMode];
+  controls.minDistance = limits?.minDistance ?? (normalizedMode === 'overview' ? 34 : 12);
+  controls.maxDistance = limits?.maxDistance ?? (normalizedMode === 'overview' ? 135 : 90);
+  const isCutawayView = normalizedMode === 'overview' || normalizedMode === 'underground';
   controls.minAzimuthAngle = limits?.minAzimuth ?? (isCutawayView ? -1.15 : -Infinity);
   controls.maxAzimuthAngle = limits?.maxAzimuth ?? (isCutawayView ? 1.15 : Infinity);
   controls.minPolarAngle = limits?.minPolar ?? 0;
   controls.maxPolarAngle = limits?.maxPolar ?? Math.PI;
   controls.autoRotate = false;
-  scene.background = mode === 'underground'
-    ? new THREE.Color(0x151310)
-    : (mineEnvironment || new THREE.Color(0x718087));
-  scene.backgroundIntensity = mode === 'underground' ? 1 : 0.48;
-  scene.environmentIntensity = mode === 'underground' ? 0.26 : 0.72;
+  scene.background = new THREE.Color(0x151310);
+  scene.backgroundIntensity = 1;
+  scene.environmentIntensity = 0.26;
   groundGroup.visible = true;
-  surfaceGroup.visible = true;
   undergroundGroup.visible = true;
   indicatorGroup.visible = true;
-  scene.traverse(c => { if (c.name === 'underLight') c.visible = mode !== 'surface'; });
+  scene.traverse(c => { if (c.name === 'underLight') c.visible = true; });
   mineRuntime?.monitorMarkers?.forEach(markerEntry => {
     const root = markerEntry?.isObject3D ? markerEntry : markerEntry?.root;
     if (!root?.isObject3D) throw new TypeError('Monitor marker must be an Object3D or a legacy { root, label } entry');
-    root.visible = mode !== 'surface';
-    if (markerEntry?.label) markerEntry.label.visible = mode === 'underground';
+    root.visible = true;
+    if (markerEntry?.label) markerEntry.label.visible = normalizedMode === 'underground';
   });
-  mineRuntime?.setViewMode?.(mode);
-  if (mineRuntime?.setLabelMode) mineRuntime.setLabelMode(mode);
+  mineRuntime?.setViewMode?.(normalizedMode);
+  if (mineRuntime?.setLabelMode) mineRuntime.setLabelMode(normalizedMode);
   else mineRuntime?.labels?.forEach(label => {
-    const isSurface = label.element?.classList.contains('surface');
-    label.visible = mode === 'overview' || (mode === 'surface' ? isSurface : !isSurface);
+    label.visible = true;
   });
 
   if (immediate) {
@@ -1034,7 +1015,6 @@ const EQUIPMENT_FOCUS_LABELS = {
 };
 
 export function switchToOverview() { applyCameraPreset('overview'); }
-export function switchToSurface() { mineRuntime?.setFocusedLabel?.(null); applyCameraPreset('surface', mineRuntime?.variant === 'v2'); }
 export function switchToUnderground() { mineRuntime?.setFocusedLabel?.(null); applyCameraPreset('underground', mineRuntime?.variant === 'v2'); }
 export function focusMineZone(zoneId) { return sceneAdapter?.focusZone(zoneId) ?? null; }
 export function focusMineEquipment(equipmentId) {
@@ -1044,18 +1024,6 @@ export function focusMineEquipment(equipmentId) {
   const rolePosition = sceneAdapter?.getWorldPosition(equipment.sceneObjectName);
   const roleObject = sceneAdapter?.getObject(equipment.sceneObjectName);
   const roleMeta = sceneAdapter?.getObjectMeta(equipment.sceneObjectName);
-  if (zoneId === 'surface') {
-    applyCameraPreset('surface', mineRuntime?.variant === 'v2');
-    if (rolePosition) {
-      targetCamPos.set(rolePosition.x + 132, rolePosition.y + 92, rolePosition.z + 118);
-      targetLookAt.set(rolePosition.x, rolePosition.y + 8, rolePosition.z);
-      camera.fov = 48;
-      camera.updateProjectionMatrix();
-      isTransitioning = true;
-      return { mode: 'surface-object', equipment, zoneId };
-    }
-    return { mode: 'surface', equipment, zoneId };
-  }
   if (rolePosition) {
     const machinePreset = FOCUSED_MACHINE_CAMERA[equipment.id];
     if (machinePreset) {

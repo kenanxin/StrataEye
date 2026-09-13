@@ -3,7 +3,7 @@
    初始化、数据驱动、交互管理、灾害模拟
    ============================================================ */
 
-import { initScene, switchToOverview, switchToSurface, switchToUnderground, focusMineEquipment, focusRoofWarningStage, setRoofFieldMode, disasterEffects } from './scene.js';
+import { initScene, focusMineEquipment, focusRoofWarningStage, setRoofFieldMode, disasterEffects } from './scene.js';
 import { clearRoofRiskCharts, disposeCharts, initPortalCharts, resizeCharts, updateReplayChart, updateRoofRiskCharts } from './charts.js';
 import { init, startDisaster, resetDisaster, getEquipFaults, getEnvData, isActive, getState, tick, getDisasterList } from './disaster.js';
 import { EQUIPMENT, METRICS, getMetricLevel, getMineState, updateMineState } from './mine-data.js';
@@ -983,28 +983,6 @@ function setupDisasterPanel() {
   }
 }
 
-// ==================== 视角切换 ====================
-function setupViewToggle() {
-  const toggle = document.getElementById('viewToggle');
-  const isMineV2 = new URLSearchParams(window.location.search).get('scene') === 'v2';
-  if (toggle && isMineV2) {
-    toggle.querySelector('[data-view="overview"]')?.remove();
-    const initialView = new URLSearchParams(window.location.search).get('view') === 'surface' ? 'surface' : 'underground';
-    toggle.querySelectorAll('.view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === initialView));
-  }
-  const btns = document.querySelectorAll('.view-btn');
-  if (!btns.length) return;
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (btn.dataset.view === 'underground') switchToUnderground();
-      else if (btn.dataset.view === 'surface') switchToSurface();
-      else switchToOverview();
-    });
-  });
-}
-
 function setupRoofFieldControls() {
   const panel = document.getElementById('roofFieldControls');
   if (!panel) return;
@@ -1545,7 +1523,6 @@ async function initApp(authenticatedUser) {
   initPortalCharts();
 
   // UI 组件
-  setupViewToggle();
   setupRoofFieldControls();
   setupClosedLoopActions();
   setupExpertResearchActions();

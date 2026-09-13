@@ -46,28 +46,6 @@ export const ATLAS_EXPOSED_EDGE_IDS = Object.freeze([
   'lower-gate-crosscut',
 ]);
 
-const freezeRoute = route => Object.freeze({
-  ...route,
-  points: Object.freeze(route.points.map(freezePosition)),
-});
-
-export const SURFACE_ROUTES = Object.freeze([
-  {
-    id: 'portal-access',
-    from: 'campus-entry',
-    to: 'portal-yard',
-    width: 8,
-    points: [[430, 105, 0.14], [395, 82, 0.14], [350, 50, 0.14], [305, 5, 0.14], [260, -45, 0.14]],
-  },
-  {
-    id: 'plant-access',
-    from: 'campus-entry',
-    to: 'washery-yard',
-    width: 9,
-    points: [[430, 105, 0.14], [425, 55, 0.14], [400, 15, 0.14], [355, -10, 0.14], [290, -20, 0.14]],
-  },
-].map(freezeRoute));
-
 const nodesById = new Map(ROADWAY_NODES.map(node => [node.id, node]));
 const edgesById = new Map(ROADWAY_EDGES.map(edge => [edge.id, edge]));
 

@@ -97,6 +97,17 @@ test('application header exposes identity and logout instead of a portal switch'
   assert.doesNotMatch(html, /id="portalSwitch"|data-portal=/);
 });
 
+test('final dashboard exposes only the underground digital twin', () => {
+  const html = read('index.html');
+  const mainScript = read('js/main.js');
+  const sceneScript = read('js/scene.js');
+  const mineV2Script = read('js/scene/mine-v2/mine-v2.js');
+  assert.doesNotMatch(html, /data-view="surface"|id="viewToggle"|>地表</);
+  assert.doesNotMatch(mainScript, /switchToSurface|dataset\.view === 'surface'/);
+  assert.doesNotMatch(sceneScript, /export function switchToSurface|requestedView === 'surface'/);
+  assert.doesNotMatch(mineV2Script, /surface-campus|terrain\.js|surfaceRoot|buildSurfaceCampus|buildTerrain/);
+});
+
 test('dashboard self-hosts the patched ECharts release consistently', () => {
   const html = read('index.html');
   const packageJson = JSON.parse(read('package.json'));
