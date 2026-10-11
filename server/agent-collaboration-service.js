@@ -43,7 +43,14 @@ function createAgentCollaborationService({ repository, store, adviceService, now
   const available = () => { if (!store) throw new WorkflowStoreError('WORKFLOW_STORAGE_UNAVAILABLE', 'Durable workflow storage is unavailable', 503); };
   async function reviewedMemory(recordId, similarIds) {
     const runs = (await Promise.all([recordId, ...similarIds].map(id => store.list({ recordId: id, limit: 100 })))).flat();
-    return runs.filter(run => run.demo_state.status === 'archived').flatMap(run => run.case_memory.filter(item => item.reviewed === true && item.reviewed_conclusion && item.actor?.role === 'expert').map(item => ({ ...item, workflow_run_id: run.workflow_run_id, record_id: run.algorithm.record_id })));
+    return runs.filter(run => run.demo_state.status === 'archived').flatMap(run => run.case_memory.filter(item => item.reviewed === true && item.reviewed_conclusion && item.actor?.role === 'expert').map(() => {
+      const evaluated = repository.evaluateRecord(run.algorithm.record_id);
+      const assessment = currentFeedback(run);
+      return { reviewed: true, workflow_run_id: run.workflow_run_id, record_id: evaluated.record_id, risk_class: evaluated.model_output.predicted_class,
+        action_codes: [...new Set(run.events.map(event => event.type).filter(type => Object.hasOwn(POLICY, type)))], outcome: 'archived',
+        ...(assessment.monitoring_trend ? { monitoring_trend: assessment.monitoring_trend } : {}),
+        ...(assessment.execution_status ? { execution_status: assessment.execution_status } : {}) };
+    }));
   }
   async function plan(run, version, timestamp) {
     const decision = run.nodes.find(node => node.agent_id === 'A3');
@@ -58,12 +65,24 @@ function createAgentCollaborationService({ repository, store, adviceService, now
     decision.output_summary = advice.summary;
     const control = run.nodes.find(node => node.agent_id === 'A4');
     if (control.output) control.output.portal_tasks.enterprise = advice.recommendations;
-    return { version, created_at: timestamp, source_record_id: run.algorithm.record_id, monitoring_evidence: 'original_csv_record', feedback_source: run.feedback.length ? 'human-input' : 'none', advice, resources: structuredClone(run.nodes.find(node => node.agent_id === 'A5').output.snapshot), approved: false };
+    return { version, created_at: timestamp, source_record_id: run.algorithm.record_id, monitoring_evidence: 'original_csv_record', feedback_source: run.feedback.length ? 'human-input' : 'none', feedback_start_index: run.feedback.length, advice, resources: structuredClone(run.nodes.find(node => node.agent_id === 'A5').output.snapshot), approved: false };
+  }
+  function currentFeedback(run) {
+    const currentPlan = run.plan_versions.at(-1);
+    const startIndex = currentPlan?.feedback_start_index || 0;
+    const assessment = Object.assign({}, ...run.feedback.slice(startIndex));
+    const resourceIndex = Math.max(startIndex, currentPlan?.resource_feedback_consumed_index || 0);
+    assessment.resource_changed = run.feedback.slice(resourceIndex).some(item => item.resource_changed === true);
+    return assessment;
   }
   function reflectSaved(run) {
-    const feedback = Object.assign({}, ...run.feedback);
+    const feedback = currentFeedback(run);
     if (run.nodes.find(node => node.agent_id === 'A5').output?.feasibility === 'infeasible') feedback.resource_changed = true;
     const reflection = builder.reflect({ run, feedback });
+    if (['verified', 'archived'].includes(run.demo_state.status)) {
+      reflection.status = 'success';
+      reflection.return_decision = { action: 'finish', reason: run.demo_state.status === 'archived' ? '监管已核验且专家已完成归档，历史人工反馈保留用于审计。' : '监管已完成当前方案核验，等待专家复盘归档。', operator_confirmation_required: true };
+    }
     const node = run.nodes.find(node => node.agent_id === 'A6');
     node.status = reflection.status; node.output = reflection; node.output_summary = reflection.return_decision.reason;
     run.next_action = reflection.return_decision.action;
@@ -98,7 +117,7 @@ function createAgentCollaborationService({ repository, store, adviceService, now
     },
     async get(runId) { available(); return store.get(runId); },
     async list(query) { available(); return store.list(query); },
-    async reflect(runId) { available(); const run = await store.get(runId); if (run.current_phase === 'finish') fail(400, 'Low-risk monitoring run has no reflection workflow'); return builder.reflect({ run, feedback: Object.assign({}, ...run.feedback, run.nodes.find(node => node.agent_id === 'A5').output?.feasibility === 'infeasible' ? { resource_changed: true } : {}) }); },
+    async reflect(runId) { available(); const run = await store.get(runId); if (run.current_phase === 'finish') fail(400, 'Low-risk monitoring run has no reflection workflow'); return reflectSaved(run); },
     async act({ runId, type, payload = {}, actor, expectedRevision, commandId }) {
       identity(actor);
       if (!Object.hasOwn(POLICY, type)) fail(400, 'Unknown workflow action');
@@ -114,11 +133,14 @@ function createAgentCollaborationService({ repository, store, adviceService, now
       if (['REPROCESS', 'UPDATE_RESOURCES'].includes(type)) {
         if (!ACTIVE.includes(run.demo_state.status)) fail(400, 'Action requires an active unverified run');
         if (type === 'UPDATE_RESOURCES') {
-          const calculated = builder.run({ recordId: run.algorithm.record_id, resourceSnapshot: payload.resource_snapshot });
           if (!object(payload.resource_snapshot)) fail(400, 'resource_snapshot is required');
+          const snapshot = { ...run.nodes[3].output.snapshot, ...payload.resource_snapshot };
+          const calculated = builder.run({ recordId: run.algorithm.record_id, resourceSnapshot: snapshot });
           run.nodes[3] = calculated.nodes[3];
           run.nodes[4] = calculated.nodes[4];
-          run.feedback.push(feedbackFor(type, payload, trustedActor, timestamp));
+          if (run.nodes[4].output) run.nodes[4].output.portal_tasks.enterprise = structuredClone(run.nodes[2].output.actions);
+          event.payload.resource_snapshot = snapshot;
+          run.feedback.push(feedbackFor(type, event.payload, trustedActor, timestamp));
           run.plan_versions.at(-1).approved = false;
           run.demo_state.status = 'alert_triggered'; run.demo_state.alertSeenRevision = null;
           run.demo_state.timeline.push({ id: `${key}-resources`, type, role: actor.role, actor: trustedActor.displayName, at: timestamp, detail: '人工更新资源快照，重新评估可行性，等待企业确认。' });
@@ -166,8 +188,9 @@ function createAgentCollaborationService({ repository, store, adviceService, now
         if (type === 'SUBMIT_DISPOSAL') {
           if (run.nodes[3].output.feasibility !== 'feasible' || !run.plan_versions.at(-1).approved) fail(400, 'A feasible enterprise-confirmed plan is required');
           if (Array.isArray(payload.photos)) {
-            if (!payload.photos.every(photo => object(photo) && typeof photo.name === 'string' && photo.name.trim() && (!Object.hasOwn(photo, 'size') || Number.isSafeInteger(photo.size) && photo.size >= 0))) fail(400, 'Valid browser-local photo metadata is required');
-            event.payload.photos = payload.photos.map(photo => ({ name: photo.name, ...(Object.hasOwn(photo, 'size') ? { size: photo.size } : {}), storage_source: 'browser-local' }));
+            if (!payload.photos.every(photo => object(photo) && typeof photo.name === 'string' && photo.name.trim() && (!Object.hasOwn(photo, 'id') || typeof photo.id === 'string' && COMMAND.test(photo.id)) && (!Object.hasOwn(photo, 'size') || Number.isSafeInteger(photo.size) && photo.size >= 0))) fail(400, 'Valid browser-local photo metadata and opaque photo IDs are required');
+            event.payload.photos = payload.photos.map((photo, index) => ({ id: photo.id ?? `PHOTO-${key.slice(0, 32)}-${index}`, name: photo.name, ...(Object.hasOwn(photo, 'size') ? { size: photo.size } : {}), storage_source: 'browser-local' }));
+            if (new Set(event.payload.photos.map(photo => photo.id)).size !== event.payload.photos.length) fail(400, 'Photo IDs must be distinct within a submission');
           }
           run.feedback.push(feedbackFor(type, payload, trustedActor, timestamp));
         }
@@ -177,7 +200,7 @@ function createAgentCollaborationService({ repository, store, adviceService, now
         catch (error) { fail(error.code === 'ACTION_NOT_ALLOWED' ? 403 : 400, 'Invalid workflow transition or incomplete action fields'); }
         run.phase = run.demo_state.status; run.current_phase = run.phase;
         if (type === 'ACKNOWLEDGE') {
-          Object.assign(run.plan_versions.at(-1), { approved: true, approved_by: trustedActor, approved_at: timestamp, approved_resources: structuredClone(run.nodes[3].output.snapshot) });
+          Object.assign(run.plan_versions.at(-1), { approved: true, approved_by: trustedActor, approved_at: timestamp, approved_resources: structuredClone(run.nodes[3].output.snapshot), resource_feedback_consumed_index: run.feedback.length });
         }
         reflectSaved(run);
       }

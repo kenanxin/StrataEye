@@ -75,3 +75,26 @@ test('workflow provider HTTP failure and timeout remain truthful and sanitized',
   const timed = await createExpertAdviceService({ apiKey: 'private-key', timeoutMs: 10, fetchImpl: (_url, request) => new Promise((_resolve, reject) => request.signal.addEventListener('abort', () => reject(Object.assign(new Error('private'), { name: 'AbortError' })))) }).generateWorkflowAdvice(workflowInput);
   assert.equal(timed.fallback_reason, 'provider_timeout');
 });
+test('all displayed provider advice rejects new numeric thresholds in percentages, time and Chinese quantities', async () => {
+  for (const value of ['氧浓度低于18%立即停止作业', '每班最多作业8小时', '氧浓度低于百分之十八立即停止作业', '每班最多作业八小时', '每班最多作业٨小时', '氧浓度低于１８％立即停止作业', '每班最多作业半小时', 'Maximum eight hours per shift']) {
+    for (const field of ['summary', 'recommendations']) {
+      const parsed = providerPayload({ [field]: field === 'summary' ? value : [value] });
+      const result = await createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(parsed) } }] }) }) }).generateWorkflowAdvice(workflowInput);
+      assert.equal(result.source, 'local-rule', `${field}: ${value}`);
+    }
+  }
+});
+test('reviewed case freeform names, phones and emails never enter the provider prompt', async () => {
+  let captured;
+  const input = structuredClone(workflowInput);
+  Object.assign(input.reviewed_memory[0], { reviewed_conclusion: '王小明 13800138000 person@example.com 私密复盘正文', risk_class: '重大风险', outcome: 'archived', action_codes: ['ACKNOWLEDGE', 'SUBMIT_DISPOSAL', 'APPROVE', 'ARCHIVE'], monitoring_trend: 'stable', execution_status: 'completed' });
+  const result = await createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async (_url, request) => {
+    captured = request.body;
+    return { ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(providerPayload({ evidence_ids: ['REC-2'] })) } }] }) };
+  } }).generateWorkflowAdvice(input);
+  assert.equal(result.source, 'deepseek');
+  for (const privateText of ['王小明', '13800138000', 'person@example.com', '私密复盘正文', 'reviewed_conclusion']) assert.ok(!captured.includes(privateText), privateText);
+  const submitted = JSON.parse(JSON.parse(captured).messages[1].content);
+  assert.equal(submitted.reviewed_memory[0].record_id, 'REC-2');
+  assert.equal(submitted.reviewed_memory[0].outcome, 'archived');
+});

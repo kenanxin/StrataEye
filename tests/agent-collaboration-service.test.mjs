@@ -69,11 +69,14 @@ test('actions use saved revision, deduplicate before phase validation and preser
   assert.equal(archived.feedback.filter(e => e.type === 'SUBMIT_DISPOSAL').length, 2);
   await f.start('unreviewed');
   assert.equal(f.adviceInputs.at(-1).reviewed_memory.length, 0);
-  const reviewed = await f.act(archived, 'APPROVE_MEMORY', { reviewed_conclusion: '人工审阅：处置过程可参考' }, 'expert');
+  const reviewed = await f.act(archived, 'APPROVE_MEMORY', { reviewed_conclusion: '人工审阅 王小明 13800138000 person@example.com' }, 'expert');
   assert.equal(reviewed.case_memory[0].reviewed, true);
+  assert.match(reviewed.case_memory[0].reviewed_conclusion, /王小明/);
   assert.equal(reviewed.demo_state.revision, reviewed.revision);
   await f.start('next');
   assert.equal(f.adviceInputs.at(-1).reviewed_memory.length, 1);
+  assert.ok(!JSON.stringify(f.adviceInputs.at(-1).reviewed_memory).includes('王小明'));
+  assert.equal(f.adviceInputs.at(-1).reviewed_memory[0].outcome, 'archived');
 });
 test('resource and worsening branches require confirmation and bound new plan versions', async t => {
   const f = await fixture(t);
@@ -130,4 +133,61 @@ test('confirmed reprocess saves new manual feedback before choosing a return pat
   assert.equal(run.plan_versions.at(-1).reprocess_from, 'return_to_perception');
   assert.equal(run.algorithm.record_id, recordId);
   assert.equal(run.demo_state.sourceRecordId, recordId);
+});
+test('incremental resources retain saved zero fields and A4 follows the current A3 proposal', async t => {
+  const f = await fixture(t);
+  let run = await f.start('incremental', { resourceSnapshot: { personnel_available: 0, support_material_sets: 0, inspection_devices: 0 } });
+  run = await f.act(run, 'UPDATE_RESOURCES', { resource_snapshot: { personnel_available: 6 } });
+  assert.deepEqual(run.nodes[3].output.snapshot, { personnel_available: 6, support_material_sets: 0, inspection_devices: 0 });
+  assert.equal(run.nodes[3].output.feasibility, 'infeasible');
+  await assert.rejects(f.act(run, 'ACKNOWLEDGE'), errorStatus(400));
+  run = await f.act(run, 'UPDATE_RESOURCES', { resource_snapshot: { support_material_sets: 12, inspection_devices: 3 } });
+  assert.deepEqual(run.nodes[4].output.portal_tasks.enterprise, run.nodes[2].output.actions);
+  assert.deepEqual(run.nodes[4].output.portal_tasks.enterprise, ['复测支护']);
+});
+test('consumed historical resource feedback cannot prevent a completed new version closing', async t => {
+  const f = await fixture(t);
+  let run = await f.start('resource-close', { resourceSnapshot: { personnel_available: 0 } });
+  run = await f.act(run, 'UPDATE_RESOURCES', { resource_snapshot: { personnel_available: 6 } });
+  run = await f.act(run, 'REPROCESS', { confirmed: true });
+  run = await f.act(run, 'ACKNOWLEDGE');
+  assert.equal(run.nodes[5].output.return_decision.action, 'wait_for_feedback');
+  run = await f.act(run, 'SUBMIT_DISPOSAL', disposal);
+  assert.equal(run.nodes[5].output.return_decision.action, 'finish');
+  run = await f.act(run, 'APPROVE', { opinion: 'checked' }, 'regulator');
+  assert.equal(run.next_action, 'finish');
+  run = await f.act(run, 'ARCHIVE', { conclusion: 'closed' }, 'expert');
+  assert.equal(run.next_action, 'finish');
+  assert.equal((await f.service.reflect(run.workflow_run_id)).return_decision.action, 'finish');
+  assert.ok(run.feedback.some(item => item.resource_changed === true));
+});
+test('resource reevaluation uses the existing AI candidate tasks in A4', async t => {
+  const f = await fixture(t);
+  let run = await f.start('consistent-tasks');
+  assert.deepEqual(run.nodes[2].output.actions, ['复测支护']);
+  run = await f.act(run, 'UPDATE_RESOURCES', { resource_snapshot: { personnel_available: 4 } });
+  assert.deepEqual(run.nodes[4].output.portal_tasks.enterprise, run.nodes[2].output.actions);
+});
+test('confirming feasible updated resources consumes their pending feedback without erasing history', async t => {
+  const f = await fixture(t);
+  let run = await f.start('resource-confirm');
+  run = await f.act(run, 'UPDATE_RESOURCES', { resource_snapshot: { personnel_available: 4 } });
+  assert.equal(run.next_action, 'return_to_resource');
+  run = await f.act(run, 'ACKNOWLEDGE');
+  assert.equal(run.next_action, 'wait_for_feedback');
+  run = await f.act(run, 'SUBMIT_DISPOSAL', disposal);
+  assert.equal(run.next_action, 'finish');
+  assert.ok(run.feedback.some(item => item.resource_changed === true));
+});
+test('photo metadata preserves distinct opaque IDs and submission history without cloud claims', async t => {
+  const f = await fixture(t);
+  let run = await f.act(await f.start('photo-ids'), 'ACKNOWLEDGE');
+  for (const id of ['', 'bad/../path', 12]) await assert.rejects(f.act(run, 'SUBMIT_DISPOSAL', { ...disposal, photos: [{ id, name: 'same.jpg' }] }), errorStatus(400));
+  run = await f.act(run, 'SUBMIT_DISPOSAL', { ...disposal, photos: [{ id: 'local-photo-a', name: 'same.jpg', bytes: 'private bytes', storage_source: 'cloud' }, { id: 'local-photo-b', name: 'same.jpg', cloud_url: 'fake' }] });
+  assert.deepEqual(run.demo_state.disposal.photos.map(item => item.id), ['local-photo-a', 'local-photo-b']);
+  assert.ok(run.demo_state.disposal.photos.every(item => item.storage_source === 'browser-local' && !item.bytes && !item.cloud_url));
+  run = await f.act(run, 'REJECT', { opinion: '补充', deadline: '2026-10-15' }, 'regulator');
+  run = await f.act(run, 'SUBMIT_DISPOSAL', disposal);
+  assert.ok(run.demo_state.disposal.photos[0].id);
+  assert.deepEqual(run.events.find(item => item.type === 'SUBMIT_DISPOSAL').payload.photos.map(item => item.id), ['local-photo-a', 'local-photo-b']);
 });
