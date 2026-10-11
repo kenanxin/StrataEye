@@ -128,6 +128,26 @@ test('strict IDs, complete JSON state, revisions, commands and events reject inv
   for (const bad of [null, [], {}, { type: '' }]) await assert.rejects(store.save(fixture({ revision: 1 }), { expectedRevision: 0, commandId: 'invalid', event: bad }), hasError('WORKFLOW_INVALID_INPUT', 400));
 });
 
+test('sparse arrays with enumerable properties reject before any run is committed', async (t) => {
+  const { directory, store } = await local(t);
+  for (const key of ['extra', '01', '-1', '4294967295']) {
+    const nodes = new Array(1);
+    nodes[key] = {};
+    await assert.rejects(store.create(fixture({ nodes }), { commandId: 'invalid-sparse' }), hasError('WORKFLOW_INVALID_INPUT', 400));
+    await assert.rejects(store.get(id), hasError('WORKFLOW_NOT_FOUND', 404));
+    assert.deepEqual(await readdir(directory), []);
+  }
+  const nodes = [{}];
+  nodes.extra = {};
+  await assert.rejects(store.create(fixture({ nodes }), { commandId: 'invalid-extra' }), hasError('WORKFLOW_INVALID_INPUT', 400));
+  assert.deepEqual(await readdir(directory), []);
+  const current = await store.create(fixture(), { commandId: 'valid-create' });
+  const evidence = new Array(1);
+  evidence.extra = {};
+  await assert.rejects(store.save({ ...current, revision: 1 }, { expectedRevision: 0, commandId: 'invalid-save', event: { ...event, evidence } }), hasError('WORKFLOW_INVALID_INPUT', 400));
+  assert.deepEqual(await store.get(id), current);
+});
+
 test('save retains creation identity and rejects rewritten event history', async (t) => {
   const { store } = await local(t);
   await store.create(fixture(), { commandId: 'create-1' });

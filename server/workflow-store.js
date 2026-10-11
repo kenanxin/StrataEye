@@ -36,7 +36,14 @@ function validateJson(value, ancestors = new Set(), depth = 0) {
   if (ancestors.has(value)) invalid('Workflow JSON must not be circular');
   ancestors.add(value);
   if (Object.getOwnPropertySymbols(value).length) invalid('Workflow state must contain only JSON keys');
-  if (Array.isArray(value) && Object.keys(value).length !== value.length) invalid('Workflow arrays must be dense JSON arrays');
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index++) {
+      if (!Object.hasOwn(value, index)) invalid('Workflow arrays must be dense JSON arrays');
+    }
+    for (const key of Object.keys(value)) {
+      if (!/^(0|[1-9]\d*)$/.test(key) || Number(key) >= value.length) invalid('Workflow arrays must contain only numeric indices');
+    }
+  }
   for (const child of Object.values(value)) validateJson(child, ancestors, depth + 1);
   ancestors.delete(value);
 }
