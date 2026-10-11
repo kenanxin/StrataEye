@@ -68,7 +68,7 @@ await assert.rejects(store.save(next,{expectedRevision:0,commandId:'approve-2',e
 - actor is taken exclusively from session and has subject/username, role, displayName; resolve identity as subject or username for local accounts.
 - Existing `/api/multi-agent/run` POST becomes an awaited saved start; `/api/multi-agent/runs` GET lists; `/api/multi-agent/runs/:id` GET reads; `/api/multi-agent/runs/:id/actions` POST accepts type,payload,expected_revision,command_id. Legacy reflect validates an existing stored run and never trusts submitted nodes.
 - Shared business actions: ACKNOWLEDGE, SUBMIT_DISPOSAL, REJECT, APPROVE, ARCHIVE; additional REPROCESS (enterprise, human confirmation), UPDATE_RESOURCES (enterprise), APPROVE_MEMORY (expert). Reject unknown actions and wrong phases before AI calls.
-- Start attaches demo_state with alert_triggered and the real sourceRecordId; ACKNOWLEDGE confirms the plan. Submitted photo metadata includes storage_source:'browser-local' and cannot count as cloud bytes. REJECT returns changes_requested and keeps evidence history; APPROVE yields verified; ARCHIVE yields archived. APPROVE_MEMORY requires archived state and explicit reviewed conclusion. REPROCESS reads saved feedback and produces a new plan version, bounded to5 per run, retaining the same workflow_run_id and previous evidence.
+- Start attaches demo_state with the real sourceRecordId. Non-low-risk records get alert_triggered; low-risk records retain builder finish with demo_state.ready and no signing/reprocess actions. ACKNOWLEDGE confirms the plan. Submitted photo metadata includes storage_source:'browser-local' and cannot count as cloud bytes. REJECT returns changes_requested and keeps evidence history; APPROVE yields verified; ARCHIVE yields archived. APPROVE_MEMORY requires archived state and explicit reviewed conclusion. REPROCESS reads saved feedback and produces a new plan version, bounded to5 per run, retaining the same workflow_run_id and previous evidence.
 - `generateWorkflowAdvice(input)` on existing advice service returns source, fallback_reason if any, summary, recommendations and evidence_ids. Input has authoritative risk, feature evidence with stable IDs, known similar record IDs and reviewed memory. Unknown citation IDs, invalid JSON or malformed recommendation arrays fall back; source metadata stays truthful. No model risk replacement or arbitrary numeric engineering thresholds.
 - Store source selection uses WORKFLOW_STORE_PROVIDER=file for local; for supabase authentication default is supabase and missing service key/migration gives unavailable workflow, never file fallback in production.
 - `status` exposes available, storage_provider, durable, advice_configured (not verified), human_approval_required, external_delivery:false, learning_mode:'reviewed_case_memory'. Error messages contain no secret/provider bodies.
@@ -92,7 +92,7 @@ assert.equal(agreed.events.at(-1).actor.role,'enterprise');
 ### Task 3: Connect existing three-role UI to saved runs
 
 **Files:**
-- Modify: js/multi-agent-workflow-ui.mjs, js/warning-demo-ui.mjs, js/warning-demo-state.mjs, js/main.js (shared client initialization only)
+- Modify: js/multi-agent-workflow-ui.mjs, js/warning-demo-ui.mjs, js/warning-demo-state.mjs, js/main.js (shared initialization, selected-run closed-loop projection and legacy-action routing only)
 - Create: js/workflow-client.mjs
 - Modify: index.html and the existing workflow CSS section only
 - Test: tests/workflow-client.test.mjs, tests/multi-agent-ui.test.mjs, tests/warning-demo-ui.test.mjs
