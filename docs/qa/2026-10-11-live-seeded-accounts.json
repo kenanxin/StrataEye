@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-11T10:22:53.835Z",
+  "base_url": "https://smart-mine-v2-balanced.vercel.app",
+  "roles": {
+    "enterprise": {
+      "login_http": 401,
+      "login_error": "INVALID_CREDENTIALS"
+    },
+    "regulator": {
+      "login_http": 401,
+      "login_error": "INVALID_CREDENTIALS"
+    },
+    "expert": {
+      "login_http": 401,
+      "login_error": "INVALID_CREDENTIALS"
+    }
+  }
+}

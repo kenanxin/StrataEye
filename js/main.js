@@ -1407,12 +1407,15 @@ function setupClosedLoopActions() {
 function setExpertAdviceResult(result) {
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const sourceLabel = result.source === 'deepseek' ? 'DeepSeek AI' : '本地专家规则';
+  const fallbackLabels = { not_configured: 'API未配置', provider_http_error: 'API返回错误', empty_provider_response: 'API返回空内容', provider_timeout: 'API请求超时', provider_unavailable: 'API连接失败' };
+  const fallbackNotice = result.fallback_reason ? `已使用本地规则：${fallbackLabels[result.fallback_reason] || 'API暂不可用'}${result.provider_status ? `（HTTP ${result.provider_status}）` : ''}。` : '';
   const source = document.getElementById('expertAdviceSource');
   const time = document.getElementById('expertAdviceTime');
   const resultPanel = document.getElementById('expertAdviceResult');
   const copy = document.getElementById('copyExpertAdvice');
   const sourceBadge = document.getElementById('expertExplanationSource');
   const text = [
+    `建议来源：${sourceLabel}${fallbackNotice ? `，${fallbackNotice}` : ''}`,
     `风险等级：${result.riskLevel}`,
     `建议时效：${result.timeHorizon}`,
     `分析摘要：${result.summary}`,
@@ -1423,7 +1426,7 @@ function setExpertAdviceResult(result) {
   if (time) time.textContent = result.generatedAt ? new Date(result.generatedAt).toLocaleString('zh-CN', { hour12: false }) : '--';
   if (sourceBadge) sourceBadge.textContent = sourceLabel;
   if (resultPanel) {
-    resultPanel.innerHTML = `<strong>${escapeHtml(result.riskLevel)} · ${escapeHtml(result.timeHorizon)}</strong><p>${escapeHtml(result.summary)}</p><ul>${(result.recommendations || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
+    resultPanel.innerHTML = `<strong>${escapeHtml(result.riskLevel)} · ${escapeHtml(result.timeHorizon)}</strong>${fallbackNotice ? `<p role="status">${escapeHtml(fallbackNotice)}</p>` : ''}<p>${escapeHtml(result.summary)}</p><ul>${(result.recommendations || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
   }
   if (copy) { copy.disabled = false; copy.dataset.copyText = text; }
 }
@@ -1483,7 +1486,7 @@ async function refreshExpertAdviceStatus() {
     const status = await response.json();
     button.disabled = !status.configured;
     button.textContent = status.configured ? '生成 DeepSeek 建议' : '需配置 DeepSeek';
-    if (source) source.textContent = status.configured ? 'DeepSeek 已就绪' : 'DeepSeek 未配置';
+    if (source) source.textContent = status.configured ? 'DeepSeek 已配置 · 调用待验证' : 'DeepSeek 未配置';
     if (!status.configured && result) result.innerHTML = '<strong>DeepSeek API 未配置</strong><p>当前仅展示真实数据和模型解释。配置服务端 DEEPSEEK_API_KEY 后，才会生成 AI 专家建议。</p>';
   } catch (error) {
     button.disabled = true;

@@ -21,7 +21,7 @@
 - 规模：20,000 行、11 列
 - 类别：低风险 7,432；一般风险 9,830；较大风险 2,071；重大风险 667
 - 生成数据：`data/roof-risk-dataset.json`
-- 模型：XGBoost，独立测试准确率 99.325%，全量回放一致率 99.665%
+- 模型：XGBoost，算法组交付的随机划分测试准确率 99.325%，全量回放标签一致率 99.665%。原流水线在划分前进行全量平滑和标准化，且使用测试集早停；这两项指标不能直接作为独立时序泛化性能。时间留出复核见 `docs/qa/2026-10-11-competition-audit.md`。
 
 七项数值输入为顶板离层速率、锚杆轴力增量、锚索轴力增量、支架阻力、涌水量、微震能量、距水体/岩溶体距离，另含数据质量类别，共八项模型输入。界面展示原始测量值，模型推理使用卡尔曼平滑后的 `model_values`。
 
@@ -160,7 +160,7 @@ competition_submission
 
 - Vercel：托管静态前端，并通过 `vercel.json` 代理 `/api/*`。
 - Render：运行 Node API、权限校验和 RoofRisk 业务服务。
-- Supabase：执行 `supabase/migrations/202609030001_rbac_foundation.sql`，保存用户角色、权限、审计和闭环状态。
+- Supabase：执行 `supabase/migrations/202609030001_rbac_foundation.sql`，保存用户角色、权限和管理员操作审计。迁移含事件/动作表，但当前演示工单、照片与三端状态尚未写入这些表；工单状态在同浏览器 localStorage，照片在 IndexedDB，服务端基础闭环在进程内存。跨设备同步和重启后的服务端闭环恢复仍需接入持久化。
 
 部署前复制 `.env.example` 配置 Render 环境变量。`SUPABASE_SERVICE_ROLE_KEY` 只能放在 Render，不能提交到 Git 或暴露给浏览器。Vercel 配置中的 Render 地址部署后需替换为实际服务地址。
 

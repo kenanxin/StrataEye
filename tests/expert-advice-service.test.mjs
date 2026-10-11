@@ -36,4 +36,12 @@ test('DeepSeek failure falls back to local advice', async () => {
   const result = await service.generate(input);
   assert.equal(result.source, 'local-rule');
   assert.deepEqual(result.recommendations, localAdvice(input).recommendations);
+  assert.equal(result.fallback_reason, 'provider_unavailable');
+});
+
+test('provider failure retains safe HTTP evidence without leaking response or key', async () => {
+  const result = await createExpertAdviceService({ apiKey: 'private-key', fetchImpl: async () => ({ ok: false, status: 402 }) }).generate(input);
+  assert.equal(result.fallback_reason, 'provider_http_error');
+  assert.equal(result.provider_status, 402);
+  assert.ok(!JSON.stringify(result).includes('private-key'));
 });

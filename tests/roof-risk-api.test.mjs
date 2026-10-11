@@ -42,6 +42,16 @@ async function requestJson(url, options = {}, cookie = null) {
   return { response, payload };
 }
 
+test('health check exposes deployment identity without credentials', async () => {
+  await withServer(async (baseUrl) => {
+    const { response, payload } = await requestJson(`${baseUrl}/healthz`);
+    assert.equal(response.status, 200);
+    assert.equal(payload.release, 'competition-audit-v1');
+    assert.equal(payload.auth_provider, 'local');
+    assert.ok(!JSON.stringify(payload).includes('KEY'));
+  }, { authenticate: false });
+});
+
 test('current endpoint exposes real source, eight metrics, and XGBoost output', async () => {
   await withServer(async (baseUrl, cookie) => {
     const { response, payload } = await requestJson(`${baseUrl}/api/roof-risk/current`, {}, cookie);
@@ -353,5 +363,11 @@ test('multi-agent API authenticates requests and validates record input', async 
     }, cookie);
     assert.equal(invalid.response.status, 400);
     assert.equal(invalid.payload.error.code, 'RECORD_ID_REQUIRED');
+    const resources = await requestJson(`${baseUrl}/api/multi-agent/run`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ record_id: 'REC-202511101149-02909', resource_snapshot: { personnel_available: 'abc' } }),
+    }, cookie);
+    assert.equal(resources.response.status, 400);
+    assert.equal(resources.payload.error.code, 'INVALID_WORKFLOW_INPUT');
   });
 });

@@ -41,7 +41,7 @@ function currentFeatureRows(current, schema) {
     label: feature.label || feature.key,
     unit: feature.unit || '',
     value: Number(current?.metrics?.[feature.key]?.value),
-    standardized: Number(current?.feature_evidence?.find((item) => item.key === feature.key)?.standardized_value),
+    standardized: Number(current?.metrics?.[feature.key]?.standardized_value ?? current?.feature_evidence?.find((item) => item.key === feature.key)?.standardized_value),
     contribution: Number(current?.risk?.contribution?.[feature.key] || 0),
     fallbackIndex: index,
   }));
@@ -73,9 +73,9 @@ export function buildExpertResearchModel({ current = {}, history = {}, events = 
   const distributionTotal = distribution.reduce((sum, item) => sum + item.count, 0);
   distribution.forEach((item) => { item.percent = distributionTotal ? round((item.count / distributionTotal) * 100, 1) : 0; });
 
-  const contributions = currentRows.map((item) => ({
+  const contributions = currentRows.filter((item) => Number.isFinite(item.standardized)).map((item) => ({
     ...item,
-    contribution: item.contribution || (Number.isFinite(item.standardized) ? Math.abs(item.standardized) : 0),
+    contribution: Number.isFinite(item.standardized) ? Math.abs(item.standardized) : 0,
   })).sort((left, right) => right.contribution - left.contribution).map((item) => ({
     ...item,
     contribution: round(item.contribution, 3),

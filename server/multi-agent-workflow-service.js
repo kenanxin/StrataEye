@@ -1,6 +1,7 @@
 'use strict';
 
 const { randomUUID } = require('crypto');
+const { performance } = require('node:perf_hooks');
 
 const AGENTS = [
   ['A1', '感知预警 Agent', 'perception_warning'],
@@ -24,10 +25,11 @@ function skippedNode(agent, reason) {
   };
 }
 
-function completedNode(agent, status, inputEvidence, outputSummary, output) {
+function completedNode(agent, status, inputEvidence, outputSummary, output, startedAt) {
   return {
     agent_id: agent[0], name: agent[1], node: agent[2], status,
-    input_evidence: inputEvidence, output_summary: outputSummary, output, elapsed_ms: 1,
+    input_evidence: inputEvidence, output_summary: outputSummary, output,
+    elapsed_ms: Number((performance.now() - startedAt).toFixed(6)),
   };
 }
 
@@ -42,7 +44,15 @@ function planForRisk(predictedClass) {
 }
 
 function resourceEvaluation(snapshot) {
+  if (snapshot !== undefined && (snapshot === null || typeof snapshot !== 'object' || Array.isArray(snapshot))) {
+    throw new TypeError('resourceSnapshot must be an object');
+  }
   const resource = { ...DEFAULT_RESOURCES, ...(snapshot || {}) };
+  for (const key of Object.keys(resource)) {
+    if (!Object.hasOwn(DEFAULT_RESOURCES, key) || !Number.isSafeInteger(resource[key]) || resource[key] < 0) {
+      throw new TypeError(`resourceSnapshot.${key} must be a non-negative safe integer`);
+    }
+  }
   const gaps = [];
   if (Number(resource.personnel_available) < 2) gaps.push('现场处置人员不足2人');
   if (Number(resource.support_material_sets) < 1) gaps.push('补强支护材料不足');
@@ -62,8 +72,8 @@ function createMultiAgentWorkflowService(repository) {
 
   function reflect({ run, feedback = {} }) {
     if (!run?.workflow_run_id) throw new TypeError('a completed workflow run is required');
-    let action = 'finish';
-    let reason = '当前反馈未发现需要重启智能体链路的条件。';
+    let action = 'wait_for_feedback';
+    let reason = '等待人工审批与现场处置反馈，尚未完成闭环核验。';
     if (feedback.monitoring_trend === 'worsened') {
       action = 'return_to_perception'; reason = '监测趋势恶化，建议人工确认后返回A1读取新监测窗口。';
     } else if (feedback.execution_status === 'failed') {
@@ -72,16 +82,20 @@ function createMultiAgentWorkflowService(repository) {
       action = 'return_to_resource'; reason = '资源条件变化，建议返回A5重新评估。';
     } else if (feedback.notification_failed === true) {
       action = 'return_to_control'; reason = '协同通知失败，建议返回A4重新生成协同草案。';
+    } else if (feedback.execution_status === 'completed' && feedback.monitoring_trend === 'stable') {
+      action = 'finish'; reason = '已收到执行完成和监测稳定反馈，提交人工闭环核验；本节点未代替监管审批。';
     }
     return {
       agent_id: 'A6', name: '反思迭代 Agent', status: action === 'finish' ? 'success' : 'waiting_human',
       reflection_mode: 'rule_assisted', auto_loop: false, auto_update: false,
-      return_decision: { action, reason, operator_confirmation_required: action !== 'finish' },
+      return_decision: { action, reason, operator_confirmation_required: true },
     };
   }
 
   function run({ recordId, resourceSnapshot } = {}) {
     if (typeof recordId !== 'string' || !recordId) throw new TypeError('recordId is required');
+    if (resourceSnapshot !== undefined) resourceEvaluation(resourceSnapshot);
+    let startedAt = performance.now();
     const evaluated = repository.evaluateRecord(recordId);
     const workflowRunId = `WF-${randomUUID()}`;
     const warningId = `WARN-${recordId}`;
@@ -100,9 +114,10 @@ function createMultiAgentWorkflowService(repository) {
         risk_score: evaluated.risk.score,
         confidence: evaluated.model_output.confidence,
         fast_alert_required: ['较大风险', '重大风险'].includes(predictedClass),
-        causal_evidence: evaluated.feature_evidence,
+        feature_evidence: evaluated.feature_evidence,
         model_mode: 'integrated_xgboost',
       },
+      startedAt,
     ));
 
     if (isLowRisk) {
@@ -110,28 +125,34 @@ function createMultiAgentWorkflowService(repository) {
       return buildResult({ workflowRunId, warningId, traceId, evaluated, nodes, currentPhase: 'finish', nextAction: 'continue_monitoring' });
     }
 
+    startedAt = performance.now();
     const similar = repository.findSimilarCases(recordId, 3);
     nodes.push(completedNode(
       AGENTS[1], 'success',
       [`查询记录${recordId}`, `标准化七维特征欧氏距离`, `数据哈希${evaluated.provenance.source_sha256.slice(0, 12)}…`],
       `检索到${similar.cases.length}条真实数据相似记录；相似不代表已证实事故因果。`,
       { method: similar.method, catalog: 'teacher_csv_similar_records', cases: similar.cases },
+      startedAt,
     ));
 
+    startedAt = performance.now();
     const actions = planForRisk(predictedClass);
     nodes.push(completedNode(
       AGENTS[2], 'success',
       [`风险等级：${predictedClass}`, `${similar.cases.length}条相似数据记录`, ...evaluated.risk.trigger],
       `形成${actions.length}项可审计候选处置步骤，等待资源可行性校验。`,
       { decision_mode: 'rule_assisted', plan_id: `PLAN-${recordId}`, actions, human_approval_boundary: true },
+      startedAt,
     ));
 
+    startedAt = performance.now();
     const resources = resourceEvaluation(resourceSnapshot);
     nodes.push(completedNode(
       AGENTS[3], resources.feasibility === 'feasible' ? 'success' : 'needs_attention',
       Object.entries(resources.snapshot).map(([key, value]) => `${key}=${value}`),
       resources.feasibility === 'feasible' ? '人员、材料和复测设备满足演示处置方案要求。' : `存在${resources.gaps.length}项资源缺口，禁止进入协同管控。`,
       resources,
+      startedAt,
     ));
 
     if (resources.feasibility !== 'feasible') {
@@ -140,6 +161,7 @@ function createMultiAgentWorkflowService(repository) {
       return buildResult({ workflowRunId, warningId, traceId, evaluated, nodes, currentPhase: 'resource_evaluation', nextAction: 'return_to_resource' });
     }
 
+    startedAt = performance.now();
     nodes.push(completedNode(
       AGENTS[4], 'waiting_human',
       [`方案${nodes[2].output.plan_id}`, 'A5资源评估可行', '企业端/监管端/智库端权限边界'],
@@ -149,17 +171,20 @@ function createMultiAgentWorkflowService(repository) {
         delivery_mode: 'dry_run', external_delivery: false, dispatch_status: 'waiting_approval',
         portal_tasks: { enterprise: actions, regulator: ['核验工单与监测对照', '决定通过或驳回'], expert: ['解释主要模型证据', '复盘并提出返回建议'] },
       },
+      startedAt,
     ));
 
+    startedAt = performance.now();
     const reflection = reflect({
       run: { workflow_run_id: workflowRunId },
       feedback: { execution_status: 'pending_human_approval' },
     });
     nodes.push(completedNode(
-      AGENTS[5], 'success',
+      AGENTS[5], reflection.status,
       ['A1—A5结构化输出', '当前尚无现场处置反馈'],
       '已建立反思检查点；等待三端处置反馈后判断闭环或定向返回。',
       reflection,
+      startedAt,
     ));
 
     return buildResult({ workflowRunId, warningId, traceId, evaluated, nodes, currentPhase: 'waiting_human', nextAction: 'operator_approval' });

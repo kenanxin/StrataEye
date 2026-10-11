@@ -215,7 +215,11 @@ function createAppServer(options = {}) {
 
       if (pathname === '/healthz') {
         assertMethod(req, ['GET', 'HEAD']);
-        sendJson(res, { status: 'ok', service: 'smart-mine-v2-balanced', data_source: 'teacher_real_csv_xgboost' });
+        sendJson(res, {
+          status: 'ok', service: 'smart-mine-v2-balanced', data_source: 'teacher_real_csv_xgboost',
+          release: 'competition-audit-v1', commit: process.env.RENDER_GIT_COMMIT || null,
+          auth_provider: authService.provider || (process.env.AUTH_PROVIDER === 'supabase' ? 'supabase' : 'local'),
+        });
         return;
       }
 
@@ -351,10 +355,14 @@ function createAppServer(options = {}) {
         if (typeof body.record_id !== 'string' || !body.record_id) {
           throw new RoofRiskRepositoryError('RECORD_ID_REQUIRED', 'record_id is required', 400);
         }
-        sendJson(res, multiAgentWorkflowService.run({
-          recordId: body.record_id,
-          resourceSnapshot: body.resource_snapshot,
-        }));
+        let result;
+        try {
+          result = multiAgentWorkflowService.run({ recordId: body.record_id, resourceSnapshot: body.resource_snapshot });
+        } catch (error) {
+          if (error instanceof TypeError) throw new RoofRiskRepositoryError('INVALID_WORKFLOW_INPUT', error.message, 400);
+          throw error;
+        }
+        sendJson(res, result);
         return;
       }
 

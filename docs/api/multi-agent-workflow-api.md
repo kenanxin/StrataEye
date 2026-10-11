@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 ```
 
-资源快照可省略，此时使用演示默认资源。低风险记录只执行A1；资源不足时停在A5；A4始终输出 `delivery_mode: dry_run`、`external_delivery: false` 和 `dispatch_status: waiting_approval`。
+资源快照可省略，此时使用演示默认资源；各字段必须是非负安全整数，非法输入返回400和`INVALID_WORKFLOW_INPUT`。低风险记录只执行A1；资源不足时停在A5；A4始终输出 `delivery_mode: dry_run`、`external_delivery: false` 和 `dispatch_status: waiting_approval`。A6在尚无处置反馈时为`waiting_human`，其动作是`wait_for_feedback`。
 
 响应包含：
 
@@ -43,6 +43,7 @@ Content-Type: application/json
 - `trace_id`：审计追踪编号。
 - `algorithm`：XGBoost模型、真实记录号、置信度和数据哈希。
 - `nodes`：六个Agent的状态、证据、摘要和结构化输出。
+- `nodes[].elapsed_ms`：Node兼容节点的实际墙钟耗时，包含读取预计算结果的时间，不是训练或在线模型推理时间；跳过节点为0。
 - `safety`：人工确认和非生产控制边界。
 
 ## 反思评估
@@ -60,7 +61,7 @@ Content-Type: application/json
 }
 ```
 
-可能动作包括 `finish`、`return_to_perception`、`return_to_decision`、`return_to_resource` 和 `return_to_control`。接口只返回建议，不自动循环；非 `finish` 动作均要求操作人员确认。
+可能动作包括 `wait_for_feedback`、`finish`、`return_to_perception`、`return_to_decision`、`return_to_resource` 和 `return_to_control`。缺少反馈保持等待；仅执行完成且监测稳定反馈才形成`finish`建议。所有建议均需人工确认，接口不自动循环或代替监管审批。
 
 ## 真实性声明
 

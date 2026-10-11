@@ -245,7 +245,7 @@ export async function setupWarningDemo(options = {}) {
       : '当前记录暂无特征证据');
     setText('expertDemoRiskLevel', `${sourceData.model_output?.predicted_class || '较大风险'} · ${sourceData.risk?.score ?? 70}`);
     setText('expertDemoMechanism', evidence.length
-      ? `${evidence.map((item) => item.label).join('、')}构成本次 XGBoost 判别的主要标准化特征证据。贡献度反映模型输入偏离，不直接等同于工程因果。`
+      ? `${evidence.map((item) => item.label).join('、')}是当前记录标准化偏离较大的监测项，可供现场复核。该统计排序尚未进行模型归因或工程因果验证。`
       : '等待真实记录的模型概率与主要特征证据。');
     const probabilityContainer = element('expertDemoProbabilities');
     if (probabilityContainer) {

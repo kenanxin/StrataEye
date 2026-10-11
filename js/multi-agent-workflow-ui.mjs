@@ -18,7 +18,7 @@ function renderDetail(node, result) {
     <div><span>${escapeHtml(node.agent_id)} · ${escapeHtml(node.name)}</span><b>${escapeHtml(STATUS_LABELS[node.status] || node.status)}</b></div>
     <p>${escapeHtml(node.output_summary || node.reason || '暂无输出')}</p>
     <ul>${evidence || '<li>当前节点没有额外输入证据。</li>'}</ul>
-    <footer><span>运行 ${escapeHtml(result.workflow_run_id)}</span><span>下一动作 ${escapeHtml(result.next_action)}</span></footer>`;
+    <footer><span>运行 ${escapeHtml(result.workflow_run_id)}</span><span>实测 ${escapeHtml(node.elapsed_ms)} ms · 下一动作 ${escapeHtml(result.next_action)}</span></footer>`;
 }
 
 function renderRun(result) {

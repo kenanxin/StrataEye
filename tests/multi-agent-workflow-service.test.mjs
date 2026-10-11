@@ -13,13 +13,29 @@ const service = createMultiAgentWorkflowService(createRoofRiskRepository(artifac
 test('major-risk XGBoost record executes the delivered six-agent order', () => {
   const result = service.run({ recordId: 'REC-202511101149-02909' });
   assert.deepEqual(result.nodes.map((node) => node.agent_id), ['A1', 'A2', 'A3', 'A5', 'A4', 'A6']);
-  assert.deepEqual(result.nodes.map((node) => node.status), ['success', 'success', 'success', 'success', 'waiting_human', 'success']);
+  assert.deepEqual(result.nodes.map((node) => node.status), ['success', 'success', 'success', 'success', 'waiting_human', 'waiting_human']);
   assert.equal(result.algorithm.model, 'xgboost');
   assert.equal(result.algorithm.data_source, 'teacher_real_csv_xgboost');
   assert.equal(result.algorithm.record_id, 'REC-202511101149-02909');
   assert.equal(result.nodes[4].output.delivery_mode, 'dry_run');
   assert.equal(result.nodes[4].output.external_delivery, false);
   assert.equal(result.safety.human_approval_required, true);
+});
+
+test('pending feedback is not reported as completed reflection', () => {
+  const run = service.run({ recordId: 'REC-202511101149-02909' });
+  assert.equal(run.nodes[5].output.return_decision.action, 'wait_for_feedback');
+  assert.equal(service.reflect({ run }).status, 'waiting_human');
+  assert.equal(service.reflect({ run, feedback: { execution_status: 'completed', monitoring_trend: 'stable' } }).return_decision.action, 'finish');
+  assert.ok(run.nodes.every((node) => Number.isFinite(node.elapsed_ms) && node.elapsed_ms >= 0));
+  assert.ok(run.nodes.some((node) => node.elapsed_ms !== 1));
+});
+
+test('malformed resources cannot bypass the feasibility check', () => {
+  for (const value of ['abc', '2', null, -1, 0.5, Infinity]) {
+    assert.throws(() => service.run({ recordId: 'REC-202511101149-02909', resourceSnapshot: { personnel_available: value } }), /safe integer/);
+  }
+  assert.throws(() => service.run({ recordId: 'REC-202511101149-02909', resourceSnapshot: [] }), /object/);
 });
 
 test('low-risk record stops after A1 and marks downstream nodes skipped', () => {

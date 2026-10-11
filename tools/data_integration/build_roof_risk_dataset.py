@@ -179,6 +179,7 @@ def build_dataset(csv_path: Path, model_dir: Path, built_at: str) -> dict:
         raise ValueError(f"source SHA-256 mismatch: expected {EXPECTED_SHA256}, received {source_hash}")
 
     frame = pd.read_csv(csv_path, encoding="utf-8-sig")
+    source_column_count = len(frame.columns)
     validate_source_frame(frame, expected_rows=EXPECTED_ROWS)
     frame = frame.copy()
     frame[NUMERIC_COLUMNS] = frame[NUMERIC_COLUMNS].apply(pd.to_numeric)
@@ -264,7 +265,7 @@ def build_dataset(csv_path: Path, model_dir: Path, built_at: str) -> dict:
             "name": csv_path.name,
             "sha256": source_hash,
             "row_count": len(frame),
-            "column_count": len(frame.columns),
+            "column_count": source_column_count,
             "time_min": parsed_time.min().isoformat(),
             "time_max": parsed_time.max().isoformat(),
             "devices": sorted(frame["设备编号"].astype(str).unique().tolist()),

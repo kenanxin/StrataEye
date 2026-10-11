@@ -1,0 +1,59 @@
+{
+  "checked_at": "2026-10-11T11:05:52.795Z",
+  "hash_normalization": "LF line endings",
+  "endpoints": {
+    "frontend": {
+      "url": "https://smart-mine-v2-balanced.vercel.app/login",
+      "http": 200,
+      "elapsed_ms": 2113
+    },
+    "backend": {
+      "url": "https://smart-mine-v2-balanced.onrender.com/healthz",
+      "http": 200,
+      "elapsed_ms": 1815,
+      "health": {
+        "status": "ok",
+        "service": "smart-mine-v2-balanced",
+        "data_source": "teacher_real_csv_xgboost"
+      }
+    }
+  },
+  "assets": {
+    "frontend/js/main.js": {
+      "http": 200,
+      "sha256": "bff0a110c6955f3d2ff37336073983fa434dd0686165838d9a7b8e7adf4aa162",
+      "matches_local": false
+    },
+    "frontend/js/scene.js": {
+      "http": 200,
+      "sha256": "614c1037d1471476a7cf48c1f179600aac8c86670b87b17d83acf7633facb01c",
+      "matches_local": true,
+      "contains_surface_switch": false
+    },
+    "frontend/js/multi-agent-workflow-ui.mjs": {
+      "http": 200,
+      "sha256": "e611f3fbca8d96e60c9d030962f14407071181a08b970dfa5b43de2ab7576e3e",
+      "matches_local": false
+    },
+    "backend/js/main.js": {
+      "http": 200,
+      "sha256": "0f174559a9eb3c1e6cd36b03aeb43a023c177e50a78a6f06249de5d06d3e28a1",
+      "matches_local": false
+    },
+    "backend/js/multi-agent-workflow-ui.mjs": {
+      "http": 200,
+      "sha256": "e611f3fbca8d96e60c9d030962f14407071181a08b970dfa5b43de2ab7576e3e",
+      "matches_local": false
+    },
+    "backend/js/scene.js": {
+      "error": "request_failed"
+    }
+  },
+  "local_assets": {
+    "js/scene.js": "614c1037d1471476a7cf48c1f179600aac8c86670b87b17d83acf7633facb01c",
+    "js/main.js": "f285c8faa53f5e069f55283c0417e212d58fa379be08361c4e99297fdd8b7e4b",
+    "js/multi-agent-workflow-ui.mjs": "e986a79d322c025b24b6f078103b8b0e661abaabdaa819178f913c406398154d"
+  },
+  "backend_verified_release": false,
+  "frontend_verified_release": false
+}

@@ -66,7 +66,7 @@ function createExpertAdviceService(options = {}) {
     endpoint,
     async generate(input = {}) {
       const fallback = localAdvice(input);
-      if (!apiKey || typeof fetchImpl !== 'function') return fallback;
+      if (!apiKey || typeof fetchImpl !== 'function') return { ...fallback, fallback_reason: 'not_configured' };
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), timeoutMs);
       try {
@@ -84,11 +84,11 @@ function createExpertAdviceService(options = {}) {
             ],
           }),
         });
-        if (!response.ok) return fallback;
+        if (!response.ok) return { ...fallback, fallback_reason: 'provider_http_error', provider_status: response.status };
         const payload = await response.json();
-        return normalizeDeepSeek(payload, fallback) || fallback;
-      } catch {
-        return fallback;
+        return normalizeDeepSeek(payload, fallback) || { ...fallback, fallback_reason: 'empty_provider_response' };
+      } catch (error) {
+        return { ...fallback, fallback_reason: error.name === 'AbortError' ? 'provider_timeout' : 'provider_unavailable' };
       } finally {
         clearTimeout(timeout);
       }

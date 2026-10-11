@@ -7,6 +7,17 @@ const schema = [
   { key: 'support', label: '支架阻力', unit: 'MPa' },
 ];
 
+test('deviation ranking uses full numeric metric evidence and omits unavailable values', () => {
+  const model = buildExpertResearchModel({
+    current: {
+      feature_schema: schema,
+      metrics: { roof: { value: 3, standardized_value: -2.8 }, support: { value: .9 } },
+      risk: { contribution: { roof: .1, support: .9 } },
+    },
+  });
+  assert.deepEqual(model.contributions.map(item => [item.key, item.contribution]), [['roof', 2.8]]);
+});
+
 test('builds deterministic real-data research datasets', () => {
   const model = buildExpertResearchModel({
     current: {
@@ -30,6 +41,8 @@ test('builds deterministic real-data research datasets', () => {
   assert.equal(model.sampleCount, 20000);
   assert.equal(model.distribution[3].count, 1000);
   assert.equal(model.contributions[0].label, '顶板离层速率');
+  assert.equal(model.contributions[0].contribution, 2.8);
+  assert.equal(model.contributions[1].contribution, 2.1);
   assert.equal(model.heatmap.length, 2);
   assert.equal(model.violins[0].median, 1.9);
   assert.equal(model.trend.length, 2);

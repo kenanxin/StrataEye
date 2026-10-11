@@ -281,8 +281,8 @@ function researchDistributionOption(model) {
 function researchContributionOption(model) {
   return horizontalBarOption(model.contributions.slice(0, 7).map((item) => ({ label: item.label, value: item.contribution, contribution: item.contribution, unit: item.unit })), {
     valueKey: 'value', valueMax: (value) => Math.max(1, value.max * 1.25), color: '#e8a94a',
-    labelFormatter: (params) => numberLabel(params.value.value, 3),
-    tooltipFormatter: (params) => `${params.value.label}\n贡献度 ${numberLabel(params.value.value, 3)}`,
+    labelFormatter: (params) => `${numberLabel(params.value.value, 3)}σ`,
+    tooltipFormatter: (params) => `${params.value.label}\n标准化偏离绝对值 ${numberLabel(params.value.value, 3)}σ`,
   });
 }
 

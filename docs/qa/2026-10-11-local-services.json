@@ -1,0 +1,552 @@
+{
+  "checked_at": "2026-10-11T11:04:32.982Z",
+  "base_url": "http://127.0.0.1:8096",
+  "roles": {
+    "enterprise": {
+      "login_http": 200,
+      "session_http": 200,
+      "actual_role": "enterprise",
+      "current_http": 200,
+      "data_source": "teacher_real_csv_xgboost",
+      "agent_status_http": 200
+    },
+    "regulator": {
+      "login_http": 200,
+      "session_http": 200,
+      "actual_role": "regulator",
+      "current_http": 200,
+      "data_source": "teacher_real_csv_xgboost"
+    },
+    "expert": {
+      "login_http": 200,
+      "session_http": 200,
+      "actual_role": "expert",
+      "current_http": 200,
+      "data_source": "teacher_real_csv_xgboost"
+    }
+  },
+  "agent_runtime": {
+    "available": true,
+    "runtime": "node_compatibility_layer",
+    "source_design": "delivered_langgraph_six_agent_workflow",
+    "perception_backend": "teacher_real_csv_xgboost",
+    "node_order": [
+      "A1",
+      "A2",
+      "A3",
+      "A5",
+      "A4",
+      "A6"
+    ],
+    "human_approval_required": true,
+    "external_delivery": false
+  },
+  "agent_run_http": 200,
+  "six_agent_run": {
+    "schema_version": 1,
+    "workflow_run_id": "WF-63f99349-3263-4536-8173-4823751e6ab4",
+    "warning_id": "WARN-REC-202511101149-02909",
+    "trace_id": "c438ad03-98a8-4171-9afb-5f346771c62f",
+    "current_phase": "waiting_human",
+    "next_action": "operator_approval",
+    "algorithm": {
+      "data_source": "teacher_real_csv_xgboost",
+      "model": "xgboost",
+      "model_mode": "integrated_xgboost",
+      "record_id": "REC-202511101149-02909",
+      "predicted_class": "较大风险",
+      "confidence": 0.99976403,
+      "source_sha256": "86D4C2FB192721B2745F00076AEB00CF351C654ED936DDB098BFA6217E30AC6A"
+    },
+    "nodes": [
+      {
+        "agent_id": "A1",
+        "name": "感知预警 Agent",
+        "node": "perception_warning",
+        "status": "success",
+        "input_evidence": [
+          "微震能量=472.69J",
+          "顶板离层速率=3.31mm/d",
+          "涌水量=32.38m3/h"
+        ],
+        "output_summary": "XGBoost判定较大风险，置信度99.98%。",
+        "output": {
+          "warning_id": "WARN-REC-202511101149-02909",
+          "risk_level": "较大风险",
+          "risk_score": 70,
+          "confidence": 0.99976403,
+          "fast_alert_required": true,
+          "feature_evidence": [
+            {
+              "key": "microseismic_energy",
+              "label": "微震能量",
+              "unit": "J",
+              "value": 472.69,
+              "model_value": 292.641121,
+              "standardized_value": 1.76581,
+              "magnitude": 1.76581,
+              "contribution": 0.181096
+            },
+            {
+              "key": "roof_separation_rate",
+              "label": "顶板离层速率",
+              "unit": "mm/d",
+              "value": 3.31,
+              "model_value": 1.711486,
+              "standardized_value": 1.647993,
+              "magnitude": 1.647993,
+              "contribution": 0.169013
+            },
+            {
+              "key": "water_inflow",
+              "label": "涌水量",
+              "unit": "m3/h",
+              "value": 32.38,
+              "model_value": 27.563565,
+              "standardized_value": 1.564038,
+              "magnitude": 1.564038,
+              "contribution": 0.160402
+            }
+          ],
+          "model_mode": "integrated_xgboost"
+        },
+        "elapsed_ms": 1.7599
+      },
+      {
+        "agent_id": "A2",
+        "name": "知识检索 Agent",
+        "node": "knowledge_retrieval",
+        "status": "success",
+        "input_evidence": [
+          "查询记录REC-202511101149-02909",
+          "标准化七维特征欧氏距离",
+          "数据哈希86D4C2FB1927…"
+        ],
+        "output_summary": "检索到3条真实数据相似记录；相似不代表已证实事故因果。",
+        "output": {
+          "method": "euclidean_distance_on_7_standardized_features",
+          "catalog": "teacher_csv_similar_records",
+          "cases": [
+            {
+              "record_id": "REC-202511092340-02595",
+              "timestamp": "2025/11/9 23:40",
+              "device_id": "监测1",
+              "true_class": "较大风险",
+              "predicted_class": "较大风险",
+              "risk_score": 70,
+              "distance": 0.151116,
+              "similarity": 0.868722
+            },
+            {
+              "record_id": "REC-202511101421-02975",
+              "timestamp": "2025/11/10 14:21",
+              "device_id": "监测1",
+              "true_class": "较大风险",
+              "predicted_class": "较大风险",
+              "risk_score": 70,
+              "distance": 0.156043,
+              "similarity": 0.865019
+            },
+            {
+              "record_id": "REC-202511092039-02517",
+              "timestamp": "2025/11/9 20:39",
+              "device_id": "监测1",
+              "true_class": "较大风险",
+              "predicted_class": "较大风险",
+              "risk_score": 70,
+              "distance": 0.175419,
+              "similarity": 0.85076
+            }
+          ]
+        },
+        "elapsed_ms": 78.0271
+      },
+      {
+        "agent_id": "A3",
+        "name": "调度决策 Agent",
+        "node": "dispatch_decision",
+        "status": "success",
+        "input_evidence": [
+          "风险等级：较大风险",
+          "3条相似数据记录",
+          "microseismic_energy",
+          "roof_separation_rate",
+          "water_inflow"
+        ],
+        "output_summary": "形成3项可审计候选处置步骤，等待资源可行性校验。",
+        "output": {
+          "decision_mode": "rule_assisted",
+          "plan_id": "PLAN-REC-202511101149-02909",
+          "actions": [
+            "现场复测主要异常指标",
+            "制定临时补强支护工单",
+            "加密监测并提交监管复核"
+          ],
+          "human_approval_boundary": true
+        },
+        "elapsed_ms": 0.4014
+      },
+      {
+        "agent_id": "A5",
+        "name": "资源评估 Agent",
+        "node": "resource_evaluation",
+        "status": "success",
+        "input_evidence": [
+          "personnel_available=6",
+          "support_material_sets=12",
+          "inspection_devices=3"
+        ],
+        "output_summary": "人员、材料和复测设备满足演示处置方案要求。",
+        "output": {
+          "snapshot": {
+            "personnel_available": 6,
+            "support_material_sets": 12,
+            "inspection_devices": 3
+          },
+          "feasibility": "feasible",
+          "gaps": [],
+          "redecision_required": false
+        },
+        "elapsed_ms": 0.5728
+      },
+      {
+        "agent_id": "A4",
+        "name": "协同管控 Agent",
+        "node": "collaborative_control",
+        "status": "waiting_human",
+        "input_evidence": [
+          "方案PLAN-REC-202511101149-02909",
+          "A5资源评估可行",
+          "企业端/监管端/智库端权限边界"
+        ],
+        "output_summary": "已生成三端协同处置草案；未自动下发任何真实控制指令。",
+        "output": {
+          "coordination_id": "COORD-REC-202511101149-02909",
+          "delivery_mode": "dry_run",
+          "external_delivery": false,
+          "dispatch_status": "waiting_approval",
+          "portal_tasks": {
+            "enterprise": [
+              "现场复测主要异常指标",
+              "制定临时补强支护工单",
+              "加密监测并提交监管复核"
+            ],
+            "regulator": [
+              "核验工单与监测对照",
+              "决定通过或驳回"
+            ],
+            "expert": [
+              "解释主要模型证据",
+              "复盘并提出返回建议"
+            ]
+          }
+        },
+        "elapsed_ms": 0.2057
+      },
+      {
+        "agent_id": "A6",
+        "name": "反思迭代 Agent",
+        "node": "reflection_iteration",
+        "status": "waiting_human",
+        "input_evidence": [
+          "A1—A5结构化输出",
+          "当前尚无现场处置反馈"
+        ],
+        "output_summary": "已建立反思检查点；等待三端处置反馈后判断闭环或定向返回。",
+        "output": {
+          "agent_id": "A6",
+          "name": "反思迭代 Agent",
+          "status": "waiting_human",
+          "reflection_mode": "rule_assisted",
+          "auto_loop": false,
+          "auto_update": false,
+          "return_decision": {
+            "action": "wait_for_feedback",
+            "reason": "等待人工审批与现场处置反馈，尚未完成闭环核验。",
+            "operator_confirmation_required": true
+          }
+        },
+        "elapsed_ms": 0.3799
+      }
+    ],
+    "safety": {
+      "human_approval_required": true,
+      "external_delivery": false,
+      "statement": "A3—A6为规则辅助研判与演示性工作流，不代表生产级自动控制。"
+    }
+  },
+  "shortage": {
+    "schema_version": 1,
+    "workflow_run_id": "WF-58b18834-436d-4fa5-8e4a-2596d94ea820",
+    "warning_id": "WARN-REC-202511101149-02909",
+    "trace_id": "daf9da9a-760a-42d9-b5f0-9a09555395c0",
+    "current_phase": "resource_evaluation",
+    "next_action": "return_to_resource",
+    "algorithm": {
+      "data_source": "teacher_real_csv_xgboost",
+      "model": "xgboost",
+      "model_mode": "integrated_xgboost",
+      "record_id": "REC-202511101149-02909",
+      "predicted_class": "较大风险",
+      "confidence": 0.99976403,
+      "source_sha256": "86D4C2FB192721B2745F00076AEB00CF351C654ED936DDB098BFA6217E30AC6A"
+    },
+    "nodes": [
+      {
+        "agent_id": "A1",
+        "name": "感知预警 Agent",
+        "node": "perception_warning",
+        "status": "success",
+        "input_evidence": [
+          "微震能量=472.69J",
+          "顶板离层速率=3.31mm/d",
+          "涌水量=32.38m3/h"
+        ],
+        "output_summary": "XGBoost判定较大风险，置信度99.98%。",
+        "output": {
+          "warning_id": "WARN-REC-202511101149-02909",
+          "risk_level": "较大风险",
+          "risk_score": 70,
+          "confidence": 0.99976403,
+          "fast_alert_required": true,
+          "feature_evidence": [
+            {
+              "key": "microseismic_energy",
+              "label": "微震能量",
+              "unit": "J",
+              "value": 472.69,
+              "model_value": 292.641121,
+              "standardized_value": 1.76581,
+              "magnitude": 1.76581,
+              "contribution": 0.181096
+            },
+            {
+              "key": "roof_separation_rate",
+              "label": "顶板离层速率",
+              "unit": "mm/d",
+              "value": 3.31,
+              "model_value": 1.711486,
+              "standardized_value": 1.647993,
+              "magnitude": 1.647993,
+              "contribution": 0.169013
+            },
+            {
+              "key": "water_inflow",
+              "label": "涌水量",
+              "unit": "m3/h",
+              "value": 32.38,
+              "model_value": 27.563565,
+              "standardized_value": 1.564038,
+              "magnitude": 1.564038,
+              "contribution": 0.160402
+            }
+          ],
+          "model_mode": "integrated_xgboost"
+        },
+        "elapsed_ms": 0.5851
+      },
+      {
+        "agent_id": "A2",
+        "name": "知识检索 Agent",
+        "node": "knowledge_retrieval",
+        "status": "success",
+        "input_evidence": [
+          "查询记录REC-202511101149-02909",
+          "标准化七维特征欧氏距离",
+          "数据哈希86D4C2FB1927…"
+        ],
+        "output_summary": "检索到3条真实数据相似记录；相似不代表已证实事故因果。",
+        "output": {
+          "method": "euclidean_distance_on_7_standardized_features",
+          "catalog": "teacher_csv_similar_records",
+          "cases": [
+            {
+              "record_id": "REC-202511092340-02595",
+              "timestamp": "2025/11/9 23:40",
+              "device_id": "监测1",
+              "true_class": "较大风险",
+              "predicted_class": "较大风险",
+              "risk_score": 70,
+              "distance": 0.151116,
+              "similarity": 0.868722
+            },
+            {
+              "record_id": "REC-202511101421-02975",
+              "timestamp": "2025/11/10 14:21",
+              "device_id": "监测1",
+              "true_class": "较大风险",
+              "predicted_class": "较大风险",
+              "risk_score": 70,
+              "distance": 0.156043,
+              "similarity": 0.865019
+            },
+            {
+              "record_id": "REC-202511092039-02517",
+              "timestamp": "2025/11/9 20:39",
+              "device_id": "监测1",
+              "true_class": "较大风险",
+              "predicted_class": "较大风险",
+              "risk_score": 70,
+              "distance": 0.175419,
+              "similarity": 0.85076
+            }
+          ]
+        },
+        "elapsed_ms": 32.6737
+      },
+      {
+        "agent_id": "A3",
+        "name": "调度决策 Agent",
+        "node": "dispatch_decision",
+        "status": "success",
+        "input_evidence": [
+          "风险等级：较大风险",
+          "3条相似数据记录",
+          "microseismic_energy",
+          "roof_separation_rate",
+          "water_inflow"
+        ],
+        "output_summary": "形成3项可审计候选处置步骤，等待资源可行性校验。",
+        "output": {
+          "decision_mode": "rule_assisted",
+          "plan_id": "PLAN-REC-202511101149-02909",
+          "actions": [
+            "现场复测主要异常指标",
+            "制定临时补强支护工单",
+            "加密监测并提交监管复核"
+          ],
+          "human_approval_boundary": true
+        },
+        "elapsed_ms": 0.0259
+      },
+      {
+        "agent_id": "A5",
+        "name": "资源评估 Agent",
+        "node": "resource_evaluation",
+        "status": "needs_attention",
+        "input_evidence": [
+          "personnel_available=0",
+          "support_material_sets=0",
+          "inspection_devices=0"
+        ],
+        "output_summary": "存在3项资源缺口，禁止进入协同管控。",
+        "output": {
+          "snapshot": {
+            "personnel_available": 0,
+            "support_material_sets": 0,
+            "inspection_devices": 0
+          },
+          "feasibility": "infeasible",
+          "gaps": [
+            "现场处置人员不足2人",
+            "补强支护材料不足",
+            "复测设备不足"
+          ],
+          "redecision_required": true
+        },
+        "elapsed_ms": 0.0781
+      },
+      {
+        "agent_id": "A4",
+        "name": "协同管控 Agent",
+        "node": "collaborative_control",
+        "status": "skipped",
+        "reason": "A5资源评估不可行，未生成协同下发草案。",
+        "input_evidence": [],
+        "output_summary": "A5资源评估不可行，未生成协同下发草案。",
+        "output": null,
+        "elapsed_ms": 0
+      },
+      {
+        "agent_id": "A6",
+        "name": "反思迭代 Agent",
+        "node": "reflection_iteration",
+        "status": "skipped",
+        "reason": "未进入协同管控，本次不执行反思节点。",
+        "input_evidence": [],
+        "output_summary": "未进入协同管控，本次不执行反思节点。",
+        "output": null,
+        "elapsed_ms": 0
+      }
+    ],
+    "safety": {
+      "human_approval_required": true,
+      "external_delivery": false,
+      "statement": "A3—A6为规则辅助研判与演示性工作流，不代表生产级自动控制。"
+    }
+  },
+  "reflection_branches": {
+    "pending": {
+      "agent_id": "A6",
+      "name": "反思迭代 Agent",
+      "status": "waiting_human",
+      "reflection_mode": "rule_assisted",
+      "auto_loop": false,
+      "auto_update": false,
+      "return_decision": {
+        "action": "wait_for_feedback",
+        "reason": "等待人工审批与现场处置反馈，尚未完成闭环核验。",
+        "operator_confirmation_required": true
+      }
+    },
+    "monitoring": {
+      "agent_id": "A6",
+      "name": "反思迭代 Agent",
+      "status": "waiting_human",
+      "reflection_mode": "rule_assisted",
+      "auto_loop": false,
+      "auto_update": false,
+      "return_decision": {
+        "action": "return_to_perception",
+        "reason": "监测趋势恶化，建议人工确认后返回A1读取新监测窗口。",
+        "operator_confirmation_required": true
+      }
+    },
+    "execution": {
+      "agent_id": "A6",
+      "name": "反思迭代 Agent",
+      "status": "waiting_human",
+      "reflection_mode": "rule_assisted",
+      "auto_loop": false,
+      "auto_update": false,
+      "return_decision": {
+        "action": "return_to_decision",
+        "reason": "处置执行失败，建议返回A3重新生成候选方案。",
+        "operator_confirmation_required": true
+      }
+    },
+    "resource": {
+      "agent_id": "A6",
+      "name": "反思迭代 Agent",
+      "status": "waiting_human",
+      "reflection_mode": "rule_assisted",
+      "auto_loop": false,
+      "auto_update": false,
+      "return_decision": {
+        "action": "return_to_resource",
+        "reason": "资源条件变化，建议返回A5重新评估。",
+        "operator_confirmation_required": true
+      }
+    },
+    "notification": {
+      "agent_id": "A6",
+      "name": "反思迭代 Agent",
+      "status": "waiting_human",
+      "reflection_mode": "rule_assisted",
+      "auto_loop": false,
+      "auto_update": false,
+      "return_decision": {
+        "action": "return_to_control",
+        "reason": "协同通知失败，建议返回A4重新生成协同草案。",
+        "operator_confirmation_required": true
+      }
+    }
+  },
+  "deepseek_config": {
+    "configured": false,
+    "source": "unconfigured"
+  },
+  "failures": [],
+  "status": "PASS",
+  "deepseek_verification": "not_configured"
+}

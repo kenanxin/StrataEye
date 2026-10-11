@@ -1,0 +1,247 @@
+{
+  "status": "PASS",
+  "evidence": {
+    "enterpriseAlert": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\01-enterprise-orange-alert.png",
+    "enterpriseSubmitted": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\02-enterprise-submitted.png",
+    "regulatorPending": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\03-regulator-pending-review.png",
+    "regulatorVerified": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\04-regulator-verified.png",
+    "expertReview": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\05-expert-mechanism-review.png",
+    "sixAgentReflection": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\07-six-agent-waiting-feedback.png",
+    "expertArchived": "D:\\矿业\\smart-mine-v2-balanced\\docs\\qa\\2026-10-11-warning-demo\\06-expert-archived.png"
+  },
+  "finalState": {
+    "version": 1,
+    "revision": 7,
+    "eventId": "DEMO-ORANGE-001",
+    "sourceEventId": "REAL-MAJOR-001",
+    "sourceRecordId": "REC-202511101149-02909",
+    "comparisonRecordId": "REC-202511101153-02911",
+    "status": "archived",
+    "alertSeenRevision": 1,
+    "disposal": {
+      "measures": "已加密锚索，完成支架初撑力复测，并补充警戒区域巡查记录。",
+      "workOrder": "GD-2026-0907-01",
+      "responsiblePerson": "企业值守演示员",
+      "completedAt": "2026-10-11T19:32",
+      "photos": [
+        {
+          "id": "3d77d142-2297-4dd1-b2d1-96568118f1ea",
+          "name": "login-underground.jpg",
+          "size": 178487,
+          "type": "image/jpeg",
+          "createdAt": "2026-10-11T11:33:18.331Z"
+        }
+      ],
+      "submittedAt": "2026-10-11T11:33:57.355Z",
+      "submissionCount": 2
+    },
+    "review": {
+      "decision": "approved",
+      "opinion": "整改材料完整，后续监测真实对照已降至一般风险，同意核验通过。",
+      "deadline": "",
+      "reviewedAt": "2026-10-11T11:34:00.090Z",
+      "reviewer": "监管端监管员"
+    },
+    "archive": {
+      "conclusion": "本事件已完成企业处置与监管核验，建议纳入顶板较大风险复盘案例库。",
+      "archivedAt": "2026-10-11T11:34:02.726Z",
+      "archivedBy": "智库端专家"
+    },
+    "timeline": [
+      {
+        "id": "2026-10-11T11:33:16.219Z-START_DEMO-rp1ije",
+        "type": "START_DEMO",
+        "role": "enterprise",
+        "actor": "企业端操作员",
+        "at": "2026-10-11T11:33:16.219Z",
+        "detail": "XGBoost 多元数据融合触发橙色预警。"
+      },
+      {
+        "id": "2026-10-11T11:33:18.046Z-ACKNOWLEDGE-las3e9",
+        "type": "ACKNOWLEDGE",
+        "role": "enterprise",
+        "actor": "企业端操作员",
+        "at": "2026-10-11T11:33:18.046Z",
+        "detail": "企业端确认预警并进入现场处置。"
+      },
+      {
+        "id": "2026-10-11T11:33:20.476Z-SUBMIT_DISPOSAL-3e3a49",
+        "type": "SUBMIT_DISPOSAL",
+        "role": "enterprise",
+        "actor": "企业端操作员",
+        "at": "2026-10-11T11:33:20.476Z",
+        "detail": "企业端提交工单与现场照片，等待监管核验。"
+      },
+      {
+        "id": "2026-10-11T11:33:27.009Z-REJECT-6j2zox",
+        "type": "REJECT",
+        "role": "regulator",
+        "actor": "监管端监管员",
+        "at": "2026-10-11T11:33:27.009Z",
+        "detail": "监管端驳回整改：工单已提交，但需补充支架初撑力复测结论。"
+      },
+      {
+        "id": "2026-10-11T11:33:57.355Z-SUBMIT_DISPOSAL-ttk025",
+        "type": "SUBMIT_DISPOSAL",
+        "role": "enterprise",
+        "actor": "企业端操作员",
+        "at": "2026-10-11T11:33:57.355Z",
+        "detail": "企业端第 2 次提交整改材料。"
+      },
+      {
+        "id": "2026-10-11T11:34:00.090Z-APPROVE-4vwvrv",
+        "type": "APPROVE",
+        "role": "regulator",
+        "actor": "监管端监管员",
+        "at": "2026-10-11T11:34:00.090Z",
+        "detail": "监管端核验通过：整改材料完整，后续监测真实对照已降至一般风险，同意核验通过。"
+      },
+      {
+        "id": "2026-10-11T11:34:02.726Z-ARCHIVE-yjvyca",
+        "type": "ARCHIVE",
+        "role": "expert",
+        "actor": "智库端专家",
+        "at": "2026-10-11T11:34:02.726Z",
+        "detail": "智库端确认闭环并纳入案例库：本事件已完成企业处置与监管核验，建议纳入顶板较大风险复盘案例库。"
+      }
+    ],
+    "createdAt": "2026-10-11T11:33:16.219Z",
+    "updatedAt": "2026-10-11T11:34:02.726Z"
+  },
+  "agentStates": [
+    {
+      "agent": "A1",
+      "status": "success"
+    },
+    {
+      "agent": "A2",
+      "status": "success"
+    },
+    {
+      "agent": "A3",
+      "status": "success"
+    },
+    {
+      "agent": "A5",
+      "status": "success"
+    },
+    {
+      "agent": "A4",
+      "status": "waiting_human"
+    },
+    {
+      "agent": "A6",
+      "status": "waiting_human"
+    }
+  ],
+  "regulatorLayout": {
+    "viewport": [
+      1366,
+      768
+    ],
+    "documentWidth": 1366,
+    "bodyWidth": 1366,
+    "overlaps": [],
+    "rects": [
+      {
+        "selector": "#regulatorVerificationPanel",
+        "top": 226,
+        "bottom": 724,
+        "left": 10,
+        "right": 1356
+      },
+      {
+        "selector": "portal-card wide regulator-overview-card",
+        "top": 734,
+        "bottom": 992,
+        "left": 10,
+        "right": 967.140625
+      },
+      {
+        "selector": "portal-card",
+        "top": 734,
+        "bottom": 1013.75,
+        "left": 977.140625,
+        "right": 1355.984375
+      }
+    ]
+  },
+  "expertLayout": {
+    "viewport": [
+      1366,
+      768
+    ],
+    "documentWidth": 1366,
+    "bodyWidth": 1366,
+    "overlaps": [],
+    "rects": [
+      {
+        "selector": "#expertDemoEventStrip",
+        "top": -359,
+        "bottom": 202,
+        "left": 10,
+        "right": 1356
+      },
+      {
+        "selector": "expert-research-console",
+        "top": 212,
+        "bottom": 1132,
+        "left": 10,
+        "right": 1356
+      }
+    ]
+  },
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "failedResponses": [
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    },
+    {
+      "status": 401,
+      "url": "http://127.0.0.1:8096/api/auth/session"
+    }
+  ],
+  "unexpectedResponses": [],
+  "failures": []
+}

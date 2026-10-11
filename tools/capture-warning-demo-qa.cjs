@@ -10,9 +10,9 @@ const chromePath = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const evidencePath = path.resolve('images/login-underground.jpg');
 
 const accounts = {
-  enterprise: ['enterprise_operator', process.env.ENTERPRISE_QA_PASSWORD || 'Mine@2026'],
-  regulator: ['regulator_officer', process.env.REGULATOR_QA_PASSWORD || 'Safe@2026'],
-  expert: ['expert_analyst', process.env.EXPERT_QA_PASSWORD || 'Model@2026'],
+  enterprise: [process.env.ENTERPRISE_QA_USERNAME || 'enterprise_operator', process.env.ENTERPRISE_QA_PASSWORD || 'Mine@2026'],
+  regulator: [process.env.REGULATOR_QA_USERNAME || 'regulator_officer', process.env.REGULATOR_QA_PASSWORD || 'Safe@2026'],
+  expert: [process.env.EXPERT_QA_USERNAME || 'expert_analyst', process.env.EXPERT_QA_PASSWORD || 'Model@2026'],
 };
 
 async function login(page, role) {
@@ -21,13 +21,14 @@ async function login(page, role) {
   await page.locator('#username').fill(username);
   await page.locator('#password').fill(password);
   await Promise.all([
-    page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 30_000 }),
+    page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 90_000 }),
     page.locator('#loginSubmit').click(),
   ]);
   await page.waitForTimeout(1000);
   console.log(JSON.stringify({ role, url: page.url(), demoState: await page.locator('body').getAttribute('data-warning-demo-state') }));
   await page.waitForFunction(() => Boolean(document.body.dataset.warningDemoState));
   await page.locator('#warningDemoStrip').waitFor({ state: 'visible' });
+  if (role === 'enterprise') await waitForCameraStable(page);
 }
 
 async function logout(page) {
@@ -43,7 +44,7 @@ async function status(page, expected) {
 }
 
 async function waitForCameraStable(page) {
-  await page.waitForFunction(() => Boolean(document.querySelector('#threeContainer')?.dataset.cameraPosition));
+  await page.waitForFunction(() => Boolean(document.querySelector('#threeContainer')?.dataset.cameraPosition), null, { timeout: 90_000 });
   let previous = null;
   let stableSamples = 0;
   for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -60,9 +61,10 @@ async function waitForCameraStable(page) {
   throw new Error('Three.js camera did not settle before warning workflow');
 }
 
-async function screenshot(page, name) {
+async function screenshot(page, name, selector) {
   const filePath = path.join(outputDir, `${name}.png`);
-  await page.screenshot({ path: filePath, fullPage: true });
+  if (selector) await page.locator(selector).screenshot({ path: filePath });
+  else await page.screenshot({ path: filePath, fullPage: true });
   return filePath;
 }
 
@@ -106,6 +108,7 @@ async function main() {
   });
   const context = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
+  page.setDefaultTimeout(90_000);
   const pageErrors = [];
   const consoleErrors = [];
   const failedResponses = [];
@@ -174,6 +177,12 @@ async function main() {
     await status(page, 'verified');
     await page.waitForFunction(() => document.querySelectorAll('#expertSimilarCases article').length === 3);
     evidence.expertReview = await screenshot(page, '05-expert-mechanism-review');
+    await page.locator('#runMultiAgentWorkflow').click();
+    await page.waitForFunction(() => document.querySelector('#multiAgentSource')?.textContent.includes('XGBOOST'), null, { timeout: 30_000 });
+    await page.locator('#multiAgentRail [data-agent-id="A6"]').click();
+    const agentStates = await page.locator('#multiAgentRail [data-agent-id]').evaluateAll(elements => elements.map(element => ({ agent: element.dataset.agentId, status: element.dataset.status })));
+    if (!agentStates.some(node => node.agent === 'A6' && node.status === 'waiting_human')) throw new Error('A6 must wait for field feedback');
+    evidence.sixAgentReflection = await screenshot(page, '07-six-agent-waiting-feedback', '#multiAgentWorkbench');
     const expertLayout = await layoutReport(page, ['#expertDemoEventStrip', '.expert-research-console', '.expert-grid > .portal-card']);
     await page.locator('#expertArchiveAction').click();
     await status(page, 'archived');
@@ -199,7 +208,7 @@ async function main() {
     const unexpectedConsole = consoleErrors.filter((message) => !message.startsWith('Failed to load resource:'));
     if (unexpectedConsole.length) failures.push(`console errors: ${unexpectedConsole.join(' | ')}`);
 
-    const result = { status: failures.length ? 'FAIL' : 'PASS', evidence, finalState, regulatorLayout, expertLayout, pageErrors, consoleErrors, failedResponses, unexpectedResponses, failures };
+    const result = { status: failures.length ? 'FAIL' : 'PASS', evidence, finalState, agentStates, regulatorLayout, expertLayout, pageErrors, consoleErrors, failedResponses, unexpectedResponses, failures };
     fs.writeFileSync(path.join(outputDir, 'results.json'), JSON.stringify(result, null, 2));
     if (failures.length) throw new Error(failures.join('\n'));
     console.log(JSON.stringify({ status: 'PASS', outputDir, screenshots: Object.keys(evidence).length }));

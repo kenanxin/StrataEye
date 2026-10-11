@@ -535,7 +535,7 @@
         <div class="research-stat"><span>模型置信度</span><b id="researchConfidence">--</b><em id="researchModelName">XGBoost</em></div>
         <div class="research-stat"><span>真实样本量</span><b id="researchSampleCount">--</b><em id="researchSourceName">teacher_roof_monitoring.csv</em></div>
         <div class="research-stat"><span>异常证据项</span><b id="researchEvidenceCount">--</b><em>当前记录标准化偏离</em></div>
-        <div class="research-stat"><span>模型准确率</span><b id="researchAccuracy">--</b><em id="researchF1">Macro-F1 --</em></div>
+        <div class="research-stat"><span>交付随机测试准确率</span><b id="researchAccuracy">--</b><em id="researchF1">Macro-F1 --</em></div>
       </div>
       <section class="multi-agent-workbench" id="multiAgentWorkbench" aria-labelledby="multiAgentTitle">
         <header class="multi-agent-head">
@@ -570,7 +570,7 @@
       </section>
       <div class="expert-research-grid">
         <section class="research-panel panel-distribution"><header><strong>风险等级分布</strong><span>全量真实样本</span></header><div class="research-chart" id="expertDistributionChart" role="img" aria-label="老师真实数据风险等级分布"></div></section>
-        <section class="research-panel panel-contribution"><header><strong>指标贡献度</strong><span>当前记录证据排序</span></header><div class="research-chart" id="expertContributionChart" role="img" aria-label="当前风险指标贡献度"></div></section>
+        <section class="research-panel panel-contribution"><header><strong>标准化偏离排序</strong><span>统计证据 · 非模型归因</span></header><div class="research-chart" id="expertContributionChart" role="img" aria-label="当前记录标准化偏离证据排序，不代表模型归因"></div></section>
         <section class="research-panel panel-heatmap"><header><strong>风险机理关联热力图</strong><span>标准化指标 Pearson r</span></header><div class="research-chart" id="expertMechanismHeatmap" role="img" aria-label="标准化指标风险机理关联热力图"></div></section>
         <section class="research-panel panel-violin"><header><strong>指标分布小提琴图</strong><span>20,000 条样本 · 标准化值</span></header><div class="research-chart" id="expertViolinChart" role="img" aria-label="全量真实样本指标标准化分布小提琴图"></div></section>
         <section class="research-panel panel-trend"><header><strong>风险指数演化</strong><span>全量时间聚合 · 120 窗口</span></header><div class="research-chart" id="expertResearchTrendChart" role="img" aria-label="全量真实样本聚合风险趋势"></div></section>
@@ -672,7 +672,7 @@
         <p><span>真实记录</span><b id="apiRecordId">--</b></p>
         <p><span>原始时间</span><b id="apiRecordTime">--</b></p>
         <p><span>来源哈希</span><b id="apiSourceHash">--</b></p>
-        <p><span>模型准确率</span><b id="apiModelAccuracy">--</b></p>
+        <p><span>交付随机测试准确率</span><b id="apiModelAccuracy">--</b></p>
       </div>
       <div class="api-table">
         <p><span>GET /api/roof-risk/current</span><b>当前多源风险态势</b></p>
