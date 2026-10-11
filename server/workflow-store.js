@@ -183,6 +183,7 @@ function createFileWorkflowStore({ directory = path.resolve('.runtime/workflows'
   }
 
   return {
+    storage_provider: 'file',
     async create(run, { commandId } = {}) {
       const candidate = capture(run, commandId);
       return locked(candidate.workflow_run_id, async () => {
@@ -282,6 +283,7 @@ function createSupabaseWorkflowStore({ url, serviceRoleKey, fetchImpl = globalTh
     return run;
   }
   return {
+    storage_provider: 'supabase',
     async create(run, { commandId } = {}) {
       const candidate = capture(run, commandId);
       validateJson(candidate);

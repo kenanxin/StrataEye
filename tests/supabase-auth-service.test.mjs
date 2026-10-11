@@ -52,3 +52,10 @@ test('Supabase invalid password is reported as invalid credentials', async () =>
     error => error.code === 'INVALID_CREDENTIALS' && error.statusCode === 401,
   );
 });
+
+test('Supabase transport errors are unavailable, never invalid credentials or provider detail', async () => {
+  for (const name of ['Error', 'TypeError', 'AbortError']) {
+    const auth = createSupabaseAuthService({ url: 'https://demo.supabase.co', anonKey: 'anon', fetchImpl: async () => { throw Object.assign(new Error('private provider credentials'), { name }); } });
+    await assert.rejects(auth.login({ username: 'operator@example.com', password: 'secret' }), error => error.statusCode === 503 && error.code === 'AUTH_SERVICE_UNAVAILABLE' && !error.message.includes('private'));
+  }
+});

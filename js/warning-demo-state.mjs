@@ -117,7 +117,8 @@ function assertReview(payload = {}, rejected = false) {
 }
 
 function assertState(state) {
-  if (!state || state.version !== 1 || state.eventId !== DEMO_EVENT_ID || !VALID_STATES.has(state.status)
+  const validIdentity = state?.eventId === DEMO_EVENT_ID || (/^WF-[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(state?.eventId || '') && typeof state?.sourceRecordId === 'string' && state.sourceRecordId.length > 0);
+  if (!state || state.version !== 1 || !validIdentity || !VALID_STATES.has(state.status)
     || !Array.isArray(state.timeline) || !state.disposal || !state.review || !state.archive) {
     throw workflowError('INVALID_DEMO_STATE');
   }
@@ -136,10 +137,13 @@ export function reduceDemoState(currentState, action, context = {}) {
 
   const at = isoNow(context.now);
   if (type === DEMO_ACTIONS.RESET) {
-    return createInitialDemoState(() => at, currentState.revision + 1);
+    const reset = createInitialDemoState(() => at, currentState.revision + 1);
+    for (const key of ['eventId', 'sourceEventId', 'sourceRecordId', 'comparisonRecordId']) reset[key] = currentState[key];
+    return reset;
   }
   if (type === DEMO_ACTIONS.START_DEMO) {
     const started = createInitialDemoState(() => at, currentState.revision + 1);
+    for (const key of ['eventId', 'sourceEventId', 'sourceRecordId', 'comparisonRecordId']) started[key] = currentState[key];
     started.status = DEMO_STATES.ALERT_TRIGGERED;
     started.timeline = [timelineEntry(type, actor, at, 'XGBoost 多元数据融合触发橙色预警。')];
     return started;

@@ -139,10 +139,10 @@ test('role policy matches the approved closed-loop matrix', () => {
   assert.equal(auth.can('enterprise', 'reset'), true);
   assert.equal(auth.can('enterprise', 'archive'), false);
   assert.equal(auth.can('regulator', 'advance'), true);
-  assert.equal(auth.can('regulator', 'archive'), true);
+  assert.equal(auth.can('regulator', 'archive'), false);
   assert.equal(auth.can('regulator', 'reset'), false);
   assert.equal(auth.can('expert', 'advance'), false);
-  assert.equal(auth.can('expert', 'archive'), false);
+  assert.equal(auth.can('expert', 'archive'), true);
   assert.equal(auth.can('expert', 'reset'), false);
 });
 

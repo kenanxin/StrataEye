@@ -3,6 +3,7 @@
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
+const { randomUUID } = require('node:crypto');
 const {
   RoofRiskRepositoryError,
   createRoofRiskRepository,
@@ -17,7 +18,8 @@ const {
 } = require('./server/auth-service.js');
 const { createSupabaseAuthService } = require('./server/supabase-auth-service.js');
 const { createExpertAdviceService } = require('./server/expert-advice-service.js');
-const { createMultiAgentWorkflowService } = require('./server/multi-agent-workflow-service.js');
+const { createAgentCollaborationService } = require('./server/agent-collaboration-service.js');
+const { WorkflowStoreError, createFileWorkflowStore, createSupabaseWorkflowStore } = require('./server/workflow-store.js');
 
 const ROOT = __dirname;
 const DEFAULT_ARTIFACT_PATH = path.join(ROOT, 'data', 'roof-risk-dataset.json');
@@ -158,6 +160,13 @@ function serveStatic(root, pathname, res) {
     res.end('Forbidden');
     return;
   }
+  const normalized = path.relative(root, filePath).replace(/\\/g, '/').toLowerCase().split('/').map(segment => segment.split(':')[0].replace(/[. ]+$/, '')).join('/');
+  const segments = normalized.split('/');
+  if (segments.some(segment => segment.startsWith('.')) || ['server.js', 'server', 'tests', 'tools', 'supabase'].includes(segments[0])) {
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Forbidden');
+    return;
+  }
 
   fs.readFile(filePath, (error, data) => {
     if (error) {
@@ -186,15 +195,25 @@ function createAppServer(options = {}) {
     })
     : createAuthService());
   const expertAdviceService = options.expertAdviceService || createExpertAdviceService();
-  const multiAgentWorkflowService = options.multiAgentWorkflowService || createMultiAgentWorkflowService(repository);
+  const storageProvider = options.workflowStoreProvider || process.env.WORKFLOW_STORE_PROVIDER || (authService.provider === 'supabase' || process.env.AUTH_PROVIDER === 'supabase' ? 'supabase' : 'file');
+  let workflowStore = options.workflowStore;
+  if (!workflowStore) {
+    if (storageProvider === 'file' && process.env.NODE_ENV !== 'production' && !process.env.RENDER) workflowStore = createFileWorkflowStore({ directory: path.join(root, '.runtime', 'workflows'), ...options.workflowStoreOptions });
+    if (storageProvider === 'supabase') {
+      try { workflowStore = createSupabaseWorkflowStore(options.workflowStoreOptions || { url: process.env.SUPABASE_URL, serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY }); }
+      catch (_) { /* Configuration failure is surfaced by workflow status and mutations. */ }
+    }
+  }
+  const collaboration = options.agentCollaborationService || createAgentCollaborationService({ repository, store: workflowStore, adviceService: expertAdviceService, now: options.now });
 
   return http.createServer(async (req, res) => {
     const requestUrl = new URL(req.url, 'http://localhost');
     const pathname = requestUrl.pathname;
     const token = parseCookies(req.headers.cookie)[SESSION_COOKIE];
-    const session = await authService.getSession(token);
-
     try {
+      let session;
+      try { session = await authService.getSession(token); }
+      catch (_) { throw new AuthError('AUTH_SERVICE_UNAVAILABLE', '身份认证服务暂不可用，请稍后重试', 503); }
       if (pathname === '/api/auth/login') {
         assertMethod(req, ['POST']);
         const body = await readJsonBody(req);
@@ -345,7 +364,8 @@ function createAppServer(options = {}) {
 
       if (pathname === '/api/multi-agent/status') {
         assertMethod(req, ['GET']);
-        sendJson(res, multiAgentWorkflowService.status());
+        const status = await collaboration.status();
+        sendJson(res, { ...status, storage_provider: workflowStore?.storage_provider || storageProvider });
         return;
       }
 
@@ -357,12 +377,31 @@ function createAppServer(options = {}) {
         }
         let result;
         try {
-          result = multiAgentWorkflowService.run({ recordId: body.record_id, resourceSnapshot: body.resource_snapshot });
+          result = await collaboration.start({ recordId: body.record_id, resourceSnapshot: body.resource_snapshot, actor: session.user, commandId: body.command_id ?? randomUUID() });
         } catch (error) {
           if (error instanceof TypeError) throw new RoofRiskRepositoryError('INVALID_WORKFLOW_INPUT', error.message, 400);
           throw error;
         }
         sendJson(res, result);
+        return;
+      }
+
+      if (pathname === '/api/multi-agent/runs') {
+        assertMethod(req, ['GET']);
+        sendJson(res, { runs: await collaboration.list({ limit: Number(requestUrl.searchParams.get('limit') || 20), ...(requestUrl.searchParams.has('record_id') ? { recordId: requestUrl.searchParams.get('record_id') } : {}) }) });
+        return;
+      }
+      const runMatch = pathname.match(/^\/api\/multi-agent\/runs\/([^/]+)(\/actions)?$/);
+      if (runMatch) {
+        if (!runMatch[2]) {
+          assertMethod(req, ['GET']);
+          sendJson(res, await collaboration.get(decodeURIComponent(runMatch[1])));
+        } else {
+          assertMethod(req, ['POST']);
+          const body = await readJsonBody(req);
+          try { sendJson(res, await collaboration.act({ runId: decodeURIComponent(runMatch[1]), type: body.type, payload: body.payload ?? {}, actor: session.user, expectedRevision: body.expected_revision, commandId: body.command_id })); }
+          catch (error) { if (error instanceof TypeError) throw new RoofRiskRepositoryError('INVALID_WORKFLOW_INPUT', 'Invalid workflow action input', 400); throw error; }
+        }
         return;
       }
 
@@ -372,7 +411,7 @@ function createAppServer(options = {}) {
         if (!body.run || typeof body.run !== 'object') {
           throw new RoofRiskRepositoryError('WORKFLOW_RUN_REQUIRED', 'run is required', 400);
         }
-        sendJson(res, multiAgentWorkflowService.reflect({ run: body.run, feedback: body.feedback || {} }));
+        sendJson(res, await collaboration.reflect(body.run.workflow_run_id));
         return;
       }
 
@@ -509,7 +548,11 @@ function createAppServer(options = {}) {
         sendApiError(res, error.statusCode, error.code, error.message, error.details);
         return;
       }
-      console.error('Unhandled request error:', error);
+      if (error instanceof WorkflowStoreError) {
+        sendApiError(res, error.statusCode, error.code, error.message);
+        return;
+      }
+      console.error('Unhandled request error');
       sendApiError(res, 500, 'INTERNAL_ERROR', 'The request could not be completed');
     }
   });

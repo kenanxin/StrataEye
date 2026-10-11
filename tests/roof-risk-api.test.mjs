@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import test from 'node:test';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
 const require = createRequire(import.meta.url);
 const { EXPECTED_SOURCE_HASH } = require('../server/roof-risk-repository.js');
@@ -9,7 +12,9 @@ let createAppServer;
 
 async function withServer(run, { authenticate = true } = {}) {
   ({ createAppServer } = require('../server.js'));
-  const server = createAppServer();
+  const directory = await mkdtemp(path.join(tmpdir(), 'mine-roof-api-'));
+  const { createFileWorkflowStore } = require('../server/workflow-store.js');
+  const server = createAppServer({ workflowStore: createFileWorkflowStore({ directory }) });
   await new Promise((resolve, reject) => {
     server.once('error', reject);
     server.listen(0, '127.0.0.1', resolve);
@@ -21,6 +26,7 @@ async function withServer(run, { authenticate = true } = {}) {
     await run(baseUrl, cookie);
   } finally {
     await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+    await rm(directory, { recursive: true, force: true });
   }
 }
 
@@ -281,8 +287,8 @@ test('closed-loop mutations enforce the approved role matrix', async () => {
     };
     const expected = {
       enterprise: { advance: 200, archive: 403, reset: 200 },
-      regulator: { advance: 200, archive: 200, reset: 403 },
-      expert: { advance: 403, archive: 403, reset: 403 },
+      regulator: { advance: 200, archive: 403, reset: 403 },
+      expert: { advance: 403, archive: 200, reset: 403 },
     };
 
     for (const [role, credentials] of Object.entries(accounts)) {

@@ -4,8 +4,8 @@ const { AuthError } = require('./auth-service.js');
 
 const ROLE_ACTIONS = {
   enterprise: new Set(['advance', 'reset']),
-  regulator: new Set(['advance', 'archive']),
-  expert: new Set(),
+  regulator: new Set(['advance']),
+  expert: new Set(['archive']),
   viewer: new Set(),
   super_admin: new Set(['users.manage', 'audit.read']),
 };
@@ -19,14 +19,15 @@ function createSupabaseAuthService(options = {}) {
   if (!baseUrl || !anonKey) throw new Error('SUPABASE_URL and SUPABASE_ANON_KEY are required');
 
   async function request(path, init = {}) {
-    const response = await fetchImpl(`${baseUrl}${path}`, {
+    let response;
+    try { response = await fetchImpl(`${baseUrl}${path}`, {
       ...init,
       headers: {
         apikey: anonKey,
         'Content-Type': 'application/json',
         ...(init.headers || {}),
       },
-    });
+    }); } catch (_) { throw new AuthError('AUTH_SERVICE_UNAVAILABLE', '身份认证服务连接失败或超时，请稍后重试', 503); }
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
       if (path.startsWith('/auth/v1/token') && [400, 401].includes(response.status)) {
@@ -81,8 +82,8 @@ function createSupabaseAuthService(options = {}) {
       sessions.set(token, { user: identity, expiresAt, refreshToken: payload.refresh_token });
       return { token, user: identity, expiresAt };
     } catch (error) {
-      if (error instanceof AuthError && ['ACCOUNT_DISABLED', 'SUPABASE_AUTH_ERROR'].includes(error.code)) throw error;
-      throw new AuthError('INVALID_CREDENTIALS', '用户名或密码不正确', 401);
+      if (error instanceof AuthError) throw error;
+      throw new AuthError('AUTH_SERVICE_UNAVAILABLE', '身份认证服务暂不可用，请稍后重试', 503);
     }
   }
 

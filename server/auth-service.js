@@ -17,8 +17,8 @@ const DEFAULT_PASSWORD_HASHES = {
 
 const ROLE_ACTIONS = {
   enterprise: new Set(['advance', 'reset']),
-  regulator: new Set(['advance', 'archive']),
-  expert: new Set(),
+  regulator: new Set(['advance']),
+  expert: new Set(['archive']),
 };
 
 class AuthError extends Error {

@@ -17,6 +17,19 @@ function memoryStorage(initial = {}) {
   };
 }
 
+test('persisted workflow identity survives START and RESET without demo substitution', () => {
+  const state = createInitialDemoState();
+  Object.assign(state, { eventId: 'WF-00000000-0000-4000-8000-000000000001', sourceRecordId: 'REC-REAL-2', sourceEventId: 'WARN-REC-REAL-2', comparisonRecordId: null });
+  const actor = { role: 'enterprise', displayName: 'enterprise' };
+  const started = reduceDemoState(state, { type: 'START_DEMO', actor });
+  const reset = reduceDemoState(started, { type: 'RESET', actor });
+  for (const current of [started, reset]) {
+    assert.equal(current.eventId, state.eventId);
+    assert.equal(current.sourceRecordId, 'REC-REAL-2');
+    assert.equal(current.comparisonRecordId, null);
+  }
+});
+
 const enterprise = { role: 'enterprise', displayName: '企业演示员' };
 const regulator = { role: 'regulator', displayName: '监管演示员' };
 const expert = { role: 'expert', displayName: '智库演示员' };
