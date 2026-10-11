@@ -92,7 +92,7 @@ assert.equal(agreed.events.at(-1).actor.role,'enterprise');
 ### Task 3: Connect existing three-role UI to saved runs
 
 **Files:**
-- Modify: js/multi-agent-workflow-ui.mjs, js/warning-demo-ui.mjs, js/warning-demo-state.mjs
+- Modify: js/multi-agent-workflow-ui.mjs, js/warning-demo-ui.mjs, js/warning-demo-state.mjs, js/main.js (shared client initialization only)
 - Create: js/workflow-client.mjs
 - Modify: index.html and the existing workflow CSS section only
 - Test: tests/workflow-client.test.mjs, tests/multi-agent-ui.test.mjs, tests/warning-demo-ui.test.mjs
