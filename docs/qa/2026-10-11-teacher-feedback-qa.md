@@ -33,7 +33,7 @@ RED/GREEN：前三文件首次 37 tests、33 pass、4 fail，duration_ms=3730.97
 
 离线预检 exit 0，输出为 `真实数据：20000 行，11 列，SHA-256 86D4C2FB192721B2745F00076AEB00CF351C654ED936DDB098BFA6217E30AC6A` 与 `预检通过。`，无预检警告/失败。“真实数据”为既有 CLI 标签，仅说明大小与哈希一致；本波未改 CSV、XGBoost 概率、场景、相机或图表内容，没有模型训练或准确率提升证据。HTTP 临时目录经唯一名称/父目录校验后清除并复查不存在，未保留口令、cookie、原始 provider 数据或日志。
 
-本地修复与回归完成，仍须唯一 scoped re-review。外部验收继续待完成：新界面响应式/视觉、真实三角色与第二浏览器、IndexedDB 原件及缺失原件行为、Supabase SQL 实际执行与云并发/重启、获授权的真实 DeepSeek 生成。该批次未调用云端、真实 provider 或浏览器替代路径，未 push/deploy/merge，未修改生产账户。当前就绪范围为本地分支交接，外部验收待完成。
+本地修复与回归完成，2026-10-12 的独立定向复审已通过。F1/F2/M1/M2/M4/M5 均已解决，未发现修复引入的新 Critical/Important 问题，M3 的既有警告按原裁定延期。完整报告见[最终定向复审记录](2026-10-12-teacher-feedback-final-review.md)。外部验收继续待完成：新界面响应式/视觉、真实三角色与第二浏览器、IndexedDB 原件及缺失原件行为、Supabase SQL 实际执行与云并发/重启、获授权的真实 DeepSeek 生成。该批次未调用云端、真实 provider 或浏览器替代路径，未 push/deploy/merge，未修改生产账户。当前就绪范围为本地分支交接，外部验收待完成。
 
 ## Task4 历史本地 HTTP 证据
 
