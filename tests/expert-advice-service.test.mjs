@@ -48,6 +48,145 @@ test('provider failure retains safe HTTP evidence without leaking response or ke
 
 const workflowInput = { risk: { predicted_class: '重大风险', score: 95, confidence: 0.99 }, feature_evidence: [{ id: 'feature:r:roof', key: 'roof', label: '顶板', value: 2 }], similar_record_ids: ['REC-1'], reviewed_memory: [{ record_id: 'REC-2', workflow_run_id: 'WF-test', reviewed: true, reviewed_conclusion: '复测可参考', actor: { username: 'private person' } }], rule_recommendations: ['复测支护'], feedback: [{ responsiblePerson: 'private person', photos: [{ name: 'private.jpg' }] }], actor: { username: 'private person' } };
 const providerPayload = (extra = {}) => ({ summary: '证据解释', recommendations: ['复测支护'], evidence_ids: ['feature:r:roof', 'REC-1'], ...extra });
+const workflowAdviceFor = parsed => createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(parsed) } }] }) }) }).generateWorkflowAdvice(workflowInput);
+
+const qualitativeExamples = ['进一步复核证据', '复核证据的一致性', '统一安排复测', '一旦发现异常应复核', '一般风险应持续观察'];
+for (const value of qualitativeExamples) {
+  for (const field of ['summary', 'recommendations']) {
+    test(`workflow qualitative terms preserve provider text: ${field} ${value}`, async () => {
+      const parsed = providerPayload({ [field]: field === 'summary' ? value : [value], risk: { predicted_class: '低风险', score: 0, confidence: 0 } });
+      const result = await createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(parsed) } }] }) }) }).generateWorkflowAdvice(workflowInput);
+      assert.equal(result.source, 'deepseek');
+      assert.equal(result.summary, parsed.summary);
+      assert.deepEqual(result.recommendations, parsed.recommendations);
+      assert.deepEqual(result.risk, workflowInput.risk);
+      assert.deepEqual(result.evidence_ids, parsed.evidence_ids);
+      assert.equal(Object.hasOwn(result, 'fallback_reason'), false);
+      assert.equal(Object.hasOwn(result, 'validation_errors'), false);
+    });
+  }
+}
+
+test('workflow qualitative masking still rejects adjacent numeric instructions in every proposal field', async () => {
+  for (const value of ['进一步补强三百MPa', '统一在三十分钟内处置', '一旦超过５MPa', '一般风险每天一次', '一致率达到99%', '复核至少十处', '复核 one support']) {
+    for (const field of ['summary', 'recommendations']) {
+      const result = await workflowAdviceFor(providerPayload({ [field]: field === 'summary' ? value : [value] }));
+      assert.equal(result.source, 'local-rule', `${field}: ${value}`);
+      assert.equal(result.fallback_reason, 'invalid_provider_advice');
+      assert.deepEqual(result.validation_errors, [{ code: field === 'summary' ? 'summary_numeric_content' : 'recommendation_numeric_content', field, ...(field === 'recommendations' ? { index: 0 } : {}) }]);
+      assert.deepEqual(result.risk, workflowInput.risk);
+      assert.deepEqual(result.recommendations, workflowInput.rule_recommendations);
+    }
+  }
+});
+
+test('workflow validation reports fixed diagnostics for malformed fields and citations', async () => {
+  const cases = [
+    [{ summary: '' }, { code: 'summary_invalid', field: 'summary' }],
+    [{ summary: ' ' }, { code: 'summary_invalid', field: 'summary' }],
+    [{ summary: null }, { code: 'summary_invalid', field: 'summary' }],
+    [{ summary: {} }, { code: 'summary_invalid', field: 'summary' }],
+    [{ summary: '复'.repeat(4001) }, { code: 'summary_invalid', field: 'summary' }],
+    [{ recommendations: [] }, { code: 'recommendations_invalid', field: 'recommendations' }],
+    [{ recommendations: Array(7).fill('复测支护') }, { code: 'recommendations_invalid', field: 'recommendations' }],
+    [{ recommendations: '复测支护' }, { code: 'recommendations_invalid', field: 'recommendations' }],
+    [{ recommendations: null }, { code: 'recommendations_invalid', field: 'recommendations' }],
+    [{ recommendations: [''] }, { code: 'recommendation_invalid', field: 'recommendations', index: 0 }],
+    [{ recommendations: ['复测支护', ' '] }, { code: 'recommendation_invalid', field: 'recommendations', index: 1 }],
+    [{ recommendations: [{}] }, { code: 'recommendation_invalid', field: 'recommendations', index: 0 }],
+    [{ recommendations: [null] }, { code: 'recommendation_invalid', field: 'recommendations', index: 0 }],
+    [{ recommendations: ['复'.repeat(1001)] }, { code: 'recommendation_invalid', field: 'recommendations', index: 0 }],
+    [{ evidence_ids: [] }, { code: 'evidence_ids_invalid', field: 'evidence_ids' }],
+    [{ evidence_ids: 'feature:r:roof' }, { code: 'evidence_ids_invalid', field: 'evidence_ids' }],
+    [{ evidence_ids: null }, { code: 'evidence_ids_invalid', field: 'evidence_ids' }],
+    [{ evidence_ids: [42] }, { code: 'evidence_ids_invalid', field: 'evidence_ids' }],
+    [{ evidence_ids: ['FORGED'] }, { code: 'unknown_evidence', field: 'evidence_ids' }],
+  ];
+  for (const [extra, expected] of cases) {
+    const result = await workflowAdviceFor(providerPayload(extra));
+    assert.equal(result.source, 'local-rule', expected.code);
+    assert.equal(result.fallback_reason, 'invalid_provider_advice');
+    assert.deepEqual(result.validation_errors, [expected]);
+  }
+  for (const parsed of [null, true, 42, [], 'private provider text']) {
+    const result = await workflowAdviceFor(parsed);
+    assert.equal(result.fallback_reason, 'invalid_provider_advice');
+    assert.deepEqual(result.validation_errors, [
+      { code: 'summary_invalid', field: 'summary' },
+      { code: 'recommendations_invalid', field: 'recommendations' },
+      { code: 'evidence_ids_invalid', field: 'evidence_ids' },
+    ]);
+  }
+});
+
+test('workflow accepts exact text and array limits with original proposal wording', async () => {
+  const parsed = providerPayload({ summary: '复'.repeat(4000), recommendations: Array(6).fill('核'.repeat(1000)) });
+  const result = await workflowAdviceFor(parsed);
+  assert.equal(result.source, 'deepseek');
+  assert.equal(result.summary, parsed.summary);
+  assert.deepEqual(result.recommendations, parsed.recommendations);
+  assert.deepEqual(result.evidence_ids, parsed.evidence_ids);
+});
+
+test('workflow validation diagnostics are bounded and never contain provider content or credentials', async () => {
+  const privateMarker = 'private-key private response body person@example.com';
+  const parsed = providerPayload({ summary: `${privateMarker} 300MPa`, recommendations: Array(20).fill(`${privateMarker} 三百MPa`), evidence_ids: [privateMarker] });
+  const result = await createExpertAdviceService({ apiKey: 'private-key', fetchImpl: async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(parsed) } }] }) }) }).generateWorkflowAdvice(workflowInput);
+  assert.equal(result.fallback_reason, 'invalid_provider_advice');
+  assert.equal(result.validation_errors.length, 12);
+  const allowed = {
+    summary_invalid: 'summary', summary_numeric_content: 'summary',
+    recommendations_invalid: 'recommendations', recommendation_invalid: 'recommendations', recommendation_numeric_content: 'recommendations',
+    evidence_ids_invalid: 'evidence_ids', unknown_evidence: 'evidence_ids',
+  };
+  for (const error of result.validation_errors) {
+    assert.equal(error.field, allowed[error.code]);
+    assert.deepEqual(Object.keys(error).sort(), Object.hasOwn(error, 'index') ? ['code', 'field', 'index'] : ['code', 'field']);
+    if (Object.hasOwn(error, 'index')) assert.ok(Number.isInteger(error.index) && error.index >= 0);
+  }
+  for (const secret of ['private-key', 'private response body', 'person@example.com']) assert.ok(!JSON.stringify(result).includes(secret));
+  const unknown = await workflowAdviceFor(providerPayload({ evidence_ids: [privateMarker] }));
+  assert.deepEqual(unknown.validation_errors, [{ code: 'unknown_evidence', field: 'evidence_ids' }]);
+  assert.ok(!JSON.stringify(unknown).includes(privateMarker));
+});
+
+test('workflow prompt states exact limits and includes a valid example using this request evidence', async () => {
+  const input = structuredClone(workflowInput);
+  input.feature_evidence[0].id = 'feature:current:roof';
+  input.similar_record_ids = [];
+  let prompt;
+  const result = await createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async (_url, request) => {
+    prompt = JSON.parse(request.body).messages[0].content;
+    const example = JSON.parse(prompt.split('JSON示例：')[1]);
+    assert.deepEqual(example.evidence_ids, ['feature:current:roof']);
+    return { ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(example) } }] }) };
+  } }).generateWorkflowAdvice(input);
+  assert.equal(result.source, 'deepseek');
+  assert.match(prompt, /summary[^。]*4000/);
+  assert.match(prompt, /recommendations[^。]*1[–-]6[^。]*1000/);
+  assert.match(prompt, /中文数量/);
+  assert.match(prompt, /英文数量/);
+  assert.match(prompt, /百分比/);
+  assert.match(prompt, /时限/);
+  assert.match(prompt, /工程阈值/);
+  assert.match(prompt, /原样/);
+  assert.deepEqual(result.risk, input.risk);
+});
+
+test('workflow transport and JSON failures keep their existing reason without validation diagnostics', async () => {
+  const cases = [
+    [{ apiKey: '' }, 'not_configured'],
+    [{ fetchImpl: async () => ({ ok: false }) }, 'provider_http_error'],
+    [{ fetchImpl: async () => { throw new Error('private response'); } }, 'provider_unavailable'],
+    ...['', 'plain text'].map(content => [{ fetchImpl: async () => ({ ok: true, json: async () => ({ choices: [{ message: { content } }] }) }) }, content ? 'invalid_provider_json' : 'empty_provider_response']),
+  ];
+  for (const [options, reason] of cases) {
+    const result = await createExpertAdviceService({ apiKey: 'test-key', ...options }).generateWorkflowAdvice(workflowInput);
+    assert.equal(result.fallback_reason, reason);
+    assert.equal(Object.hasOwn(result, 'validation_errors'), false);
+  }
+});
+
 test('workflow advice uses constrained prompt, known evidence and immutable authoritative risk', async () => {
   const before = structuredClone(workflowInput);
   const service = createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async (_url, request) => {
