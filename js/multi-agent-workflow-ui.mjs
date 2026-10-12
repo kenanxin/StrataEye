@@ -16,10 +16,12 @@ function renderDetail(node, result) {
   const target = element('multiAgentDetail');
   if (!target || !node) return;
   const evidence = (node.input_evidence || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+  const context = node.agent_id === 'A2' ? (node.output?.reviewed_workflows || []).map(item => `<li>已审核工作流 ${escapeHtml(item.workflow_run_id)} · CSV ${escapeHtml(item.record_id)} · 审核版本 ${escapeHtml(item.review_version)} / 修订 ${escapeHtml(item.review_revision ?? '未知')} · ${escapeHtml(item.reviewed_at)} · 源模型 ${escapeHtml(item.source_model?.name || '未知')} / ${escapeHtml(item.source_model?.mode || '未知')} · ${escapeHtml(item.evidence_id)}</li>`).join('') : '';
   target.innerHTML = `
     <div><span>${escapeHtml(node.agent_id)} · ${escapeHtml(node.name)}</span><b>${escapeHtml(STATUS_LABELS[node.status] || node.status)}</b></div>
     <p>${escapeHtml(node.output_summary || node.reason || '暂无输出')}</p>
     <ul>${evidence || '<li>当前节点没有额外输入证据。</li>'}</ul>
+    ${node.agent_id === 'A2' ? `<p>已审核工作流检索上下文 · 与相似CSV示例分别展示；实际引用见当前保存方案</p><ul>${context || '<li>本版无已审核工作流上下文。</li>'}</ul>` : ''}
     <footer><span>运行 ${escapeHtml(result.workflow_run_id)}</span><span>实测 ${escapeHtml(node.elapsed_ms)} ms · 下一动作 ${escapeHtml(result.next_action)}</span></footer>`;
 }
 

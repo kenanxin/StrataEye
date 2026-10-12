@@ -42,6 +42,16 @@ test('repeated setup removes listeners and empty selection clears old rail/detai
   const elements=uiFixture();let resolve;const coordinator=createWorkflowCoordinator({client:{list:async()=>[uiRun()],get:()=>new Promise(r=>resolve=r)},storage:null,pollInterval:0});await coordinator.refresh();setupMultiAgentWorkflow({coordinator});const widget=setupMultiAgentWorkflow({coordinator});assert.equal(elements.get('runMultiAgentWorkflow').listeners.get('click').size,1);const selecting=coordinator.select('WF-other');assert.match(elements.get('multiAgentDetail').innerHTML,/读取|暂无/);assert.equal(elements.get('multiAgentRail').children[0].dataset.status,'waiting');resolve(uiRun());await selecting;widget.destroy();coordinator.destroy();delete globalThis.document;
 });
 
+test('A2 node shows reviewed workflow references separately from similar CSV and escapes source IDs', async () => {
+  const elements = uiFixture(), current = uiRun();
+  elements.get('multiAgentRail').children.unshift(new Node('A2'));
+  current.nodes.unshift({ agent_id: 'A2', name: '知识检索', status: 'success', input_evidence: ['相似CSV REC-1'], output_summary: '检索完成', output: { reviewed_workflows: [{ workflow_run_id: 'WF-<source>', record_id: 'REC-1', review_version: 1, review_revision: 7, reviewed_at: '2026-10-12T10:00:00Z', source_model: { name: 'xgboost', mode: 'integrated_xgboost' }, evidence_id: 'case:WF-source:review:1:r7' }] } });
+  const coordinator = createWorkflowCoordinator({ client: { list: async () => [current] }, storage: null, pollInterval: 0 }); await coordinator.refresh();
+  const widget = setupMultiAgentWorkflow({ coordinator });
+  try { await elements.get('multiAgentRail').children[0].click(); const detail = elements.get('multiAgentDetail').innerHTML; assert.match(detail, /已审核工作流.*WF-&lt;source&gt;/s); assert.match(detail, /实际引用见当前保存方案/); assert.match(detail, /相似CSV REC-1/); assert.doesNotMatch(detail, /WF-<source>/); }
+  finally { widget.destroy(); coordinator.destroy(); delete globalThis.document; }
+});
+
 test('workflow panel has responsive non-overlapping grid rules', () => {
   assert.match(css, /\.multi-agent-workbench\s*\{/);
   assert.match(css, /\.multi-agent-rail\s*\{/);

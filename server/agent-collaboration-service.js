@@ -6,6 +6,7 @@ const { createMultiAgentWorkflowService } = require('./multi-agent-workflow-serv
 const POLICY = Object.freeze({ ACKNOWLEDGE: 'enterprise', SUBMIT_DISPOSAL: 'enterprise', REJECT: 'regulator', APPROVE: 'regulator', ARCHIVE: 'expert', REPROCESS: 'enterprise', UPDATE_RESOURCES: 'enterprise', APPROVE_MEMORY: 'expert' });
 const ACTIVE = ['alert_triggered', 'disposal_in_progress', 'changes_requested', 'pending_review'];
 const COMMAND = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
+const MAX_REVIEWED_CONTEXT = 20;
 const reducer = () => import('../js/warning-demo-state.mjs');
 function fail(status, message) { throw new WorkflowStoreError(status === 403 ? 'WORKFLOW_FORBIDDEN' : status === 409 ? 'WORKFLOW_CONFLICT' : 'WORKFLOW_INVALID_INPUT', message, status); }
 function identity(actor) {
@@ -42,15 +43,23 @@ function createAgentCollaborationService({ repository, store, adviceService, now
   const at = () => { const value = now(); return value instanceof Date ? value.toISOString() : String(value); };
   const available = () => { if (!store) throw new WorkflowStoreError('WORKFLOW_STORAGE_UNAVAILABLE', 'Durable workflow storage is unavailable', 503); };
   async function reviewedMemory(recordId, similarIds) {
-    const runs = (await Promise.all([recordId, ...similarIds].map(id => store.list({ recordId: id, limit: 100 })))).flat();
-    return runs.filter(run => run.demo_state.status === 'archived').flatMap(run => run.case_memory.filter(item => item.reviewed === true && item.reviewed_conclusion && item.actor?.role === 'expert').map(() => {
+    const listed = (await Promise.all([...new Set([recordId, ...similarIds])].map(id => store.list({ recordId: id, limit: 100 })))).flat();
+    const runs = [...new Map(listed.map(run => [run.workflow_run_id, run])).values()];
+    return runs.filter(run => run.demo_state.status === 'archived').flatMap(run => run.case_memory.flatMap((item, index) => {
+      if (item.reviewed !== true || !item.reviewed_conclusion || item.actor?.role !== 'expert') return [];
+      const reviewEventIndex = run.events.findIndex(event => event.type === 'APPROVE_MEMORY' && event.at === item.reviewed_at);
+      const reviewRevision = item.review_revision ?? (reviewEventIndex >= 0 ? reviewEventIndex : null);
+      const reviewVersion = index + 1;
       const evaluated = repository.evaluateRecord(run.algorithm.record_id);
       const assessment = currentFeedback(run);
-      return { reviewed: true, workflow_run_id: run.workflow_run_id, record_id: evaluated.record_id, risk_class: evaluated.model_output.predicted_class,
+      return [{ reviewed: true, workflow_run_id: run.workflow_run_id, record_id: evaluated.record_id,
+        evidence_id: `case:${run.workflow_run_id}:review:${reviewVersion}:r${reviewRevision ?? 'unknown'}`,
+        review_version: reviewVersion, review_revision: reviewRevision, reviewed_at: item.reviewed_at,
+        source_model: { name: run.algorithm.model, mode: run.algorithm.model_mode }, risk_class: evaluated.model_output.predicted_class,
         action_codes: [...new Set(run.events.map(event => event.type).filter(type => Object.hasOwn(POLICY, type)))], outcome: 'archived',
         ...(assessment.monitoring_trend ? { monitoring_trend: assessment.monitoring_trend } : {}),
-        ...(assessment.execution_status ? { execution_status: assessment.execution_status } : {}) };
-    }));
+        ...(assessment.execution_status ? { execution_status: assessment.execution_status } : {}) }];
+    })).slice(0, MAX_REVIEWED_CONTEXT);
   }
   async function plan(run, version, timestamp) {
     const decision = run.nodes.find(node => node.agent_id === 'A3');
@@ -59,13 +68,24 @@ function createAgentCollaborationService({ repository, store, adviceService, now
     const featureEvidence = Object.entries(evaluated.metrics).filter(([key]) => key !== 'data_quality').map(([key, metric]) => ({ ...metric, key, label: evaluated.feature_evidence.find(item => item.key === key)?.label || key, id: `feature:${run.algorithm.record_id}:${key}` }));
     const similarIds = run.nodes.find(node => node.agent_id === 'A2').output.cases.map(item => item.record_id);
     const memory = await reviewedMemory(run.algorithm.record_id, similarIds);
-    const input = { risk: { predicted_class: run.algorithm.predicted_class, confidence: run.algorithm.confidence, score: run.nodes[0].output.risk_score }, feature_evidence: featureEvidence, similar_record_ids: similarIds, reviewed_memory: memory, rule_recommendations: decision.output.actions };
+    run.nodes.find(node => node.agent_id === 'A2').output.reviewed_workflows = structuredClone(memory);
+    const input = { advice_invocation_id: `${run.workflow_run_id}:v${version}`, risk: { predicted_class: run.algorithm.predicted_class, confidence: run.algorithm.confidence, score: run.nodes[0].output.risk_score }, feature_evidence: featureEvidence, similar_record_ids: similarIds, reviewed_memory: structuredClone(memory), rule_recommendations: decision.output.actions };
     const advice = await adviceService.generateWorkflowAdvice(input);
     decision.output = { ...decision.output, decision_mode: advice.source === 'deepseek' ? 'deepseek_proposal' : 'rule_assisted', actions: advice.recommendations, advice, plan_version: version };
     decision.output_summary = advice.summary;
     const control = run.nodes.find(node => node.agent_id === 'A4');
     if (control.output) control.output.portal_tasks.enterprise = advice.recommendations;
-    return { version, created_at: timestamp, source_record_id: run.algorithm.record_id, monitoring_evidence: 'original_csv_record', feedback_source: run.feedback.length ? 'human-input' : 'none', feedback_start_index: run.feedback.length, advice, resources: structuredClone(run.nodes.find(node => node.agent_id === 'A5').output.snapshot), approved: false };
+    return { version, created_at: timestamp, source_record_id: run.algorithm.record_id, monitoring_evidence: 'original_csv_record', feedback_source: run.feedback.length ? 'human-input' : 'none', feedback_start_index: run.feedback.length, advice, retrieved_context: structuredClone(memory), resources: structuredClone(run.nodes.find(node => node.agent_id === 'A5').output.snapshot), approved: false };
+  }
+  function syncControl(run) {
+    const control = run.nodes.find(node => node.agent_id === 'A4');
+    if (!control?.output) return;
+    const status = run.demo_state.status;
+    const approved = run.plan_versions.at(-1)?.approved === true;
+    const dispatch = status === 'archived' ? 'closed' : status === 'verified' ? 'verified' : approved ? 'human_approved' : 'waiting_approval';
+    control.status = approved ? 'success' : 'waiting_human';
+    Object.assign(control.output, { dispatch_status: dispatch, human_approved: approved, delivery_mode: 'dry_run', external_delivery: false });
+    control.output_summary = ({ closed: '企业已确认方案、监管已核验，事件已闭环归档。', verified: '企业已确认方案，监管已核验，等待专家归档。', human_approved: '企业已确认当前候选方案，处置及核验按保存事件推进。', waiting_approval: '当前候选方案等待企业人工确认。' })[dispatch] + '协同记录为演示草案，真实设备指令下发数为零。';
   }
   function currentFeedback(run) {
     const currentPlan = run.plan_versions.at(-1);
@@ -111,6 +131,7 @@ function createAgentCollaborationService({ repository, store, adviceService, now
         run.demo_state.status = 'alert_triggered';
         run.demo_state.timeline.push({ id: `${id}-start`, type: 'START', role: actor.role, actor: String(actor.displayName || actor.role), at: timestamp, detail: `XGBoost判定${run.algorithm.predicted_class}，等待企业确认候选方案。` });
         run.plan_versions.push(await plan(run, 1, timestamp));
+        syncControl(run);
         if (run.next_action === 'return_to_resource') reflectSaved(run);
       }
       return store.create(run, { commandId: key });
@@ -180,7 +201,7 @@ function createAgentCollaborationService({ repository, store, adviceService, now
       } else if (type === 'APPROVE_MEMORY') {
         if (run.demo_state.status !== 'archived' || typeof payload.reviewed_conclusion !== 'string' || !payload.reviewed_conclusion.trim()) fail(400, 'Archived run and explicit reviewed conclusion are required');
         if (run.case_memory.length) fail(400, 'Case memory has already been reviewed');
-        run.case_memory.push({ reviewed: true, reviewed_conclusion: payload.reviewed_conclusion.trim(), actor: trustedActor, reviewed_at: timestamp });
+        run.case_memory.push({ reviewed: true, reviewed_conclusion: payload.reviewed_conclusion.trim(), actor: trustedActor, reviewed_at: timestamp, review_revision: run.revision + 1 });
         run.demo_state.revision += 1; run.demo_state.updatedAt = timestamp;
         run.demo_state.timeline.push({ id: `${key}-memory`, type, role: actor.role, actor: trustedActor.displayName, at: timestamp, detail: '专家人工审核复盘摘要并允许后续案例检索参考。' });
       } else {
@@ -204,6 +225,7 @@ function createAgentCollaborationService({ repository, store, adviceService, now
         }
         reflectSaved(run);
       }
+      syncControl(run);
       run.revision += 1; run.updated_at = timestamp;
       return store.save(run, { expectedRevision, commandId: key, event });
     },

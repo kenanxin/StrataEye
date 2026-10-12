@@ -55,7 +55,7 @@ GET /api/multi-agent/runs/WF-...
 - algorithm：原 CSV 记录、XGBoost 类别、置信度、模型及数据哈希；20/45/70/95 类别映射和概率加权风险分未校准为灾害概率。
 - nodes：节点状态、证据、摘要及输出；elapsed_ms 为兼容节点读取预计算结果等实际墙钟耗时，跳过节点为 0，未代表在线模型训练或推理耗时。
 - demo_state：工单、监管核验、归档、照片元数据及人员时间线。
-- plan_versions：版本、来源记录、资源、人工批准、建议来源、重评估返回目标及证据声明。
+- plan_versions：版本、来源记录、资源、人工批准、建议来源、重评估返回目标及证据声明。每版含 `retrieved_context` 去身份检索快照（至多 20 条），A2.output.reviewed_workflows 对应当前版快照；与 `advice.evidence_ids` 实际引用列表分开保存。
 - feedback、case_memory、events：权威人工反馈、显式审核记忆及 actor/time/command 审计历史；safety 标注人工确认及设备控制边界。
 
 ## 保存动作与并发
@@ -110,11 +110,17 @@ Content-Type: application/json
 
 服务器根据 ID 读取保存事件及反馈，忽略客户端 feedback 和 run 内 nodes/风险替代字段。仅返回评估，不提交版本或保存动作。无反馈为 wait_for_feedback，其他目标为 finish、return_to_perception、return_to_decision、return_to_resource、return_to_control；低风险 reflect 返回 400。
 
-仅 ARCHIVE 未允许记忆检索。显式 APPROVE_MEMORY 后，相关记录及相似记录的归档记忆可进入后续方案检索。建议适配器收到去身份的事件/记录 ID、模型等级、动作代码、归档结果、人工趋势/执行枚举，未收到人员、工单、照片或审核正文。A2 相似 CSV 记录是监测示例，事故属性待核验。审核记忆和方案版本提供有限的改进机制，未在线训练 XGBoost，也未证明准确率提升或处置因果效果。
+仅 ARCHIVE 未允许记忆检索。显式 APPROVE_MEMORY 后，相关记录及相似记录的归档记忆可进入后续方案检索。建议适配器收到去身份的事件/记录 ID、模型等级、动作代码、归档结果、人工趋势/执行枚举，未收到人员、组织、工单、照片或审核正文。A2 相似 CSV 记录是监测示例，事故属性待核验。审核记忆和方案版本提供有限的改进机制，未在线训练 XGBoost，也未证明准确率提升或处置因果效果。
+
+每次生成从当前记录及相似记录检索归档且经专家明确审核的工作流，合并重复源事件，检索快照截取至多 20 条。快照字段为 `workflow_run_id`、`record_id`、`evidence_id`、`review_version`（源审核记录的序号）、`review_revision`（实际保存的审核修订）、`reviewed_at`、`source_model: {name, mode}`、`risk_class`、`action_codes`、`outcome`、可选人工趋势/执行枚举。source_model 使用源事件已有 algorithm.model/model_mode；当前产物没有可核实模型版本，未补写版本。历史审核缺少 review_revision 时从对应已保存 APPROVE_MEMORY 事件推得修订，缺失时明确为 null。
+
+工作流引用 ID 格式为 `case:<源workflow_run_id>:review:<审核序号>:r<审核修订>`，区分相同 CSV 的不同事件及审核记录。provider 允许引用本次已知特征 ID、相似 CSV ID 或 case-specific ID；CSV 示例引用与工作流审核引用语义分别保存。`retrieved_context` 表示本版检索到的上下文，`advice.evidence_ids` 表示建议实际引用；规则回退亦保留上下文，不宣称 DeepSeek 已引用它。REPROCESS 为新版取得新快照，旧版快照保留且重新 GET 不依赖临时 provider 输入。standalone expert advice 接口维持兼容。
+
+A4 的 `status/dispatch_status` 从 `waiting_human/waiting_approval` 在确认后变为 `success/human_approved`，更新资源或重评估后回到等待确认，监管通过后为 `success/verified`，归档后为 `success/closed`；`human_approved` 投影当前方案批准值。始终保留 `delivery_mode: dry_run` 与 `external_delivery: false`，不表示真实设备下发。
 
 ## 存储与错误
 
-本地认证开发默认 file 存储，目录 `.runtime/workflows`，支持 `createAppServer({ workflowStoreOptions: { directory } })` 注入。当前 `.env.example` 的 WORKFLOW_STORE_DIRECTORY 字段尚未被 server.js 读取。生产/Render 不自动启用文件存储。Supabase 认证默认 Supabase 存储，失败后不静默回退到临时数据。
+本地认证开发默认 file 存储，目录 `.runtime/workflows`，支持 `createAppServer({ workflowStoreOptions: { directory } })` 注入；目录没有环境变量配置入口，示例中的无效目录变量已移除。生产/Render 不自动启用文件存储。Supabase 认证默认 Supabase 存储，失败后不静默回退到临时数据。
 
 WORKFLOW_STORE_PROVIDER=supabase 需要服务器端 SUPABASE_URL、SUPABASE_SERVICE_ROLE_KEY，先有 RBAC 基础迁移，再执行 `supabase/migrations/202610110001_workflow_runs.sql`。增量迁移建立 mine_workflow_runs、mine_workflow_commands 与受 service-role 约束的 create/save RPC，事务内处理修订和幂等快照。密钥不得交给浏览器。本次未执行云端迁移；SQL/适配器测试不代替真实 Supabase 验收。
 

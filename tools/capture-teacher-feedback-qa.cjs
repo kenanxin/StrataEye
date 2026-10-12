@@ -11,6 +11,27 @@ const { once } = require('node:events');
 const RECORD = 'REC-202511101149-02909';
 const ROLES = { enterprise: 'enterprise_operator', regulator: 'regulator_officer', expert: 'expert_analyst' };
 
+function createAdviceCaptureBarrier() {
+  const captures = new Map(), waiters = new Map();
+  return {
+    capture({ invocation_id, memory }) {
+      captures.set(invocation_id, memory);
+      if (captures.size > 100) captures.delete(captures.keys().next().value);
+      for (const finish of waiters.get(invocation_id) || []) finish(memory);
+      waiters.delete(invocation_id);
+    },
+    wait(invocationId, timeoutMs = 10000) {
+      if (captures.has(invocationId)) return Promise.resolve(captures.get(invocationId));
+      return new Promise((resolve, reject) => {
+        const pending = waiters.get(invocationId) || new Set();
+        const finish = memory => { clearTimeout(timer); pending.delete(finish); resolve(memory); };
+        const timer = setTimeout(() => { pending.delete(finish); if (!pending.size) waiters.delete(invocationId); reject(new Error(`IPC advice capture timeout: ${invocationId}`)); }, timeoutMs);
+        pending.add(finish); waiters.set(invocationId, pending);
+      });
+    },
+  };
+}
+
 async function childServer({ directory, password }) {
   const { createAppServer } = require('../server.js');
   const { createAuthService } = require('../server/auth-service.js');
@@ -29,7 +50,7 @@ async function childServer({ directory, password }) {
         assert.equal(memory.outcome, 'archived');
         assert.equal(memory.reviewed, true);
       }
-      process.send({ kind: 'advice', memory: input.reviewed_memory.map(item => ({ workflow_run_id: item.workflow_run_id, record_id: item.record_id })) });
+      process.send({ kind: 'advice', invocation_id: input.advice_invocation_id, memory: input.reviewed_memory.map(item => ({ workflow_run_id: item.workflow_run_id, record_id: item.record_id })) });
       return disabled.generateWorkflowAdvice(input);
     },
   };
@@ -46,7 +67,7 @@ async function childServer({ directory, password }) {
 
 async function launch(directory, password) {
   const child = fork(__filename, ['--child'], { stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
-  const advice = [];
+  const advice = createAdviceCaptureBarrier();
   let outputBytes = 0;
   // Do not print child output or auth responses. Only count unexpected diagnostics.
   for (const stream of [child.stdout, child.stderr]) stream.on('data', bytes => { outputBytes += bytes.length; });
@@ -55,13 +76,13 @@ async function launch(directory, password) {
     child.once('error', error => { clearTimeout(timer); reject(error); });
     child.once('exit', code => { clearTimeout(timer); reject(new Error(`Local child exited before readiness (${code})`)); });
     child.on('message', message => {
-      if (message.kind === 'advice') advice.push(message.memory);
+      if (message.kind === 'advice') advice.capture(message);
       if (message.kind === 'ready') { clearTimeout(timer); resolve(message); }
     });
     child.send({ kind: 'init', directory, password });
   });
   return {
-    ...ready, base: `http://127.0.0.1:${ready.port}`, advice,
+    ...ready, base: `http://127.0.0.1:${ready.port}`, waitForAdvice: run => advice.wait(`${run.workflow_run_id}:v${run.plan_versions.at(-1).version}`),
     async stop() {
       if (child.exitCode !== null || child.signalCode !== null) return;
       const exited = once(child, 'exit');
@@ -150,8 +171,9 @@ async function acceptance() {
     assert.deepEqual(await b.get(run.workflow_run_id), run);
     // Archiving alone does not admit memory to later advice.
     await a.logout(); await a.login('enterprise');
-    await a.start('qa-before-memory');
-    assert.equal(server.advice.at(-1).length, 0);
+    const beforeMemory = await a.start('qa-before-memory');
+    assert.equal((await server.waitForAdvice(beforeMemory)).length, 0);
+    assert.deepEqual(beforeMemory.plan_versions[0].retrieved_context, []);
     await a.logout(); await a.login('expert');
     await action('APPROVE_MEMORY', { reviewed_conclusion: '合成私密复盘文本仅供本地审计' }, 'qa-memory');
     assert.equal(run.revision, 7); assert.equal(run.events.length, 8);
@@ -171,7 +193,12 @@ async function acceptance() {
     const reset = await restarted.start('qa-reset-new-run');
     assert.notEqual(reset.workflow_run_id, saved.workflow_run_id);
     assert.deepEqual(await restarted.get(saved.workflow_run_id), saved);
-    assert.deepEqual(server.advice.at(-1), [{ workflow_run_id: saved.workflow_run_id, record_id: RECORD }]);
+    assert.deepEqual(await server.waitForAdvice(reset), [{ workflow_run_id: saved.workflow_run_id, record_id: RECORD }]);
+    const retrieved = reset.plan_versions[0].retrieved_context;
+    assert.equal(retrieved.length, 1); assert.equal(retrieved[0].workflow_run_id, saved.workflow_run_id);
+    assert.equal(retrieved[0].record_id, RECORD); assert.equal(retrieved[0].review_revision, saved.revision);
+    assert.deepEqual(reset.nodes.find(node => node.agent_id === 'A2').output.reviewed_workflows, retrieved);
+    assert.deepEqual((await other.get(reset.workflow_run_id)).plan_versions[0].retrieved_context, retrieved);
     assert.equal(reset.plan_versions[0].advice.source, 'local-rule');
     assert.equal(reset.plan_versions[0].advice.fallback_reason, 'not_configured');
 
@@ -218,9 +245,10 @@ async function acceptance() {
   }
 }
 
-if (process.argv.includes('--child')) {
+module.exports = { createAdviceCaptureBarrier };
+if (require.main === module && process.argv.includes('--child')) {
   process.once('message', message => childServer(message).catch(() => { process.exitCode = 1; process.disconnect(); }));
-} else {
+} else if (require.main === module) {
   acceptance().then(result => console.log(JSON.stringify(result, null, 2))).catch(error => {
     // Assertion text contains only paths/statuses/fixture evidence; never dump request objects.
     console.error(`Local acceptance failed: ${error.message}`); process.exitCode = 1;

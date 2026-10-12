@@ -99,6 +99,27 @@ function renderTimeline(id, timeline = []) {
   });
 }
 
+function renderSavedPlan(id, run, unavailable) {
+  const container = element(id);
+  if (!container) return;
+  container.replaceChildren();
+  const paragraph = text => { const row = document.createElement('p'); row.textContent = text; container.append(row); };
+  const plan = unavailable ? null : run?.plan_versions?.at(-1);
+  if (!plan?.advice) { paragraph(unavailable ? '当前保存方案不可用，请刷新后再确认。' : '当前事件没有保存的候选方案。'); return; }
+  const advice = plan.advice;
+  paragraph(`当前保存候选方案 · ${run.workflow_run_id} · 第 ${plan.version} 版 · ${plan.approved ? '企业已确认' : '待企业确认'}`);
+  paragraph(`来源：${advice.source === 'deepseek' ? 'DeepSeek' : 'rule'}${advice.fallback_reason ? ` · 降级原因：${advice.fallback_reason}` : ''}`);
+  paragraph(advice.summary);
+  const recommendations = document.createElement('ol');
+  (advice.recommendations || []).slice(0, 6).forEach(text => { const row = document.createElement('li'); row.textContent = text; recommendations.append(row); });
+  container.append(recommendations);
+  paragraph(`${advice.source === 'deepseek' ? 'DeepSeek实际引用' : '规则建议实际引用'}证据 ID：${(advice.evidence_ids || []).join('、') || '无'}`);
+  paragraph('检索上下文 · 已审核工作流（与相似CSV示例、建议实际引用分别展示）');
+  const context = plan.retrieved_context || [];
+  if (!context.length) paragraph('本版未检索到已审核工作流。');
+  context.slice(0, 20).forEach(item => paragraph(`已审核工作流 ${item.workflow_run_id} · CSV ${item.record_id} · 审核版本 ${item.review_version} / 修订 ${item.review_revision ?? '未知'} · ${formatTime(item.reviewed_at)} · 源模型 ${item.source_model?.name || '未知'} / ${item.source_model?.mode || '未知'} · 案例引用 ID ${item.evidence_id}`));
+}
+
 function renderRail(state) {
   const rail = element('warningDemoRail');
   if (!rail) return;
@@ -340,7 +361,7 @@ export async function setupWarningDemo(options = {}) {
     const alertIdentity = `${snapshot.run?.workflow_run_id}:${snapshot.run?.revision}`;
     const feasible = snapshot.run?.nodes?.find(node => node.agent_id === 'A5')?.output?.feasibility === 'feasible';
     const acknowledge = element('warningDialogAcknowledge');
-    if (acknowledge) { acknowledge.hidden = user.role !== 'enterprise'; acknowledge.disabled = !feasible || snapshot.pending || Boolean(snapshot.error) || state.status !== DEMO_STATES.ALERT_TRIGGERED; }
+    if (acknowledge) { acknowledge.hidden = user.role !== 'enterprise'; acknowledge.disabled = !feasible || snapshot.pending || snapshot.loading || Boolean(snapshot.error) || !snapshot.run?.plan_versions?.at(-1)?.advice || state.status !== DEMO_STATES.ALERT_TRIGGERED; }
     if (user.role === 'enterprise' && state.status === DEMO_STATES.ALERT_TRIGGERED && shownAlertRevision !== alertIdentity && !snapshot.pending) {
       shownAlertRevision = alertIdentity;
       showDialog(element('enterpriseWarningDialog'));
@@ -397,6 +418,7 @@ export async function setupWarningDemo(options = {}) {
     const plan = run?.plan_versions?.at(-1);
     const advice = plan?.advice;
     setText('workflowPlanSource', run ? `方案 ${plan?.version ?? '--'}/5 · ${advice ? advice.source === 'deepseek' ? 'DeepSeek' : 'rule' : '无候选方案'}${advice?.fallback_reason ? ` · 降级原因：${advice.fallback_reason}` : ''} · 反馈 ${run.feedback?.length ? '人工输入' : '未收到'} · 返回 ${run.next_action || '--'} · 复用原CSV记录，无新测量证据` : '--');
+    ['workflowCurrentPlan', 'enterpriseWarningPlan'].forEach(id => renderSavedPlan(id, run, snapshot.loading || Boolean(snapshot.error) || run?.workflow_run_id !== snapshot.selectedId));
     const color = ({重大风险:'red',较大风险:'orange',一般风险:'yellow',低风险:'blue'})[run?.algorithm?.predicted_class] || 'none';
     if (element('enterpriseWarningDialog')) element('enterpriseWarningDialog').dataset.riskLevel = color;
     setText('workflowWarningColor',color.toUpperCase());
@@ -439,7 +461,7 @@ export async function setupWarningDemo(options = {}) {
     if (memory) { memory.replaceChildren(); (run?.case_memory || []).forEach(item => { const row=document.createElement('p');row.textContent=`已审核记忆：${item.reviewed_conclusion} · ${item.actor?.displayName} · ${formatTime(item.reviewed_at)}`;memory.append(row); }); }
     ['regulatorRejectAction','regulatorApproveAction'].forEach(id => { if (element(id)) element(id).hidden = user.role !== 'regulator'; });
     if (element('expertArchiveAction')) element('expertArchiveAction').hidden = user.role !== 'expert';
-    const blocked = snapshot.pending || Boolean(snapshot.error) || !run;
+    const blocked = snapshot.pending || snapshot.loading || Boolean(snapshot.error) || !run;
     if (blocked) ['enterpriseDisposalForm','workflowResourceForm','workflowReprocessForm','workflowMemoryForm'].forEach(id => element(id)?.querySelectorAll('input,textarea,select,button').forEach(control => { control.disabled=true; }));
     ['regulatorApproveAction','regulatorRejectAction','expertArchiveAction'].forEach(id => { if (blocked && element(id)) element(id).disabled = true; });
     ['enterpriseWarningTimeline', 'regulatorWarningTimeline', 'expertWarningTimeline'].forEach((id) => renderTimeline(id, state.timeline));

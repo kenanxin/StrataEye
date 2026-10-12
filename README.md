@@ -175,7 +175,9 @@ competition_submission
 - Render：运行 Node API、权限校验和 RoofRisk 业务服务。
 - Supabase：身份、角色和审计使用 `supabase/migrations/202609030001_rbac_foundation.sql`。新保存事件存储还需要执行增量迁移 `supabase/migrations/202610110001_workflow_runs.sql`；本次未执行该云端 SQL。旧生产与当前升级分支状态需分别验收。
 
-本地开发默认文件存储目录为 `.runtime/workflows`，可通过 `createAppServer({ workflowStoreOptions: { directory } })` 显式指定。当前 `.env.example` 中的 `WORKFLOW_STORE_DIRECTORY` 尚未被 `server.js` 读取。`WORKFLOW_STORE_PROVIDER=supabase` 需要后端 URL、service-role key 与新迁移；生产/Render 禁用本地文件回退，数据库不可用会显示错误。文件存储恢复已通过两个独立 Node 进程验证；云端文件系统持久性和 Supabase 并发原子性仍需实际部署环境验收。
+本地开发默认文件存储目录为 `.runtime/workflows`，可通过 `createAppServer({ workflowStoreOptions: { directory } })` 显式指定；目录没有环境变量配置入口。`WORKFLOW_STORE_PROVIDER=supabase` 需要后端 URL、service-role key 与新迁移；生产/Render 禁用本地文件回退，数据库不可用会显示错误。文件存储恢复已通过两个独立 Node 进程验证；云端文件系统持久性和 Supabase 并发原子性仍需实际部署环境验收。
+
+所选保存事件的当前候选方案可在公共“协同事件”卡和企业确认框查看，监管与智库从公共卡审阅同一方案。方案正文、完整建议列表、来源/降级原因与实际引用 ID 和已审核工作流检索上下文分别展示。每版保存至多 20 条去身份检索快照，含源事件/CSV ID、已有模型身份及审核版本/修订/时间；新版本保留旧版快照。A4 随人工确认、资源更新、重新研判及闭环同步状态，始终为 dry_run、external_delivery=false。
 
 部署前复制 `.env.example` 配置 Render 环境变量。`SUPABASE_SERVICE_ROLE_KEY` 只能放在 Render，不能提交到 Git 或暴露给浏览器。Vercel 配置中的 Render 地址部署后需替换为实际服务地址。
 

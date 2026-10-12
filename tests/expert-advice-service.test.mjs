@@ -98,3 +98,21 @@ test('reviewed case freeform names, phones and emails never enter the provider p
   assert.equal(submitted.reviewed_memory[0].record_id, 'REC-2');
   assert.equal(submitted.reviewed_memory[0].outcome, 'archived');
 });
+
+test('reviewed workflow citations distinguish shared CSV and review versions without private prompt fields', async () => {
+  const input = structuredClone(workflowInput);
+  input.reviewed_memory = ['WF-a', 'WF-b'].map(workflow_run_id => ({ reviewed: true, record_id: 'REC-shared', workflow_run_id, evidence_id: `case:${workflow_run_id}:review:1:r7`, review_version: 1, review_revision: 7, reviewed_at: '2026-10-12T10:00:00Z', source_model: { name: 'xgboost', mode: 'integrated_xgboost' }, risk_class: '重大风险', outcome: 'archived', action_codes: ['ARCHIVE'], actor: { name: 'private actor' }, organization: 'private org', reviewed_conclusion: 'private review', photos: ['private photo'], workOrder: 'private order' }));
+  for (const citation of ['case:WF-a:review:1:r7', 'case:WF-b:review:1:r7', 'REC-shared', 'case:WF-a:review:2:r8']) {
+    let captured;
+    const result = await createExpertAdviceService({ apiKey: 'test-key', fetchImpl: async (_url, request) => {
+      captured = request.body;
+      return { ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify(providerPayload({ evidence_ids: [citation] })) } }] }) };
+    } }).generateWorkflowAdvice(input);
+    assert.equal(result.source, citation.includes(':review:1:') ? 'deepseek' : 'local-rule');
+    assert.ok(!captured.includes('private'));
+    const safe = JSON.parse(JSON.parse(captured).messages[1].content).reviewed_memory;
+    assert.deepEqual(safe.map(item => item.evidence_id), input.reviewed_memory.map(item => item.evidence_id));
+    assert.deepEqual(safe[0].source_model, { name: 'xgboost', mode: 'integrated_xgboost' });
+    assert.equal(safe[0].review_revision, 7);
+  }
+});

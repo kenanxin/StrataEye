@@ -3612,6 +3612,9 @@ body.portal-enterprise .core-monitoring-workbench .metric-rail {
 .warning-dialog-metrics b { overflow-wrap: anywhere; color: #e8f0f3; font: 700 13px/1.35 var(--font-mono); }
 .warning-dialog-metrics div:first-child b { color: #f4a340; font-size: 24px; }
 .warning-dialog-evidence { padding: 10px 12px; border-left: 3px solid #d88a2b; background: #1f1b13; color: #c6b997; font-size: 11px; line-height: 1.6; }
+.workflow-saved-plan { margin-top: 10px; max-height: 32vh; overflow: auto; overflow-wrap: anywhere; }
+.workflow-saved-plan p { margin: 8px 0; }
+.workflow-saved-plan ol { margin: 8px 0; padding-left: 20px; }
 .warning-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
 
 .warning-demo-drawer {

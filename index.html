@@ -70,6 +70,7 @@
   <summary>协同事件 · 方案、资源与审核记录</summary>
   <div class="workflow-saved-toolbar"><label>保存事件 <select id="workflowRunSelection" aria-label="选择保存的协同事件"><option value="">读取中…</option></select></label><button id="workflowRefresh" type="button">刷新保存状态</button></div>
   <p id="workflowRunIdentity">读取保存事件…</p><p id="workflowPlanSource">--</p><p id="workflowResponsibility">--</p>
+  <div class="warning-dialog-evidence workflow-saved-plan" id="workflowCurrentPlan" aria-label="当前保存候选方案与检索上下文"></div>
   <p id="workflowResourceSnapshot">--</p>
   <form id="workflowResourceForm" hidden><label>人员 <input id="workflowPersonnel" type="number" min="0" step="1" placeholder="保留原值"></label><label>材料套数 <input id="workflowMaterials" type="number" min="0" step="1" placeholder="保留原值"></label><label>复测设备 <input id="workflowDevices" type="number" min="0" step="1" placeholder="保留原值"></label><button type="submit">更新资源，重新确认</button></form>
   <form id="workflowReprocessForm" hidden><label>人工趋势 <select id="workflowMonitoringTrend"><option value="">沿用已保存反馈</option><option value="stable">稳定</option><option value="worsened">恶化</option><option value="improved">改善</option></select></label><label>人工执行反馈 <select id="workflowExecutionStatus"><option value="">沿用已保存反馈</option><option value="completed">完成</option><option value="failed">失败</option><option value="pending_human_approval">等待人工审批</option></select></label><label>反馈原因 <textarea id="workflowFeedbackReason" maxlength="2000" rows="2"></textarea></label><label><input id="workflowReprocessConfirmed" type="checkbox">明确确认复用原CSV记录重新研判（最多五版，无新测量证据）</label><button id="workflowReprocessSubmit" type="submit">确认重新研判</button></form>
@@ -259,6 +260,7 @@
       <div><span>模型置信度</span><b id="enterpriseWarningConfidence">--</b></div>
     </div>
     <div class="warning-dialog-evidence" id="enterpriseWarningEvidence">正在读取模型特征证据</div>
+    <div class="warning-dialog-evidence workflow-saved-plan" id="enterpriseWarningPlan" aria-label="确认前审阅当前保存候选方案"></div>
     <div class="warning-dialog-actions">
       <button id="warningDialogDismiss" type="button">稍后查看</button>
       <button class="warning-demo-primary" id="warningDialogAcknowledge" type="button">确认可行方案并进入处置</button>

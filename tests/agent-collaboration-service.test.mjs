@@ -191,3 +191,77 @@ test('photo metadata preserves distinct opaque IDs and submission history withou
   assert.ok(run.demo_state.disposal.photos[0].id);
   assert.deepEqual(run.events.find(item => item.type === 'SUBMIT_DISPOSAL').payload.photos.map(item => item.id), ['local-photo-a', 'local-photo-b']);
 });
+
+test('each plan persists reviewed workflow context with distinct citations and immutable review snapshots', async t => {
+  const f = await fixture(t);
+  async function close(commandId, review = true) {
+    let run = await f.act(await f.start(commandId), 'ACKNOWLEDGE');
+    run = await f.act(run, 'SUBMIT_DISPOSAL', disposal);
+    run = await f.act(run, 'APPROVE', { opinion: 'checked' }, 'regulator');
+    run = await f.act(run, 'ARCHIVE', { conclusion: 'private archive' }, 'expert');
+    if (review) run = await f.act(run, 'APPROVE_MEMORY', { reviewed_conclusion: 'private reviewer person@example.com' }, 'expert');
+    return run;
+  }
+  const first = await close('source-first'), second = await close('source-second'), unreviewed = await close('source-unreviewed', false);
+  let run = await f.start('context-target');
+  const context = run.plan_versions[0].retrieved_context;
+  assert.equal(context.length, 2);
+  assert.equal(new Set(context.map(item => item.evidence_id)).size, 2);
+  for (const source of [first, second]) {
+    const item = context.find(item => item.workflow_run_id === source.workflow_run_id);
+    assert.equal(item.record_id, recordId);
+    assert.deepEqual(item.source_model, { name: source.algorithm.model, mode: source.algorithm.model_mode });
+    assert.equal(item.review_revision, source.revision);
+    assert.equal(item.review_version, 1);
+    assert.equal(item.reviewed_at, source.case_memory[0].reviewed_at);
+    assert.ok(item.evidence_id.includes(source.workflow_run_id));
+  }
+  assert.ok(!JSON.stringify(context).includes(unreviewed.workflow_run_id));
+  assert.ok(!JSON.stringify(context).includes('private'));
+  assert.deepEqual(run.nodes.find(item => item.agent_id === 'A2').output.reviewed_workflows, context);
+  assert.deepEqual(f.adviceInputs.at(-1).reviewed_memory, context);
+  const oldPlan = structuredClone(run.plan_versions[0]);
+  const third = await close('source-third');
+  run = await f.act(run, 'REPROCESS', { confirmed: true });
+  assert.deepEqual(run.plan_versions[0], oldPlan);
+  assert.equal(run.plan_versions[1].retrieved_context.length, 3);
+  assert.ok(run.plan_versions[1].retrieved_context.some(item => item.workflow_run_id === third.workflow_run_id));
+  assert.deepEqual(await f.make().get(run.workflow_run_id), run);
+});
+
+test('A4 projects current human approval, invalidation and closure without external dispatch', async t => {
+  const f = await fixture(t);
+  let run = await f.start('control-state');
+  const control = () => run.nodes.find(item => item.agent_id === 'A4');
+  const check = (status, dispatch) => { assert.equal(control().status, status); assert.equal(control().output.dispatch_status, dispatch); assert.equal(control().output.delivery_mode, 'dry_run'); assert.equal(control().output.external_delivery, false); };
+  check('waiting_human', 'waiting_approval');
+  run = await f.act(run, 'ACKNOWLEDGE'); check('success', 'human_approved');
+  run = await f.act(run, 'UPDATE_RESOURCES', { resource_snapshot: { personnel_available: 4 } }); check('waiting_human', 'waiting_approval');
+  run = await f.act(run, 'ACKNOWLEDGE'); check('success', 'human_approved');
+  run = await f.act(run, 'REPROCESS', { confirmed: true }); check('waiting_human', 'waiting_approval');
+  run = await f.act(run, 'ACKNOWLEDGE'); check('success', 'human_approved');
+  run = await f.act(run, 'SUBMIT_DISPOSAL', disposal); check('success', 'human_approved');
+  run = await f.act(run, 'APPROVE', { opinion: 'checked' }, 'regulator'); check('success', 'verified');
+  run = await f.act(run, 'ARCHIVE', { conclusion: 'closed' }, 'expert'); check('success', 'closed');
+  assert.match(control().output_summary, /归档/);
+  assert.doesNotMatch(run.demo_state.timeline.find(item => item.type === 'ARCHIVE').detail, /纳入案例|案例库|记忆/);
+  assert.equal(run.case_memory.length, 0);
+});
+
+test('reviewed retrieval limits snapshots to twenty and distinguishes stored review versions', async t => {
+  const f = await fixture(t), seed = await f.start('bounded-seed');
+  const sources = Array.from({ length: 24 }, (_, index) => ({ ...structuredClone(seed), workflow_run_id: `WF-source-${index}`, demo_state: { ...seed.demo_state, status: 'archived' }, case_memory: [7, 8].map((revision, review) => ({ reviewed: true, reviewed_conclusion: 'private stored review', actor: actors.expert, reviewed_at: `2026-10-12T10:0${review}:00Z`, review_revision: revision })) }));
+  const stored = new Map();
+  const service = createAgentCollaborationService({ repository: createRoofRiskRepository(artifact), store: {
+    list: async () => sources,
+    get: async id => { if (!stored.has(id)) throw Object.assign(new Error('missing'), { statusCode: 404 }); return structuredClone(stored.get(id)); },
+    create: async run => { stored.set(run.workflow_run_id, structuredClone(run)); return structuredClone(run); },
+  }, adviceService: { async generateWorkflowAdvice(input) { assert.equal(input.reviewed_memory.length, 20); return { source: 'local-rule', summary: '候选', recommendations: ['复核'], evidence_ids: [] }; } } });
+  const run = await service.start({ recordId, actor: actors.enterprise, commandId: 'bounded-target' });
+  const context = run.plan_versions[0].retrieved_context;
+  assert.equal(context.length, 20);
+  assert.equal(new Set(context.map(item => item.evidence_id)).size, 20);
+  assert.equal(context[0].workflow_run_id, context[1].workflow_run_id);
+  assert.deepEqual(context.slice(0, 2).map(item => [item.review_version, item.review_revision, item.reviewed_at]), [[1, 7, '2026-10-12T10:00:00Z'], [2, 8, '2026-10-12T10:01:00Z']]);
+  assert.deepEqual((await service.get(run.workflow_run_id)).plan_versions[0].retrieved_context, context);
+});

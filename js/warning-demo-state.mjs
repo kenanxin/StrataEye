@@ -227,7 +227,7 @@ export function reduceDemoState(currentState, action, context = {}) {
     if (!conclusion) throw workflowError('ARCHIVE_INCOMPLETE', '复盘结论为必填项');
     next.status = DEMO_STATES.ARCHIVED;
     next.archive = { conclusion, archivedAt: at, archivedBy: actor.displayName };
-    detail = `智库端确认闭环并纳入案例库：${conclusion}`;
+    detail = `智库端确认闭环并完成事件归档：${conclusion}`;
   }
 
   next.timeline.push(timelineEntry(type, actor, at, detail));

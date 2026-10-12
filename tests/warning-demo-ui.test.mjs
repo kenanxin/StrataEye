@@ -99,6 +99,60 @@ test('saved-run picker selects history for all subscribers without starting or e
 
 async function settleEvidence() { for (let turn=0;turn<20;turn++) await Promise.resolve(); }
 
+function fixtureText(element) { return [element.textContent, ...(element.children || []).map(fixtureText)].join(' '); }
+test('saved current candidate is visible before confirmation, replaces versions and clears during selection and failed loads', async () => {
+  const elements = fixture();
+  for (const id of ['workflowCurrentPlan', 'enterpriseWarningPlan']) elements.set(id, new FixtureElement());
+  let current = savedRun('WF-one', 0, 'alert_triggered'), fail = false, resolveLoad;
+  current.plan_versions = [{ version: 1, approved: false, advice: { source: 'deepseek', summary: '保存摘要 <script>文本</script>', recommendations: ['独特服务端建议甲', '独特服务端建议乙'], evidence_ids: ['feature:REC-1:roof'] }, retrieved_context: [{ evidence_id: 'case:WF-source:review:1:r7', workflow_run_id: 'WF-source', record_id: 'REC-1', review_version: 1, review_revision: 7, reviewed_at: now(), source_model: { name: 'xgboost', mode: 'integrated_xgboost' } }] }];
+  let signs = 0;
+  const coordinator = createWorkflowCoordinator({ client: { list: async () => [current], get: async id => { if (fail) throw new Error('load failed'); if (id === 'WF-two') return new Promise(resolve => { resolveLoad = resolve; }); return current; }, act: async () => { signs++; return current; } }, storage: null, pollInterval: 0 });
+  await coordinator.refresh();
+  const widget = await setupWarningDemo({ user: enterprise, coordinator, media: { list: async () => [] } });
+  try {
+    assert.equal(signs, 0);
+    assert.equal(elements.get('warningDialogAcknowledge').disabled, false);
+    for (const id of ['workflowCurrentPlan', 'enterpriseWarningPlan']) {
+      const text = fixtureText(elements.get(id));
+      assert.match(text, /独特服务端建议甲.*独特服务端建议乙/);
+      assert.match(text, /保存摘要 <script>文本<\/script>/);
+      assert.match(text, /已审核工作流.*WF-source/);
+      assert.match(text, /实际引用.*feature:REC-1:roof/);
+    }
+    current = { ...current, revision: 1, plan_versions: [...current.plan_versions, { version: 2, advice: { source: 'local-rule', fallback_reason: 'not_configured', summary: '新版摘要', recommendations: ['独特新版建议'], evidence_ids: [] }, retrieved_context: [] }] };
+    await coordinator.refresh();
+    assert.match(fixtureText(elements.get('enterpriseWarningPlan')), /独特新版建议/);
+    assert.doesNotMatch(fixtureText(elements.get('enterpriseWarningPlan')), /独特服务端建议甲/);
+    fail = true; await assert.rejects(coordinator.refresh(), /load failed/);
+    assert.doesNotMatch(fixtureText(elements.get('enterpriseWarningPlan')), /独特新版建议/);
+    assert.equal(elements.get('warningDialogAcknowledge').disabled, true);
+    fail = false; await coordinator.refresh();
+    const selecting = coordinator.select('WF-two');
+    assert.doesNotMatch(fixtureText(elements.get('enterpriseWarningPlan')), /独特新版建议/);
+    assert.equal(elements.get('warningDialogAcknowledge').disabled, true);
+    resolveLoad(savedRun('WF-two', 0, 'alert_triggered')); await selecting;
+    fail = true; await assert.rejects(coordinator.refresh(), /load failed/);
+    assert.doesNotMatch(fixtureText(elements.get('enterpriseWarningPlan')), /独特新版建议|独特服务端建议甲/);
+    assert.equal(elements.get('warningDialogAcknowledge').disabled, true);
+  } finally { widget.destroy(); coordinator.destroy(); delete globalThis.document; }
+});
+
+test('regulator and expert review the same saved candidate and full bounded action list', async () => {
+  for (const user of [regulator, expert]) {
+    const elements = fixture(); elements.set('workflowCurrentPlan', new FixtureElement());
+    const current = savedRun('WF-role-review', 3, 'pending_review');
+    current.plan_versions = [{ version: 1, advice: { source: 'local-rule', fallback_reason: 'provider_unavailable', summary: '角色共享保存摘要', recommendations: ['复核顶板', '复核锚杆', '检查支架', '复核工单', '补充测量', '监管核验'], evidence_ids: ['feature:REC-1:roof'] } }];
+    const coordinator = createWorkflowCoordinator({ client: { list: async () => [current] }, storage: null, pollInterval: 0 }); await coordinator.refresh();
+    const widget = await setupWarningDemo({ user, coordinator, media: { list: async () => [] } });
+    try {
+      const text = fixtureText(elements.get('workflowCurrentPlan'));
+      assert.match(text, /角色共享保存摘要/); assert.match(text, /provider_unavailable/);
+      for (const action of current.plan_versions[0].advice.recommendations) assert.ok(text.includes(action));
+      assert.equal(elements.get('warningDialogAcknowledge').hidden, true);
+    } finally { widget.destroy(); coordinator.destroy(); delete globalThis.document; }
+  }
+});
+
 test('failed new-run evidence clears displayed risk and comparisons; same-run refresh retries evidence',async()=>{
   const elements=fixture();
   for (const id of ['expertDemoRiskLevel','expertDemoMechanism','expertDemoProbabilities','expertSimilarCases','enterpriseWarningEvidence','regulatorMonitoringComparison']) elements.set(id,new FixtureElement());
