@@ -185,6 +185,7 @@ export async function setupWarningDemo(options = {}) {
   let selectedIdentity = null;
   let mediaSequence = 0;
   let listSequence = 0;
+  let riskSequence = 0;
   const cleanups = [];
 
   function listen(id, eventName, handler) {
@@ -222,11 +223,25 @@ export async function setupWarningDemo(options = {}) {
     previewUrls.push(...renderEvidenceList(element('regulatorPhotoList'), records));
   }
 
+  function clearSourceEvidence(message = '等待所选记录证据') {
+    sourceData = null; comparisonData = null; similarCases = null;
+    ['expertSimilarCases', 'expertDemoProbabilities'].forEach(id => element(id)?.replaceChildren());
+    setText('expertDemoRiskLevel', '--');
+    setText('enterpriseWarningEvidence', message);
+    setText('expertDemoMechanism', message);
+    element('regulatorMonitoringComparison')?.querySelectorAll('article').forEach(article => {
+      article.querySelector('b').textContent = '--';
+      article.querySelector('em').textContent = '--';
+    });
+  }
+
   async function loadRiskData() {
-    if (typeof authFetch !== 'function') return;
+    if (typeof authFetch !== 'function') return true;
     const runId = coordinator.getSnapshot().run?.workflow_run_id;
     const recordId = coordinator.getSnapshot().run?.algorithm?.record_id;
-    if (!recordId) return;
+    if (!recordId) return true;
+    const sequence = ++riskSequence;
+    clearSourceEvidence('正在读取所选记录证据…');
     try {
       const [sourceResponse, comparisonResponse, casesResponse] = await Promise.all([
         authFetch('/api/roof-risk/evaluate', {
@@ -244,11 +259,13 @@ export async function setupWarningDemo(options = {}) {
         responseJson(comparisonResponse, 'comparison record'),
         responseJson(casesResponse, 'similar cases'),
       ]);
-      if (destroyed || runId !== coordinator.getSnapshot().run?.workflow_run_id) return;
+      if (destroyed || sequence !== riskSequence || runId !== coordinator.getSnapshot().run?.workflow_run_id) return false;
       [sourceData, comparisonData, similarCases] = loaded;
       render(store.getState());
+      return true;
     } catch (error) {
-      if (!destroyed && runId === coordinator.getSnapshot().run?.workflow_run_id) setText('expertDemoMechanism', `真实数据接口暂不可用：${error.message}`);
+      if (!destroyed && sequence === riskSequence && runId === coordinator.getSnapshot().run?.workflow_run_id) clearSourceEvidence(`真实数据接口暂不可用：${error.message}`);
+      return false;
     }
   }
 
@@ -364,15 +381,13 @@ export async function setupWarningDemo(options = {}) {
     const run = snapshot.run;
     const identity = snapshot.selectedId;
     if (selectedIdentity !== identity) {
-      selectedIdentity = identity; mediaSequence++;
+      selectedIdentity = identity; mediaSequence++; riskSequence++;
       evidenceRecords = []; sourceData = null; comparisonData = null; similarCases = null; shownAlertRevision = null;
       ['enterpriseWarningDialog', 'enterpriseDisposalDrawer'].forEach(id => closeDialog(element(id)));
       clearFields(['disposalMeasures', 'disposalWorkOrder', 'disposalResponsiblePerson', 'disposalCompletedAt', 'regulatorReviewOpinion', 'regulatorRectificationDeadline', 'expertArchiveConclusion', 'workflowFeedbackReason', 'workflowMemoryConclusion', 'workflowPersonnel','workflowMaterials','workflowDevices','workflowMonitoringTrend','workflowExecutionStatus','disposalPhotos']);
       if (element('workflowReprocessConfirmed')) element('workflowReprocessConfirmed').checked=false;
       ['enterpriseDisposalError','regulatorReviewError','expertArchiveError','workflowActionError'].forEach(id=>setText(id,''));
-      ['expertSimilarCases','expertDemoProbabilities'].forEach(id => element(id)?.replaceChildren());
-      setText('enterpriseWarningEvidence', '等待所选记录证据');
-      setText('expertDemoMechanism', '等待所选记录证据');
+      clearSourceEvidence();
     }
     const status = demoStatusView(state.status);
     if (document?.body) document.body.dataset.warningDemoState = state.status;
@@ -488,21 +503,34 @@ export async function setupWarningDemo(options = {}) {
 
   async function refreshRunList() {
     const picker=element('workflowRunSelection');
-    if (!picker || !selectionClient) return;
+    if (!picker || !selectionClient) return true;
     const sequence=++listSequence;
     try {
       const runs=await selectionClient.list();
-      if (destroyed || sequence!==listSequence) return;
+      if (destroyed || sequence!==listSequence) return false;
       const selected=coordinator.getSnapshot().run;
       if (selected && !runs.some(run=>run.workflow_run_id===selected.workflow_run_id)) runs.unshift(selected);
       picker.replaceChildren();
       if (!runs.length) { const empty=document.createElement('option');empty.value='';empty.textContent='尚无保存事件';picker.append(empty); }
       runs.forEach(run=>{const option=document.createElement('option');option.value=run.workflow_run_id;option.textContent=`${run.workflow_run_id} · r${run.revision} · ${run.algorithm.record_id} · ${run.demo_state.status}`;picker.append(option);});
       picker.value=coordinator.getSnapshot().selectedId || '';
-    } catch(error) { if(!destroyed)setText('workflowActionError',`保存事件列表不可用：${error.message}`); }
+      return true;
+    } catch(error) {
+      if (!destroyed && sequence===listSequence) setText('workflowActionError',`保存事件列表不可用：${error.message}`);
+      return false;
+    }
   }
   listen('workflowRunSelection','change',async event=>{if(!event.currentTarget.value)return;try{await coordinator.select(event.currentTarget.value);}catch(error){setText('workflowActionError',actionError(error));}});
-  listen('workflowRefresh','click',async()=>{try{await coordinator.refresh();await refreshRunList();setText('workflowActionError','');}catch(error){setText('workflowActionError',actionError(error));}});
+  listen('workflowRefresh','click',async()=>{
+    try {
+      await coordinator.refresh();
+      const runId = coordinator.getSnapshot().selectedId;
+      const [listReady, evidenceReady] = await Promise.all([refreshRunList(), loadRiskData()]);
+      if (destroyed || runId !== coordinator.getSnapshot().selectedId) return;
+      if (listReady && evidenceReady) setText('workflowActionError','');
+      else if (listReady && !evidenceReady) setText('workflowActionError','所选记录证据不可用，请刷新重试。');
+    } catch(error) { if (!destroyed) setText('workflowActionError',actionError(error)); }
+  });
 
   listen('warningDemoLauncher', 'click', () => startOrOpen().catch((error) => setText('warningDemoStatus', `启动失败：${error.message}`)));
   listen('warningDemoReset', 'click', async () => {
@@ -576,7 +604,7 @@ export async function setupWarningDemo(options = {}) {
       render(store.getState());
     },
     destroy() {
-      destroyed=true;mediaSequence++;
+      destroyed=true;mediaSequence++;riskSequence++;
       revokeEvidencePreviews(previewUrls);
       cleanups.forEach((cleanup) => cleanup());
       if (ownedCoordinator) coordinator.destroy();

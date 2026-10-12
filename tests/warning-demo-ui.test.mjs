@@ -54,7 +54,7 @@ class FixtureElement {
   removeEventListener(type,fn){this.listeners[type]?.delete(fn);}
   async fire(type){for(const fn of this.listeners[type]||[])await fn({preventDefault(){},currentTarget:this});}
   querySelectorAll(){return this.controls||[];}
-  querySelector(){return this.em ||= new FixtureElement();}
+  querySelector(selector){this.parts ||= {};return this.parts[selector] ||= new FixtureElement();}
   replaceChildren(...children){this.children=children;}
   append(...children){this.children.push(...children);}
   setAttribute(){}
@@ -95,6 +95,47 @@ test('expert explicitly approves reviewed memory after archive and destroys only
 });
 test('saved-run picker selects history for all subscribers without starting or erasing evidence',async()=>{
   const elements=fixture();const first=savedRun(),second=savedRun('WF-two',7,'archived');let starts=0;const client={list:async()=>[first,second],get:async id=>id==='WF-two'?second:first,start:async()=>{starts++;return first;}};const coordinator=createWorkflowCoordinator({client,storage:null,pollInterval:0});await coordinator.refresh();const widget=await setupWarningDemo({user:expert,coordinator,client,media:{list:async()=>[]}});assert.equal(elements.get('workflowRunSelection').children.length,2);elements.get('workflowRunSelection').value='WF-two';await elements.get('workflowRunSelection').fire('change');assert.equal(coordinator.getSnapshot().run.revision,7);assert.equal(elements.get('warningDemoEventId').textContent,'WF-two');assert.equal(starts,0);assert.equal(first.workflow_run_id,'WF-one');widget.destroy();coordinator.destroy();delete globalThis.document;
+});
+
+async function settleEvidence() { for (let turn=0;turn<20;turn++) await Promise.resolve(); }
+
+test('failed new-run evidence clears displayed risk and comparisons; same-run refresh retries evidence',async()=>{
+  const elements=fixture();
+  for (const id of ['expertDemoRiskLevel','expertDemoMechanism','expertDemoProbabilities','expertSimilarCases','enterpriseWarningEvidence','regulatorMonitoringComparison']) elements.set(id,new FixtureElement());
+  const articles=[new FixtureElement(),new FixtureElement()];elements.get('regulatorMonitoringComparison').controls=articles;
+  const first=savedRun('WF-A'),second=savedRun('WF-B');first.algorithm.record_id='REC-A';second.algorithm.record_id='REC-B';
+  let failing=true,sourceReads=0;
+  const client={list:async()=>[first,second],get:async id=>id==='WF-B'?second:first};
+  const authFetch=async(path,init)=>{
+    if(path.includes('similar-cases'))return {ok:true,json:async()=>({cases:[],source:'CSV'})};
+    const recordId=JSON.parse(init.body).record_id;
+    if(recordId==='REC-B'){sourceReads++;if(failing)throw new Error('REC-B evidence unavailable');}
+    return {ok:true,json:async()=>({record_id:recordId,risk:{score:recordId==='REC-A'?70:recordId==='REC-B'?82:45},model_output:{record_id:recordId,predicted_class:recordId==='REC-B'?'重大风险':'较大风险',confidence:.8,probabilities:{}},feature_evidence:[]})};
+  };
+  const coordinator=createWorkflowCoordinator({client,storage:null,pollInterval:0});await coordinator.refresh();
+  const widget=await setupWarningDemo({user:expert,coordinator,client,authFetch,media:{list:async()=>[]}});
+  try {
+    await settleEvidence();assert.equal(elements.get('expertDemoRiskLevel').textContent,'较大风险 · 70');assert.equal(articles[0].querySelector('em').textContent,'REC-A');
+    await coordinator.select('WF-B');await settleEvidence();
+    assert.equal(elements.get('warningDemoEventId').textContent,'WF-B');assert.equal(elements.get('expertDemoRiskLevel').textContent,'--');
+    for(const article of articles){assert.equal(article.querySelector('b').textContent,'--');assert.equal(article.querySelector('em').textContent,'--');}
+    assert.match(elements.get('expertDemoMechanism').textContent,/REC-B evidence unavailable/);
+    const previousReads=sourceReads;failing=false;await elements.get('workflowRefresh').fire('click');await settleEvidence();
+    assert.ok(sourceReads>previousReads);assert.equal(elements.get('expertDemoRiskLevel').textContent,'重大风险 · 82');assert.equal(articles[0].querySelector('b').textContent,82);assert.equal(articles[0].querySelector('em').textContent,'REC-B');assert.equal(articles[1].querySelector('b').textContent,45);
+  } finally {widget.destroy();coordinator.destroy();delete globalThis.document;}
+});
+
+test('refresh GET success with history-list failure keeps its visible notice until complete success',async()=>{
+  const elements=fixture(),current=savedRun();let failing=false;
+  const client={get:async()=>current,list:async()=>{if(failing)throw new Error('database list failed');return [current];}};
+  const coordinator=createWorkflowCoordinator({client,storage:null,pollInterval:0});await coordinator.refresh();
+  const widget=await setupWarningDemo({user:expert,coordinator,client,media:{list:async()=>[]}});
+  try {
+    await settleEvidence();const oldOptions=elements.get('workflowRunSelection').children;
+    failing=true;await elements.get('workflowRefresh').fire('click');
+    assert.match(elements.get('workflowActionError').textContent,/保存事件列表不可用.*database list failed/);assert.equal(elements.get('workflowRunSelection').children,oldOptions);
+    failing=false;await elements.get('workflowRefresh').fire('click');assert.equal(elements.get('workflowActionError').textContent,'');
+  } finally {widget.destroy();coordinator.destroy();delete globalThis.document;}
 });
 
 test('expert advice context contains the local demo workflow without replacing model data', () => {
