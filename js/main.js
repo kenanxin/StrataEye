@@ -12,6 +12,57 @@ import { authFetch, bootstrapAuthenticatedPortal } from './auth-client.mjs';
 import { createReplayController } from './roof-risk-replay-controller.mjs';
 import { destroyWarningDemo, getWarningDemoAdviceContext, refreshWarningDemoRisk, setupWarningDemo } from './warning-demo-ui.mjs';
 import { setupMultiAgentWorkflow } from './multi-agent-workflow-ui.mjs';
+import { createWorkflowClient, createWorkflowCoordinator, projectWorkflowClosedLoop } from './workflow-client.mjs';
+
+let workflowCoordinator = null;
+let warningController = null;
+let multiAgentController = null;
+let workflowUnsubscribe = null;
+let workflowRole = null;
+
+function hasWorkflowAuthority() {
+  const snapshot = workflowCoordinator?.getSnapshot();
+  return Boolean(snapshot && (snapshot.run || snapshot.selectedId || snapshot.loading || snapshot.error));
+}
+
+function renderSavedClosedLoop(snapshot = workflowCoordinator?.getSnapshot()) {
+  if (!snapshot || !hasWorkflowAuthority()) return;
+  const view = projectWorkflowClosedLoop(snapshot.run);
+  const status = snapshot.error ? `保存状态不可用：${snapshot.error.message}` : view?.label || '读取保存事件…';
+  const eventId = view?.eventId || snapshot.selectedId || '--';
+  const source = view?.source || '协同保存状态';
+  for (const prefix of ['enterprise','regulator']) {
+    setText(`${prefix}LoopStatus`, `${status} · ${source}`);
+    setText(`${prefix}LoopEvent`, eventId);
+    setText(`${prefix}LoopStep`, view?.label || '--');
+    setText(`${prefix}LoopProgress`, view ? `${view.progress}%` : '--');
+  }
+  setText('enterpriseLoopNext', `${view?.owner || '--'}负责 · ${view?.next || '--'}`);
+  setText('regulatorLoopOwner', view?.owner || '--');
+  setText('expertLoopEvent', `事件 ${eventId} · ${source}`);
+  setText('expertLoopLayer', `${status} · ${view?.owner || '--'}负责 · ${view?.next || '--'}`);
+  renderClosedLoopTrack('enterpriseLoopTrack', view?.steps || []);
+  if (view) renderClosedLoopFlow('regulatorLoopFlow', view.steps);
+  else document.getElementById('regulatorLoopFlow')?.replaceChildren();
+  const timeline = document.getElementById('regulatorActionTimeline');
+  if (timeline) {
+    timeline.replaceChildren();
+    for (const item of snapshot.run?.events || []) {
+      const row = document.createElement('p');
+      row.textContent = `${item.at} · ${item.actor?.role} / ${item.actor?.displayName} · ${item.type}`;
+      timeline.append(row);
+    }
+  }
+  document.querySelector('.regulator-screen .closure-ring')?.classList.toggle('closed',snapshot.run?.demo_state.status==='archived');
+  document.querySelectorAll('[data-loop-action]').forEach(button => {
+    const action=button.dataset.loopAction;
+    button.disabled=snapshot.pending || Boolean(snapshot.error) || !view || !view.canSign;
+    if (action==='archive') { button.hidden=true;return; }
+    if (action==='reset') { button.hidden=workflowRole!=='enterprise';button.textContent='新建协同事件（保留历史）';return; }
+    button.disabled ||= workflowRole==='enterprise' ? !['alert_triggered','disposal_in_progress','changes_requested'].includes(snapshot.run?.demo_state.status) : workflowRole==='regulator' ? snapshot.run?.demo_state.status!=='pending_review' : true;
+    button.textContent=workflowRole==='regulator' ? '打开监管核验表' : '打开确认 / 处置材料';
+  });
+}
 
 let activeEquipmentId = null;
 let lastEquipmentListSignature = '';
@@ -661,6 +712,7 @@ function renderUnavailableRiskPanels() {
 }
 
 function renderStageClosedLoop(stageId = 'normalMonitor') {
+  if (hasWorkflowAuthority()) return;
   const meta = ROOF_WARNING_META[stageId] ?? ROOF_WARNING_META.normalMonitor;
   const stageIndex = ROOF_DEMO_SEQUENCE.findIndex(item => item.id === stageId);
   const progress = Math.max(12, Math.round(((stageIndex >= 0 ? stageIndex + 1 : 1) / ROOF_DEMO_SEQUENCE.length) * 100));
@@ -1241,6 +1293,7 @@ async function selectRoofRiskEvent(eventId) {
 }
 
 function refreshClosedLoop(payload) {
+  if (hasWorkflowAuthority()) { renderSavedClosedLoop(); return; }
   const loop = payload.closed_loop || {};
   const enterprise = loop.portal_roles?.enterprise || {};
   const regulator = loop.portal_roles?.regulator || {};
@@ -1378,6 +1431,14 @@ async function refreshRoofRiskApiStatus() {
 }
 
 async function advanceClosedLoop(action = 'advance') {
+  if (hasWorkflowAuthority()) {
+    try {
+      if (!workflowCoordinator.getSnapshot().run || workflowCoordinator.getSnapshot().error) throw new Error('协同保存状态不可用，请刷新后重试');
+      if (action === 'reset') await warningController?.resetCurrent();
+      else if (action === 'advance') await warningController?.openCurrent();
+    } catch (error) { setText('workflowActionError', error.message); }
+    return;
+  }
   const buttons = document.querySelectorAll('[data-loop-action]:not([hidden])');
   buttons.forEach(button => { button.disabled = true; });
   try {
@@ -1526,14 +1587,32 @@ async function initApp(authenticatedUser) {
   initPortalCharts();
 
   // UI 组件
+  workflowCoordinator?.destroy();
+  workflowUnsubscribe?.();
+  multiAgentController?.destroy();
+  workflowRole=authenticatedUser.role;
+  const workflowClient=createWorkflowClient({authFetch});
+  workflowCoordinator=createWorkflowCoordinator({client:workflowClient});
+  workflowUnsubscribe=workflowCoordinator.subscribe(renderSavedClosedLoop);
   setupRoofFieldControls();
   setupClosedLoopActions();
   setupExpertResearchActions();
   if (authenticatedUser.role === 'expert') {
-    setupMultiAgentWorkflow({ authFetch, getCurrentPayload: () => latestRoofRiskApiPayload });
+    multiAgentController=setupMultiAgentWorkflow({ authFetch, client:workflowClient, coordinator:workflowCoordinator, getCurrentRole:()=>authenticatedUser.role, getCurrentPayload: () => latestRoofRiskApiPayload });
   }
   refreshExpertAdviceStatus();
-  await setupWarningDemo({ user: authenticatedUser, authFetch, onSourceSelected: refreshRoofRiskApiStatus });
+  warningController=await setupWarningDemo({
+    user:authenticatedUser,authFetch,client:workflowClient,coordinator:workflowCoordinator,
+    beforeStart:()=>{if(isActive())throw new Error('当前灾害模拟正在展示，请先重置模拟再启动真实记录协同。');},
+    onSourceSelected:async(recordId)=>{
+      deactivateReplayDisplay();
+      if(recordId==='REC-202511101149-02909') {
+        const response=await authFetch('/api/roof-risk/select',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:'REAL-MAJOR-001'}),cache:'no-store'});
+        if(!response.ok)throw new Error(`真实监测记录切换失败 HTTP ${response.status}`);
+      }
+      await refreshRoofRiskApiStatus();
+    },
+  });
   setupDisasterPanel();
   setupEquipmentFocus();
   await refreshRoofRiskApiStatus();
@@ -1556,6 +1635,9 @@ async function initApp(authenticatedUser) {
   window.addEventListener('beforeunload', () => {
     replayController?.dispose();
     destroyWarningDemo();
+    multiAgentController?.destroy();
+    workflowUnsubscribe?.();
+    workflowCoordinator?.destroy();
     disposeCharts();
   }, { once: true });
 

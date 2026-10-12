@@ -48,9 +48,9 @@
 <!-- ============ 橙色预警三端协同演示 ============ -->
 <section class="warning-demo-strip" id="warningDemoStrip" aria-label="橙色预警三端协同演示">
   <div class="warning-demo-identity">
-    <span>ORANGE WARNING · 演示事件</span>
+    <span>SAVED COLLABORATION · 三端共享事件</span>
     <strong id="warningDemoStatus">尚未启动</strong>
-    <em id="warningDemoEventId">DEMO-ORANGE-001</em>
+    <em id="warningDemoEventId">--</em>
   </div>
   <div class="warning-demo-rail" id="warningDemoRail" aria-label="预警闭环进度">
     <span data-demo-step="alert_triggered">模型预警</span><i></i>
@@ -62,9 +62,20 @@
   </div>
   <div class="warning-demo-actions">
     <button class="warning-demo-primary" id="warningDemoLauncher" type="button">启动橙色预警演示</button>
-    <button id="warningDemoReset" type="button" hidden>重置演示</button>
+    <button id="warningDemoReset" type="button" hidden>新建事件（保留历史）</button>
   </div>
 </section>
+
+<details class="workflow-saved-controls" id="workflowSavedControls">
+  <summary>协同事件 · 方案、资源与审核记录</summary>
+  <div class="workflow-saved-toolbar"><label>保存事件 <select id="workflowRunSelection" aria-label="选择保存的协同事件"><option value="">读取中…</option></select></label><button id="workflowRefresh" type="button">刷新保存状态</button></div>
+  <p id="workflowRunIdentity">读取保存事件…</p><p id="workflowPlanSource">--</p><p id="workflowResponsibility">--</p>
+  <p id="workflowResourceSnapshot">--</p>
+  <form id="workflowResourceForm" hidden><label>人员 <input id="workflowPersonnel" type="number" min="0" step="1" placeholder="保留原值"></label><label>材料套数 <input id="workflowMaterials" type="number" min="0" step="1" placeholder="保留原值"></label><label>复测设备 <input id="workflowDevices" type="number" min="0" step="1" placeholder="保留原值"></label><button type="submit">更新资源，重新确认</button></form>
+  <form id="workflowReprocessForm" hidden><label>人工趋势 <select id="workflowMonitoringTrend"><option value="">沿用已保存反馈</option><option value="stable">稳定</option><option value="worsened">恶化</option><option value="improved">改善</option></select></label><label>人工执行反馈 <select id="workflowExecutionStatus"><option value="">沿用已保存反馈</option><option value="completed">完成</option><option value="failed">失败</option><option value="pending_human_approval">等待人工审批</option></select></label><label>反馈原因 <textarea id="workflowFeedbackReason" maxlength="2000" rows="2"></textarea></label><label><input id="workflowReprocessConfirmed" type="checkbox">明确确认复用原CSV记录重新研判（最多五版，无新测量证据）</label><button id="workflowReprocessSubmit" type="submit">确认重新研判</button></form>
+  <form id="workflowMemoryForm" hidden><label>专家明确审核结论 <textarea id="workflowMemoryConclusion" rows="2" required maxlength="2000"></textarea></label><button type="submit">审核并允许案例记忆参考</button></form>
+  <p id="workflowActionError" role="alert"></p><div id="workflowCaseMemory" aria-label="已审核案例记忆"></div><div id="workflowEventHistory" aria-label="协同事件历史"></div>
+</details>
 
 <!-- ============ 主体布局 ============ -->
 <div class="main-container enterprise-screen" id="enterprisePortal">
@@ -197,7 +208,7 @@
         <div class="closed-loop-summary">
           <p><span>事件编号</span><b id="enterpriseLoopEvent">--</b></p>
           <p><span>当前环节</span><b id="enterpriseLoopStep">企业端现场处置</b></p>
-          <p><span>闭环进度</span><b id="enterpriseLoopProgress">83%</b></p>
+          <p><span>闭环进度</span><b id="enterpriseLoopProgress">--</b></p>
         </div>
         <div class="closed-loop-track" id="enterpriseLoopTrack"></div>
         <div class="closed-loop-note" id="enterpriseLoopNext">上传现场处置凭证并持续回传传感器趋势</div>
@@ -237,20 +248,20 @@
 </div>
 
 <dialog class="warning-demo-dialog" id="enterpriseWarningDialog" aria-labelledby="enterpriseWarningTitle">
-  <div class="warning-dialog-signal"><span>ORANGE</span><b>较大风险</b></div>
+  <div class="warning-dialog-signal"><span id="workflowWarningColor">--</span><b id="workflowWarningRisk">--</b></div>
   <div class="warning-dialog-body">
     <span class="warning-demo-eyebrow">多元数据融合预警 · XGBoost</span>
     <h2 id="enterpriseWarningTitle">监测1出现顶板较大风险</h2>
-    <p>老师真实监测样本触发橙色预警，请立即查看热点并进入补强支护处置。</p>
+    <p>依据所选真实CSV记录复核候选方案及资源；确认后提交完整工单和现场照片元数据。</p>
     <div class="warning-dialog-metrics">
-      <div><span>综合风险</span><b id="enterpriseWarningScore">70</b></div>
-      <div><span>真实记录</span><b id="enterpriseWarningRecord">REC-202511101149-02909</b></div>
+      <div><span>综合风险</span><b id="enterpriseWarningScore">--</b></div>
+      <div><span>真实记录</span><b id="enterpriseWarningRecord">--</b></div>
       <div><span>模型置信度</span><b id="enterpriseWarningConfidence">--</b></div>
     </div>
     <div class="warning-dialog-evidence" id="enterpriseWarningEvidence">正在读取模型特征证据</div>
     <div class="warning-dialog-actions">
       <button id="warningDialogDismiss" type="button">稍后查看</button>
-      <button class="warning-demo-primary" id="warningDialogAcknowledge" type="button">查看热点并进入处置</button>
+      <button class="warning-demo-primary" id="warningDialogAcknowledge" type="button">确认可行方案并进入处置</button>
     </div>
   </div>
 </dialog>
@@ -354,7 +365,7 @@
 
   <section class="regulator-verification-panel" id="regulatorVerificationPanel" aria-labelledby="regulatorVerificationTitle">
     <header>
-      <div><span class="warning-demo-eyebrow">SUPERVISION · ORANGE</span><h3 id="regulatorVerificationTitle">橙色预警处置核验</h3></div>
+      <div><span class="warning-demo-eyebrow">SUPERVISION · SAVED EVENT</span><h3 id="regulatorVerificationTitle">保存事件处置核验</h3></div>
       <strong id="regulatorDemoBanner">等待企业端启动演示</strong>
     </header>
     <div class="regulator-verification-grid">
@@ -363,10 +374,10 @@
         <div class="warning-photo-list compact" id="regulatorPhotoList"><p>现场照片待上传</p></div>
       </div>
       <div class="warning-comparison" id="regulatorMonitoringComparison">
-        <article><span>预警触发真实记录</span><b>70</b><em>REC-202511101149-02909</em></article>
-        <i>4 分钟后</i>
-        <article><span>后续监测真实对照</span><b>45</b><em>REC-202511101153-02911</em></article>
-        <p>仅作核验对照，不代表工程措施的因果效果。</p>
+        <article><span>所选原CSV记录</span><b>--</b><em>--</em></article>
+        <i>历史对照</i>
+        <article><span>固定历史CSV对照</span><b>--</b><em>--</em></article>
+        <p>历史记录用于核验参考；当前人工反馈未提供新测量证据，工程措施效果须另行核验。</p>
       </div>
       <form id="regulatorReviewForm" autocomplete="off">
         <label for="regulatorReviewOpinion">监管核验意见</label>
@@ -503,7 +514,7 @@
         <span>闭环与案例库</span>
         <label for="expertArchiveConclusion">复盘结论</label>
         <textarea id="expertArchiveConclusion" name="archiveConclusion" rows="3" autocomplete="off">本事件已完成企业处置与监管核验，建议纳入顶板较大风险复盘案例库。</textarea>
-        <button class="warning-demo-primary" id="expertArchiveAction" type="button">确认闭环并纳入案例库</button>
+        <button class="warning-demo-primary" id="expertArchiveAction" type="button">确认闭环归档</button>
         <p class="warning-form-error" id="expertArchiveError" role="alert"></p>
       </article>
     </div>
@@ -546,7 +557,7 @@
           </div>
           <div class="multi-agent-actions">
             <span id="multiAgentSource">等待读取接入状态</span>
-            <button id="runMultiAgentWorkflow" type="button">运行六智能体研判</button>
+            <button id="runMultiAgentWorkflow" type="button">刷新已保存研判</button>
           </div>
         </header>
         <div class="multi-agent-provenance">
@@ -564,7 +575,7 @@
         </div>
         <div class="multi-agent-detail" id="multiAgentDetail">
           <div><span>当前节点</span><b>尚未运行</b></div>
-          <p>点击“运行六智能体研判”，系统将向后端提交当前真实记录并展示服务器返回的执行状态。</p>
+          <p>企业端启动保存事件；此处读取同一事件的六智能体状态，人工审核案例记忆须在归档后明确提交。</p>
         </div>
         <p class="multi-agent-boundary" id="multiAgentBoundary">真实性边界：A1使用现有XGBoost结果；A2检索的是数据相似记录；A3—A6属于规则辅助研判，不代表生产级自动控制。</p>
       </section>

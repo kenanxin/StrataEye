@@ -1,6 +1,30 @@
 export const DEMO_STORAGE_KEY = 'smart-mine-warning-demo:v1';
 export const DEMO_EVENT_ID = 'DEMO-ORANGE-001';
 
+// The pure demo reducer remains available for compatibility. Browser controllers
+// use this read adapter over server snapshots, with no local approval persistence.
+export function createSavedDemoReadAdapter(getSnapshot) {
+  return { getState: () => {
+    const state = getSnapshot().run?.demo_state;
+    return state ? structuredClone(state) : createInitialDemoState();
+  } };
+}
+
+const STATUS_VIEW = Object.freeze({
+  ready: { label: '尚未启动', progress: 0 },
+  alert_triggered: { label: '橙色预警已触发', progress: 12 },
+  disposal_in_progress: { label: '企业现场处置中', progress: 30 },
+  pending_review: { label: '等待监管核验', progress: 58 },
+  changes_requested: { label: '监管已驳回，等待整改', progress: 48 },
+  verified: { label: '监管核验通过', progress: 82 },
+  archived: { label: '事件已闭环归档', progress: 100 },
+});
+export function demoStatusView(status, riskClass) {
+  const view = { ...(STATUS_VIEW[status] || STATUS_VIEW.ready) };
+  if (status === 'alert_triggered' && riskClass) view.label = `${riskClass}预警已触发`;
+  return view;
+}
+
 export const DEMO_STATES = Object.freeze({
   READY: 'ready',
   ALERT_TRIGGERED: 'alert_triggered',

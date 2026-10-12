@@ -3006,6 +3006,25 @@ body.portal-enterprise .core-monitoring-workbench .metric-rail {
 .multi-agent-detail p, .multi-agent-detail li { color: #a8b9be; font-size: 10px; line-height: 1.5; }
 .multi-agent-detail ul { display: flex; flex-wrap: wrap; gap: 5px 16px; padding-left: 16px; }
 .multi-agent-boundary { padding: 8px 14px; border-top: 1px solid #2b393f; color: #70828a; font-size: 9px; line-height: 1.45; }
+.workflow-saved-controls { flex: 0 0 auto; margin: 8px 16px; padding: 12px; max-height: 40vh; overflow: auto; border: 1px solid #33434a; background: #0e181d; color: #b8c8cd; font-size: 12px; }
+.warning-demo-identity em { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workflow-saved-controls summary { cursor: pointer; color: #f0c76d; }
+.workflow-saved-controls p { margin-top: 8px; overflow-wrap: anywhere; }
+.workflow-saved-toolbar, .workflow-saved-controls form { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; margin-top: 12px; }
+.workflow-saved-controls [hidden] { display: none; }
+.workflow-saved-controls label { display: grid; gap: 4px; min-width: 0; }
+.workflow-saved-controls input, .workflow-saved-controls textarea, .workflow-saved-controls select, .workflow-saved-controls button { padding: 8px; border: 1px solid #3b4d51; background: #142126; color: #d2dee1; max-width: 100%; }
+.workflow-saved-controls input[type=number] { width: 120px; }
+.workflow-saved-controls button { cursor: pointer; color: #f0c76d; }
+.workflow-saved-controls button:disabled { opacity: .5; cursor: wait; }
+.workflow-saved-controls :focus-visible, .multi-agent-rail button:focus-visible { outline: 2px solid #66cfc7; outline-offset: 2px; }
+#workflowRunIdentity, #workflowEventHistory, #workflowRunSelection { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+#workflowEventHistory { max-height: 180px; overflow: auto; }
+#workflowActionError { color: #df7169; }
+.warning-demo-dialog[data-risk-level=red] .warning-dialog-signal { background: #442421; color: #df7169; }
+.warning-demo-dialog[data-risk-level=yellow] .warning-dialog-signal { background: #39341d; color: #e6cf73; }
+.warning-demo-dialog[data-risk-level=blue] .warning-dialog-signal { background: #1b3140; color: #76b6d4; }
+@media (max-width: 640px) { .workflow-saved-controls { margin: 8px; } .workflow-saved-controls form { display: grid; grid-template-columns: minmax(0,1fr); } }
 .expert-research-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 270px; gap: 10px; }
 .research-panel { min-width: 0; min-height: 270px; overflow: hidden; border: 1px solid #29343a; background: #10191e; }
 .research-panel header, .research-explanation header, .research-advice header { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 41px; padding: 9px 11px; border-bottom: 1px solid #29343a; }

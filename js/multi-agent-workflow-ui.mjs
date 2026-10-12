@@ -1,3 +1,5 @@
+import { createWorkflowClient, createWorkflowCoordinator } from './workflow-client.mjs';
+let activeController = null;
 const STATUS_LABELS = {
   success: '完成', waiting_human: '待人工确认', needs_attention: '资源异常', skipped: '条件跳过', running: '运行中',
 };
@@ -21,7 +23,7 @@ function renderDetail(node, result) {
     <footer><span>运行 ${escapeHtml(result.workflow_run_id)}</span><span>实测 ${escapeHtml(node.elapsed_ms)} ms · 下一动作 ${escapeHtml(result.next_action)}</span></footer>`;
 }
 
-function renderRun(result) {
+function renderRun(result, selectedAgent) {
   const rail = element('multiAgentRail');
   if (!rail) return;
   rail.querySelectorAll('[data-agent-id]').forEach((button) => {
@@ -29,58 +31,56 @@ function renderRun(result) {
     if (!node) return;
     button.dataset.status = node.status;
     button.querySelector('em').textContent = STATUS_LABELS[node.status] || node.status;
-    button.onclick = () => {
-      rail.querySelectorAll('[data-agent-id]').forEach((item) => item.classList.remove('selected'));
-      button.classList.add('selected');
-      renderDetail(node, result);
-    };
+    button.classList.toggle('selected', node.agent_id === selectedAgent);
   });
-  const firstRelevant = result.nodes.find((node) => ['waiting_human', 'needs_attention'].includes(node.status))
+  const firstRelevant = result.nodes.find(node => node.agent_id === selectedAgent) || result.nodes.find((node) => ['waiting_human', 'needs_attention'].includes(node.status))
     || [...result.nodes].reverse().find((node) => node.status === 'success')
     || result.nodes[0];
-  rail.querySelector(`[data-agent-id="${firstRelevant.agent_id}"]`)?.click();
-  element('multiAgentSource').textContent = `${result.algorithm.model.toUpperCase()} · ${result.algorithm.predicted_class} · ${result.algorithm.record_id}`;
-  element('multiAgentBoundary').textContent = result.safety.statement;
+  if (firstRelevant) {
+    rail.querySelectorAll('[data-agent-id]').forEach(button => button.classList.toggle('selected',button.dataset.agentId===firstRelevant.agent_id));
+    renderDetail(firstRelevant, result);
+  }
+  element('multiAgentSource').textContent = `${result.workflow_run_id} · r${result.revision} · ${result.algorithm.predicted_class} · CSV ${result.algorithm.record_id}`;
+  const advice = result.plan_versions?.at(-1)?.advice;
+  element('multiAgentBoundary').textContent = `${result.safety?.statement || '候选方案须人工确认'} · A3来源 ${advice?.source === 'deepseek' ? 'DeepSeek' : 'rule'}${advice?.fallback_reason ? ` · 降级原因：${advice.fallback_reason}` : ''} · 原CSV记录复用，无新测量证据`;
+  return firstRelevant?.agent_id;
 }
 
-export function setupMultiAgentWorkflow({ authFetch, getCurrentPayload }) {
+export function setupMultiAgentWorkflow({ authFetch, getCurrentPayload, client, coordinator: sharedCoordinator, getCurrentRole = () => 'expert' } = {}) {
+  activeController?.destroy();
   const button = element('runMultiAgentWorkflow');
   const source = element('multiAgentSource');
   if (!button) return;
-
-  authFetch('/api/multi-agent/status', { cache: 'no-store' })
-    .then(async (response) => {
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const status = await response.json();
-      source.textContent = status.available ? '六智能体后端已就绪 · XGBoost适配器' : '智能体服务不可用';
-    })
-    .catch(() => { source.textContent = '智能体服务不可用'; });
-
-  button.addEventListener('click', async () => {
-    const current = getCurrentPayload();
-    const recordId = current?.provenance?.record_id || current?.model_output?.record_id;
-    if (!recordId) {
-      source.textContent = '真实记录尚未就绪，不能启动研判';
-      return;
+  const coordinator=sharedCoordinator || createWorkflowCoordinator({client:client || createWorkflowClient({authFetch})});
+  const cleanups=[];
+  let selectedAgent=null,selectedRun=null;
+  function render(snapshot) {
+    button.textContent=snapshot.loading ? '读取保存事件…' : '刷新已保存研判';
+    button.disabled=snapshot.pending || snapshot.loading;
+    button.hidden=!['enterprise','regulator','expert','viewer','super_admin'].includes(getCurrentRole());
+    if (snapshot.run) {
+      if (selectedRun!==snapshot.run.workflow_run_id) selectedAgent=null;
+      selectedRun=snapshot.run.workflow_run_id;
+      selectedAgent=renderRun(snapshot.run,selectedAgent);
+      const monitoringRecord=getCurrentPayload?.()?.model_output?.record_id;
+      if (monitoringRecord && monitoringRecord!==snapshot.run.algorithm.record_id) source.textContent+=' · 与当前监测记录不同';
+    } else {
+      selectedAgent=null;selectedRun=null;
+      element('multiAgentRail')?.querySelectorAll('[data-agent-id]').forEach(node=>{node.dataset.status='waiting';node.querySelector('em').textContent='等待读取';node.classList.remove('selected');});
+      element('multiAgentDetail').innerHTML='<p>暂无保存研判；企业端可启动预警协同。读取中请等待服务器返回。</p>';
+      source.textContent='暂无保存事件';
     }
-    button.disabled = true;
-    button.textContent = '服务器研判中…';
-    source.textContent = `提交真实记录 ${recordId}`;
-    try {
-      const response = await authFetch('/api/multi-agent/run', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ record_id: recordId }), cache: 'no-store',
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      renderRun(await response.json());
-    } catch (error) {
-      source.textContent = '智能体服务不可用';
-      const detail = element('multiAgentDetail');
-      if (detail) detail.innerHTML = '<div><span>执行失败</span><b>未生成结果</b></div><p>服务器未返回有效状态，页面没有使用模拟数据填充成功结果。请确认登录状态和Render服务后重试。</p>';
-      console.warn('Multi-agent workflow unavailable:', error);
-    } finally {
-      button.disabled = false;
-      button.textContent = '重新运行六智能体研判';
-    }
+    if (snapshot.error) source.textContent=`智能体服务不可用：${snapshot.error.message} · 请刷新后重试`;
+  }
+  const refresh=async()=>{try{await coordinator.refresh();}catch(_){/* coordinator exposes typed error */}};
+  button.addEventListener('click',refresh);cleanups.push(()=>button.removeEventListener('click',refresh));
+  element('multiAgentRail')?.querySelectorAll('[data-agent-id]').forEach(button=>{
+    const select=()=>{selectedAgent=button.dataset.agentId;render(coordinator.getSnapshot());};
+    button.addEventListener('click',select);cleanups.push(()=>button.removeEventListener('click',select));
   });
+  cleanups.push(coordinator.subscribe(render));render(coordinator.getSnapshot());
+  if (!coordinator.getSnapshot().initialized) refresh();
+  const controller={destroy(){cleanups.forEach(cleanup=>cleanup());if(!sharedCoordinator)coordinator.destroy();}};
+  activeController=controller;
+  return controller;
 }

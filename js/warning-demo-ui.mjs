@@ -1,4 +1,6 @@
-import { DEMO_ACTIONS, DEMO_EVENT_ID, DEMO_STATES, createWarningDemoStore } from './warning-demo-state.mjs';
+import { DEMO_ACTIONS, DEMO_STATES, createSavedDemoReadAdapter, demoStatusView } from './warning-demo-state.mjs';
+export { demoStatusView } from './warning-demo-state.mjs';
+import { createWorkflowClient, createWorkflowCoordinator } from './workflow-client.mjs';
 import {
   createEvidencePreview,
   createWarningDemoMediaStore,
@@ -6,19 +8,10 @@ import {
   validateEvidenceFiles,
 } from './warning-demo-media.mjs';
 
-const STATUS_VIEW = Object.freeze({
-  ready: { label: '尚未启动', progress: 0 },
-  alert_triggered: { label: '橙色预警已触发', progress: 12 },
-  disposal_in_progress: { label: '企业现场处置中', progress: 30 },
-  pending_review: { label: '等待监管核验', progress: 58 },
-  changes_requested: { label: '监管已驳回，等待整改', progress: 48 },
-  verified: { label: '监管核验通过', progress: 82 },
-  archived: { label: '事件已闭环归档', progress: 100 },
-});
-
 const ACTION_ROLES = Object.freeze({
   START_DEMO: 'enterprise', ACKNOWLEDGE: 'enterprise', SUBMIT_DISPOSAL: 'enterprise', RESET: 'enterprise',
   REJECT: 'regulator', APPROVE: 'regulator', ARCHIVE: 'expert',
+  UPDATE_RESOURCES: 'enterprise', REPROCESS: 'enterprise', APPROVE_MEMORY: 'expert',
 });
 
 const STEP_ORDER = ['alert_triggered', 'disposal_in_progress', 'pending_review', 'changes_requested', 'verified', 'archived'];
@@ -26,10 +19,6 @@ let activeController = null;
 
 export function canRolePerformDemoAction(role, action) {
   return ACTION_ROLES[action] === role;
-}
-
-export function demoStatusView(status) {
-  return { ...(STATUS_VIEW[status] || STATUS_VIEW.ready) };
 }
 
 export function validateDisposalDraft(draft = {}) {
@@ -41,6 +30,8 @@ export function validateDisposalDraft(draft = {}) {
 }
 
 export function getWarningDemoAdviceContext(serverClosedLoop = {}, explicitState = null) {
+  const snapshot = explicitState ? null : activeController?.getSnapshot?.();
+  if (snapshot?.error || snapshot?.loading || (snapshot?.selectedId && !snapshot.run)) return { workflow_unavailable: true, selected_run_id: snapshot.selectedId, message: snapshot.error?.message || '读取中' };
   const state = explicitState || activeController?.store?.getState?.();
   if (!state || state.status === DEMO_STATES.READY) return serverClosedLoop;
   return {
@@ -91,7 +82,7 @@ function renderTimeline(id, timeline = []) {
   container.replaceChildren();
   if (!timeline.length) {
     const empty = document.createElement('p');
-    empty.textContent = '演示启动后将在此记录完整处置时间线。';
+    empty.textContent = '保存事件启动后将在此记录完整处置时间线。';
     container.append(empty);
     return;
   }
@@ -149,13 +140,19 @@ function renderEvidenceList(container, records, { editable = false, onRemove = n
     image.width = 160;
     image.height = 120;
     image.loading = 'lazy';
-    caption.textContent = `${record.name} · ${(Number(record.size) / 1024).toFixed(0)} KB`;
-    figure.append(image, caption);
+    caption.textContent = `${record.name} · ${Number.isFinite(Number(record.size)) ? (Number(record.size) / 1024).toFixed(0) + ' KB' : '大小未提供'}`;
+    caption.textContent += ' · 浏览器本地照片';
+    if (preview) figure.append(image, caption);
+    else {
+      const missing = document.createElement('p');
+      missing.textContent = '本浏览器没有原图，仅显示服务器保存的照片元数据。请在原上传浏览器查看。';
+      figure.append(caption, missing);
+    }
     if (editable && onRemove) {
       const remove = document.createElement('button');
       remove.type = 'button';
-      remove.textContent = '删除';
-      remove.setAttribute('aria-label', `删除照片 ${record.name}`);
+      remove.textContent = record.storage_source === 'browser-local' ? '删除本地原图' : '移除草稿照片';
+      remove.setAttribute('aria-label', `${remove.textContent} ${record.name}`);
       remove.addEventListener('click', () => onRemove(record.id));
       figure.append(remove);
     }
@@ -173,15 +170,21 @@ export async function setupWarningDemo(options = {}) {
   activeController?.destroy?.();
   const user = options.user || {};
   const authFetch = options.authFetch;
-  const store = options.store || createWarningDemoStore();
+  const ownedCoordinator = !options.coordinator;
+  const coordinator = options.coordinator || createWorkflowCoordinator({ client: options.client || createWorkflowClient({ authFetch }) });
+  const selectionClient = options.client;
+  const store = createSavedDemoReadAdapter(() => coordinator.getSnapshot());
   const media = options.media || createWarningDemoMediaStore();
-  const actor = { role: user.role, displayName: user.displayName || user.username || user.role };
   let evidenceRecords = [];
   let sourceData = null;
   let comparisonData = null;
   let similarCases = null;
   let shownAlertRevision = null;
   let previewUrls = [];
+  let destroyed = false;
+  let selectedIdentity = null;
+  let mediaSequence = 0;
+  let listSequence = 0;
   const cleanups = [];
 
   function listen(id, eventName, handler) {
@@ -192,7 +195,13 @@ export async function setupWarningDemo(options = {}) {
   }
 
   async function loadEvidence() {
-    try { evidenceRecords = await media.list(DEMO_EVENT_ID); } catch (_) { evidenceRecords = []; }
+    const runId = coordinator.getSnapshot().run?.workflow_run_id;
+    const sequence = ++mediaSequence;
+    if (!runId) { evidenceRecords = []; renderPhotos(store.getState()); return; }
+    let records;
+    try { records = await media.list(runId); } catch (_) { records = []; }
+    if (destroyed || sequence !== mediaSequence || runId !== coordinator.getSnapshot().run?.workflow_run_id) return;
+    evidenceRecords = records;
     renderPhotos(store.getState());
   }
 
@@ -200,42 +209,52 @@ export async function setupWarningDemo(options = {}) {
     revokeEvidencePreviews(previewUrls);
     previewUrls = [];
     const editable = user.role === 'enterprise' && [DEMO_STATES.DISPOSAL_IN_PROGRESS, DEMO_STATES.CHANGES_REQUESTED].includes(state.status);
-    previewUrls.push(...renderEvidenceList(element('enterprisePhotoList'), evidenceRecords, {
+    const runId = coordinator.getSnapshot().run?.workflow_run_id;
+    const savedPhotos = state.disposal.photos || [];
+    const records = [...savedPhotos.map(metadata => ({ ...metadata, ...evidenceRecords.find(item => item.id === metadata.id) })), ...evidenceRecords.filter(item => !savedPhotos.some(photo => photo.id === item.id))];
+    previewUrls.push(...renderEvidenceList(element('enterprisePhotoList'), records, {
       editable,
-      onRemove: async (id) => { await media.remove(DEMO_EVENT_ID, id); await loadEvidence(); },
+      onRemove: async (id) => {
+        try { await media.remove(runId, id); if (runId === coordinator.getSnapshot().run?.workflow_run_id) await loadEvidence(); }
+        catch (error) { setText('enterpriseDisposalError', error.message); }
+      },
     }));
-    previewUrls.push(...renderEvidenceList(element('regulatorPhotoList'), evidenceRecords));
+    previewUrls.push(...renderEvidenceList(element('regulatorPhotoList'), records));
   }
 
   async function loadRiskData() {
     if (typeof authFetch !== 'function') return;
+    const runId = coordinator.getSnapshot().run?.workflow_run_id;
+    const recordId = coordinator.getSnapshot().run?.algorithm?.record_id;
+    if (!recordId) return;
     try {
       const [sourceResponse, comparisonResponse, casesResponse] = await Promise.all([
         authFetch('/api/roof-risk/evaluate', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ record_id: 'REC-202511101149-02909' }), cache: 'no-store',
+          body: JSON.stringify({ record_id: recordId }), cache: 'no-store',
         }),
         authFetch('/api/roof-risk/evaluate', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ record_id: 'REC-202511101153-02911' }), cache: 'no-store',
         }),
-        authFetch('/api/roof-risk/similar-cases?record_id=REC-202511101149-02909&limit=3', { cache: 'no-store' }),
+        authFetch(`/api/roof-risk/similar-cases?record_id=${encodeURIComponent(recordId)}&limit=3`, { cache: 'no-store' }),
       ]);
-      [sourceData, comparisonData, similarCases] = await Promise.all([
+      const loaded = await Promise.all([
         responseJson(sourceResponse, 'source record'),
         responseJson(comparisonResponse, 'comparison record'),
         responseJson(casesResponse, 'similar cases'),
       ]);
+      if (destroyed || runId !== coordinator.getSnapshot().run?.workflow_run_id) return;
+      [sourceData, comparisonData, similarCases] = loaded;
       render(store.getState());
     } catch (error) {
-      console.warn('Warning demo real-data context unavailable:', error);
-      setText('expertDemoMechanism', '真实数据接口暂不可用，无法加载模型机理与相似案例。');
+      if (!destroyed && runId === coordinator.getSnapshot().run?.workflow_run_id) setText('expertDemoMechanism', `真实数据接口暂不可用：${error.message}`);
     }
   }
 
   function renderSourceData() {
     if (!sourceData) return;
-    setText('enterpriseWarningScore', sourceData.risk?.score ?? 70);
+    setText('enterpriseWarningScore', sourceData.risk?.score ?? '--');
     setText('enterpriseWarningRecord', sourceData.record_id || sourceData.model_output?.record_id || sourceData.provenance?.record_id);
     const confidence = Number(sourceData.model_output?.confidence);
     setText('enterpriseWarningConfidence', Number.isFinite(confidence) ? `${(confidence * 100).toFixed(2)}%` : '--');
@@ -243,7 +262,7 @@ export async function setupWarningDemo(options = {}) {
     setText('enterpriseWarningEvidence', evidence.length
       ? `主要因素：${evidence.map((item) => `${item.label} ${Number(item.standardized_value) >= 0 ? '+' : ''}${Number(item.standardized_value).toFixed(2)}σ`).join('、')}`
       : '当前记录暂无特征证据');
-    setText('expertDemoRiskLevel', `${sourceData.model_output?.predicted_class || '较大风险'} · ${sourceData.risk?.score ?? 70}`);
+    setText('expertDemoRiskLevel', `${sourceData.model_output?.predicted_class || '--'} · ${sourceData.risk?.score ?? '--'}`);
     setText('expertDemoMechanism', evidence.length
       ? `${evidence.map((item) => item.label).join('、')}是当前记录标准化偏离较大的监测项，可供现场复核。该统计排序尚未进行模型归因或工程因果验证。`
       : '等待真实记录的模型概率与主要特征证据。');
@@ -263,10 +282,10 @@ export async function setupWarningDemo(options = {}) {
     const comparison = element('regulatorMonitoringComparison');
     const articles = comparison?.querySelectorAll('article');
     if (articles?.length === 2) {
-      articles[0].querySelector('b').textContent = sourceData.risk?.score ?? 70;
+      articles[0].querySelector('b').textContent = sourceData.risk?.score ?? '--';
       articles[0].querySelector('em').textContent = sourceData.record_id;
-      articles[1].querySelector('b').textContent = comparisonData?.risk?.score ?? 45;
-      articles[1].querySelector('em').textContent = comparisonData?.record_id || 'REC-202511101153-02911';
+      articles[1].querySelector('b').textContent = comparisonData?.risk?.score ?? '--';
+      articles[1].querySelector('em').textContent = comparisonData?.record_id || '--';
     }
   }
 
@@ -291,7 +310,7 @@ export async function setupWarningDemo(options = {}) {
   }
 
   function renderEnterprise(state) {
-    const editable = [DEMO_STATES.DISPOSAL_IN_PROGRESS, DEMO_STATES.CHANGES_REQUESTED].includes(state.status);
+    const editable = user.role === 'enterprise' && [DEMO_STATES.DISPOSAL_IN_PROGRESS, DEMO_STATES.CHANGES_REQUESTED].includes(state.status);
     const form = element('enterpriseDisposalForm');
     form?.querySelectorAll('textarea,input,button[type="submit"]').forEach((control) => { control.disabled = !editable; });
     const notice = element('enterpriseRectificationNotice');
@@ -300,22 +319,13 @@ export async function setupWarningDemo(options = {}) {
       notice.textContent = state.status === DEMO_STATES.CHANGES_REQUESTED
         ? `监管整改意见：${state.review.opinion}；期限：${formatTime(state.review.deadline)}` : '';
     }
-    if (editable && state.disposal.submissionCount > 0) {
-      const values = {
-        disposalMeasures: state.disposal.measures,
-        disposalWorkOrder: state.disposal.workOrder,
-        disposalResponsiblePerson: state.disposal.responsiblePerson,
-        disposalCompletedAt: state.disposal.completedAt,
-      };
-      Object.entries(values).forEach(([id, value]) => { const input = element(id); if (input && document.activeElement !== input) input.value = value; });
-    } else if (!editable && state.disposal.submissionCount > 0) {
-      ['disposalMeasures', 'disposalWorkOrder', 'disposalResponsiblePerson', 'disposalCompletedAt'].forEach((id) => {
-        const input = element(id);
-        if (input && document.activeElement !== input) input.value = '';
-      });
-    }
-    if (user.role === 'enterprise' && state.status === DEMO_STATES.ALERT_TRIGGERED && shownAlertRevision !== state.revision) {
-      shownAlertRevision = state.revision;
+    const snapshot = coordinator.getSnapshot();
+    const alertIdentity = `${snapshot.run?.workflow_run_id}:${snapshot.run?.revision}`;
+    const feasible = snapshot.run?.nodes?.find(node => node.agent_id === 'A5')?.output?.feasibility === 'feasible';
+    const acknowledge = element('warningDialogAcknowledge');
+    if (acknowledge) { acknowledge.hidden = user.role !== 'enterprise'; acknowledge.disabled = !feasible || snapshot.pending || Boolean(snapshot.error) || state.status !== DEMO_STATES.ALERT_TRIGGERED; }
+    if (user.role === 'enterprise' && state.status === DEMO_STATES.ALERT_TRIGGERED && shownAlertRevision !== alertIdentity && !snapshot.pending) {
+      shownAlertRevision = alertIdentity;
       showDialog(element('enterpriseWarningDialog'));
     }
   }
@@ -350,38 +360,84 @@ export async function setupWarningDemo(options = {}) {
   }
 
   function render(state) {
+    const snapshot = coordinator.getSnapshot();
+    const run = snapshot.run;
+    const identity = snapshot.selectedId;
+    if (selectedIdentity !== identity) {
+      selectedIdentity = identity; mediaSequence++;
+      evidenceRecords = []; sourceData = null; comparisonData = null; similarCases = null; shownAlertRevision = null;
+      ['enterpriseWarningDialog', 'enterpriseDisposalDrawer'].forEach(id => closeDialog(element(id)));
+      clearFields(['disposalMeasures', 'disposalWorkOrder', 'disposalResponsiblePerson', 'disposalCompletedAt', 'regulatorReviewOpinion', 'regulatorRectificationDeadline', 'expertArchiveConclusion', 'workflowFeedbackReason', 'workflowMemoryConclusion', 'workflowPersonnel','workflowMaterials','workflowDevices','workflowMonitoringTrend','workflowExecutionStatus','disposalPhotos']);
+      if (element('workflowReprocessConfirmed')) element('workflowReprocessConfirmed').checked=false;
+      ['enterpriseDisposalError','regulatorReviewError','expertArchiveError','workflowActionError'].forEach(id=>setText(id,''));
+      ['expertSimilarCases','expertDemoProbabilities'].forEach(id => element(id)?.replaceChildren());
+      setText('enterpriseWarningEvidence', '等待所选记录证据');
+      setText('expertDemoMechanism', '等待所选记录证据');
+    }
     const status = demoStatusView(state.status);
     if (document?.body) document.body.dataset.warningDemoState = state.status;
-    setText('warningDemoStatus', `${status.label} · ${status.progress}%`);
-    setText('warningDemoEventId', state.eventId);
+    setText('warningDemoStatus', snapshot.error ? `协同保存不可用：${snapshot.error.message}` : snapshot.loading ? '读取保存事件…' : run ? `${state.status === 'alert_triggered' ? run.algorithm.predicted_class + '预警已触发' : status.label} · ${status.progress}%` : '尚无保存事件');
+    setText('warningDemoEventId', run ? `${run.workflow_run_id}` : snapshot.selectedId || '--');
+    setText('workflowRunIdentity', run ? `${run.workflow_run_id} · 修订 ${run.revision} · CSV ${run.algorithm.record_id}` : '尚无保存事件');
+    const plan = run?.plan_versions?.at(-1);
+    const advice = plan?.advice;
+    setText('workflowPlanSource', run ? `方案 ${plan?.version ?? '--'}/5 · ${advice ? advice.source === 'deepseek' ? 'DeepSeek' : 'rule' : '无候选方案'}${advice?.fallback_reason ? ` · 降级原因：${advice.fallback_reason}` : ''} · 反馈 ${run.feedback?.length ? '人工输入' : '未收到'} · 返回 ${run.next_action || '--'} · 复用原CSV记录，无新测量证据` : '--');
+    const color = ({重大风险:'red',较大风险:'orange',一般风险:'yellow',低风险:'blue'})[run?.algorithm?.predicted_class] || 'none';
+    if (element('enterpriseWarningDialog')) element('enterpriseWarningDialog').dataset.riskLevel = color;
+    setText('workflowWarningColor',color.toUpperCase());
+    setText('workflowWarningRisk',run?.algorithm?.predicted_class || '--');
+    setText('enterpriseWarningRecord',run?.algorithm?.record_id || '--');
+    setText('enterpriseWarningScore',run?.nodes?.find(node=>node.agent_id==='A1')?.output?.risk_score ?? '--');
+    setText('enterpriseWarningConfidence',Number.isFinite(run?.algorithm?.confidence)?`${(run.algorithm.confidence*100).toFixed(2)}%`:'--');
+    setText('enterpriseWarningTitle', `${run?.algorithm?.predicted_class || '待加载'}预警 · 企业确认候选方案`);
+    setText('regulatorVerificationTitle', `${run?.algorithm?.predicted_class || '当前'}预警处置核验`);
+    setText('expertDemoEventTitle', `所选${run?.algorithm?.predicted_class || ''}事件机理复盘`);
     renderRail(state);
     const launcher = element('warningDemoLauncher');
     const reset = element('warningDemoReset');
     if (launcher) {
       launcher.hidden = user.role !== 'enterprise';
       launcher.textContent = state.status === DEMO_STATES.READY ? '启动橙色预警演示' : '查看当前处置事件';
+      launcher.disabled = snapshot.pending || snapshot.loading;
     }
     if (reset) reset.hidden = user.role !== 'enterprise' || state.status === DEMO_STATES.READY;
+    if (reset) reset.disabled = snapshot.pending || snapshot.loading || Boolean(snapshot.error);
+    if (element('workflowRunSelection')) { element('workflowRunSelection').value = snapshot.selectedId || '';element('workflowRunSelection').disabled=snapshot.pending || snapshot.loading; }
+    if (element('workflowRefresh')) element('workflowRefresh').disabled = snapshot.pending || snapshot.loading;
     renderEnterprise(state);
     renderRegulator(state);
     renderExpert(state);
     renderSourceData();
     renderSimilarCases();
     renderPhotos(state);
+    const active = Boolean(run) && state.status !== 'ready' && !['verified','archived'].includes(state.status);
+    ['workflowResourceForm','workflowReprocessForm'].forEach(id => { if (element(id)) element(id).hidden = user.role !== 'enterprise' || !active; });
+    ['workflowResourceForm','workflowReprocessForm','workflowMemoryForm'].forEach(id => element(id)?.querySelectorAll('input,textarea,select,button').forEach(control => { control.disabled=false; }));
+    if (element('workflowMemoryForm')) element('workflowMemoryForm').hidden = user.role !== 'expert' || state.status !== 'archived' || Boolean(run?.case_memory?.length);
+    if (element('workflowReprocessSubmit')) element('workflowReprocessSubmit').disabled = (run?.plan_versions?.length || 0) >= 5;
+    const resource = run?.nodes?.find(node => node.agent_id === 'A5')?.output?.snapshot;
+    setText('workflowResourceSnapshot', resource ? `已保存资源：人员 ${resource.personnel_available} · 材料 ${resource.support_material_sets} · 设备 ${resource.inspection_devices}` : '--');
+    setText('workflowResponsibility', `当前责任：${['verified','archived'].includes(state.status) ? '智库' : state.status === 'pending_review' ? '监管' : '企业'} · 照片原图仅存于上传浏览器`);
+    const events = element('workflowEventHistory');
+    if (events) { events.replaceChildren(); (run?.events || []).slice().reverse().forEach(item => { const row=document.createElement('p'); row.textContent=`${formatTime(item.at)} · ${item.actor?.role || '--'} / ${item.actor?.displayName || '--'} · ${item.type}`;events.append(row); }); }
+    const memory = element('workflowCaseMemory');
+    if (memory) { memory.replaceChildren(); (run?.case_memory || []).forEach(item => { const row=document.createElement('p');row.textContent=`已审核记忆：${item.reviewed_conclusion} · ${item.actor?.displayName} · ${formatTime(item.reviewed_at)}`;memory.append(row); }); }
+    ['regulatorRejectAction','regulatorApproveAction'].forEach(id => { if (element(id)) element(id).hidden = user.role !== 'regulator'; });
+    if (element('expertArchiveAction')) element('expertArchiveAction').hidden = user.role !== 'expert';
+    const blocked = snapshot.pending || Boolean(snapshot.error) || !run;
+    if (blocked) ['enterpriseDisposalForm','workflowResourceForm','workflowReprocessForm','workflowMemoryForm'].forEach(id => element(id)?.querySelectorAll('input,textarea,select,button').forEach(control => { control.disabled=true; }));
+    ['regulatorApproveAction','regulatorRejectAction','expertArchiveAction'].forEach(id => { if (blocked && element(id)) element(id).disabled = true; });
     ['enterpriseWarningTimeline', 'regulatorWarningTimeline', 'expertWarningTimeline'].forEach((id) => renderTimeline(id, state.timeline));
   }
 
   async function startOrOpen() {
     const state = store.getState();
-    if (state.status === DEMO_STATES.READY) {
-      const response = await authFetch('/api/roof-risk/select', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event_id: 'REAL-MAJOR-001' }), cache: 'no-store',
-      });
-      await responseJson(response, 'select orange event');
-      store.dispatch({ type: DEMO_ACTIONS.START_DEMO, actor });
-      await loadRiskData();
-      await options.onSourceSelected?.();
+    if (!coordinator.getSnapshot().run || state.status === DEMO_STATES.READY) {
+      if (user.role !== 'enterprise') throw new Error('仅企业可以启动协同');
+      await options.beforeStart?.();
+      const saved = await coordinator.start({ recordId: 'REC-202511101149-02909' });
+      try { await options.onSourceSelected?.(saved.algorithm.record_id); }
+      catch(error) { setText('workflowActionError',`事件已保存；监测记录切换失败：${error.message}`); }
       return;
     }
     if (state.status === DEMO_STATES.ALERT_TRIGGERED) showDialog(element('enterpriseWarningDialog'));
@@ -390,34 +446,71 @@ export async function setupWarningDemo(options = {}) {
 
   async function submitDisposal(event) {
     event.preventDefault();
+    const runId=coordinator.getSnapshot().run?.workflow_run_id;
     const draft = {
       measures: element('disposalMeasures')?.value,
       workOrder: element('disposalWorkOrder')?.value,
       responsiblePerson: element('disposalResponsiblePerson')?.value,
       completedAt: element('disposalCompletedAt')?.value,
-      photos: evidenceRecords.map(({ id, name, size, type, createdAt }) => ({ id, name, size, type, createdAt })),
+      photos: [...store.getState().disposal.photos.filter(photo => !evidenceRecords.some(item => item.id === photo.id)), ...evidenceRecords].map(({ id, name, size }) => ({ id, name, ...(size !== undefined ? { size } : {}) })),
     };
     const validation = validateDisposalDraft(draft);
     setText('enterpriseDisposalError', validation.valid ? '' : validation.message);
     if (!validation.valid) return;
-    store.dispatch({ type: DEMO_ACTIONS.SUBMIT_DISPOSAL, actor, payload: draft });
-    ['disposalMeasures', 'disposalWorkOrder', 'disposalResponsiblePerson', 'disposalCompletedAt'].forEach((id) => {
-      const input = element(id);
-      if (input) input.value = '';
-    });
-    closeDialog(element('enterpriseDisposalDrawer'));
+    try {
+      await coordinator.dispatch({ type: DEMO_ACTIONS.SUBMIT_DISPOSAL, payload: draft });
+      if (destroyed || runId!==coordinator.getSnapshot().run?.workflow_run_id) return;
+      clearFields(['disposalMeasures', 'disposalWorkOrder', 'disposalResponsiblePerson', 'disposalCompletedAt']);
+      closeDialog(element('enterpriseDisposalDrawer'));
+    } catch (error) { if(!destroyed && runId===coordinator.getSnapshot().run?.workflow_run_id)setText('enterpriseDisposalError', actionError(error)); }
   }
+
+  function clearFields(ids) { ids.forEach(id => { if (element(id)) element(id).value = ''; }); }
+  function actionError(error) { return error.status === 409 ? '其他角色已更新事件，请复核最新状态后再提交。草稿已保留。' : error.message; }
+  async function action(type, payload, errorId, fields = []) {
+    const runId=coordinator.getSnapshot().run?.workflow_run_id;
+    try {
+      await coordinator.dispatch({ type, payload });
+      if (destroyed || runId!==coordinator.getSnapshot().run?.workflow_run_id) return false;
+      clearFields(fields);setText(errorId,'');return true;
+    } catch (error) {
+      if (!destroyed && runId===coordinator.getSnapshot().run?.workflow_run_id) setText(errorId,actionError(error));
+      return false;
+    }
+  }
+  async function resetCurrent() {
+    if (user.role !== 'enterprise') return;
+    await options.beforeStart?.();
+    const saved=await coordinator.reset({recordId:coordinator.getSnapshot().run?.algorithm.record_id || 'REC-202511101149-02909'});
+    try { await options.onSourceSelected?.(saved.algorithm.record_id); }
+    catch(error) { setText('workflowActionError',`新事件已保存；监测记录切换失败：${error.message}`); }
+  }
+
+  async function refreshRunList() {
+    const picker=element('workflowRunSelection');
+    if (!picker || !selectionClient) return;
+    const sequence=++listSequence;
+    try {
+      const runs=await selectionClient.list();
+      if (destroyed || sequence!==listSequence) return;
+      const selected=coordinator.getSnapshot().run;
+      if (selected && !runs.some(run=>run.workflow_run_id===selected.workflow_run_id)) runs.unshift(selected);
+      picker.replaceChildren();
+      if (!runs.length) { const empty=document.createElement('option');empty.value='';empty.textContent='尚无保存事件';picker.append(empty); }
+      runs.forEach(run=>{const option=document.createElement('option');option.value=run.workflow_run_id;option.textContent=`${run.workflow_run_id} · r${run.revision} · ${run.algorithm.record_id} · ${run.demo_state.status}`;picker.append(option);});
+      picker.value=coordinator.getSnapshot().selectedId || '';
+    } catch(error) { if(!destroyed)setText('workflowActionError',`保存事件列表不可用：${error.message}`); }
+  }
+  listen('workflowRunSelection','change',async event=>{if(!event.currentTarget.value)return;try{await coordinator.select(event.currentTarget.value);}catch(error){setText('workflowActionError',actionError(error));}});
+  listen('workflowRefresh','click',async()=>{try{await coordinator.refresh();await refreshRunList();setText('workflowActionError','');}catch(error){setText('workflowActionError',actionError(error));}});
 
   listen('warningDemoLauncher', 'click', () => startOrOpen().catch((error) => setText('warningDemoStatus', `启动失败：${error.message}`)));
   listen('warningDemoReset', 'click', async () => {
-    if (!globalThis.confirm?.('确认清除本次演示的工单、照片和时间线并重新开始吗？')) return;
-    await media.clear(DEMO_EVENT_ID).catch(() => {});
-    evidenceRecords = [];
-    store.dispatch({ type: DEMO_ACTIONS.RESET, actor });
+    try { await resetCurrent(); } catch (error) { setText('warningDemoStatus',actionError(error)); }
   });
   listen('warningDialogDismiss', 'click', () => closeDialog(element('enterpriseWarningDialog')));
-  listen('warningDialogAcknowledge', 'click', () => {
-    store.dispatch({ type: DEMO_ACTIONS.ACKNOWLEDGE, actor });
+  listen('warningDialogAcknowledge', 'click', async () => {
+    if (!await action(DEMO_ACTIONS.ACKNOWLEDGE, {}, 'enterpriseDisposalError')) return;
     closeDialog(element('enterpriseWarningDialog'));
     showDialog(element('enterpriseDisposalDrawer'));
   });
@@ -426,60 +519,76 @@ export async function setupWarningDemo(options = {}) {
   listen('enterpriseDisposalForm', 'submit', submitDisposal);
   listen('disposalPhotos', 'change', async (event) => {
     const input = event.currentTarget;
+    const runId = coordinator.getSnapshot().run?.workflow_run_id;
+    if (!runId || coordinator.getSnapshot().pending) return;
     const selected = Array.from(input.files || []);
     const validation = validateEvidenceFiles([...evidenceRecords, ...selected]);
     setText('enterpriseDisposalError', validation.valid ? '' : validation.message);
     if (!validation.valid) { input.value = ''; return; }
     try {
-      for (const file of selected) await media.put(DEMO_EVENT_ID, file);
-      input.value = '';
-      await loadEvidence();
-    } catch (error) { setText('enterpriseDisposalError', error.message); }
+      for (const file of selected) await media.put(runId, file);
+      if (runId === coordinator.getSnapshot().run?.workflow_run_id) { input.value = ''; await loadEvidence(); }
+    } catch (error) { if(!destroyed && runId===coordinator.getSnapshot().run?.workflow_run_id)setText('enterpriseDisposalError', error.message); }
   });
-  listen('regulatorRejectAction', 'click', () => {
-    try {
-      store.dispatch({
-        type: DEMO_ACTIONS.REJECT, actor,
-        payload: { opinion: element('regulatorReviewOpinion')?.value, deadline: element('regulatorRectificationDeadline')?.value },
-      });
-      setText('regulatorReviewError', '');
-    } catch (error) { setText('regulatorReviewError', error.message.replace(/^\w+:\s*/, '')); }
+  listen('regulatorRejectAction', 'click', () => action('REJECT',{opinion:element('regulatorReviewOpinion')?.value,deadline:element('regulatorRectificationDeadline')?.value},'regulatorReviewError',['regulatorReviewOpinion','regulatorRectificationDeadline']));
+  listen('regulatorApproveAction', 'click', () => action('APPROVE',{opinion:element('regulatorReviewOpinion')?.value},'regulatorReviewError',['regulatorReviewOpinion','regulatorRectificationDeadline']));
+  listen('expertArchiveAction', 'click', () => action('ARCHIVE',{conclusion:element('expertArchiveConclusion')?.value},'expertArchiveError',['expertArchiveConclusion']));
+  listen('workflowResourceForm','submit',async event => {
+    event.preventDefault();const resource_snapshot={};
+    for (const [id,key] of [['workflowPersonnel','personnel_available'],['workflowMaterials','support_material_sets'],['workflowDevices','inspection_devices']]) {
+      const value=element(id)?.value;
+      if (value !== undefined && value !== '') resource_snapshot[key]=Number(value);
+    }
+    if (!Object.keys(resource_snapshot).length || Object.values(resource_snapshot).some(value=>!Number.isSafeInteger(value)||value<0)) { setText('workflowActionError','填写至少一个非负整数资源数量');return; }
+    await action('UPDATE_RESOURCES',{resource_snapshot},'workflowActionError',['workflowPersonnel','workflowMaterials','workflowDevices']);
   });
-  listen('regulatorApproveAction', 'click', () => {
-    try {
-      store.dispatch({ type: DEMO_ACTIONS.APPROVE, actor, payload: { opinion: element('regulatorReviewOpinion')?.value } });
-      setText('regulatorReviewError', '');
-    } catch (error) { setText('regulatorReviewError', error.message.replace(/^\w+:\s*/, '')); }
+  listen('workflowReprocessForm','submit',async event => {
+    event.preventDefault();if (!element('workflowReprocessConfirmed')?.checked) { setText('workflowActionError','请明确确认复用原CSV记录重新研判');return; }
+    const feedback={};const reason=element('workflowFeedbackReason')?.value?.trim();
+    if (reason) feedback.reason=reason;
+    for (const [id,key] of [['workflowMonitoringTrend','monitoring_trend'],['workflowExecutionStatus','execution_status']]) { if (element(id)?.value) feedback[key]=element(id).value; }
+    const ok=await action('REPROCESS',{confirmed:true,...(Object.keys(feedback).length?{feedback}:{})},'workflowActionError',['workflowFeedbackReason','workflowMonitoringTrend','workflowExecutionStatus']);
+    if (ok) element('workflowReprocessConfirmed').checked=false;
   });
-  listen('expertArchiveAction', 'click', () => {
-    try {
-      store.dispatch({ type: DEMO_ACTIONS.ARCHIVE, actor, payload: { conclusion: element('expertArchiveConclusion')?.value } });
-      setText('expertArchiveError', '');
-    } catch (error) { setText('expertArchiveError', error.message.replace(/^\w+:\s*/, '')); }
-  });
+  listen('workflowMemoryForm','submit',async event => { event.preventDefault();await action('APPROVE_MEMORY',{reviewed_conclusion:element('workflowMemoryConclusion')?.value},'workflowActionError',['workflowMemoryConclusion']); });
 
-  const unsubscribe = store.subscribe((state) => {
-    render(state);
-    loadEvidence();
+  let loadedRunId = null;
+  let loadedRevision = null;
+  const unsubscribe = coordinator.subscribe((snapshot) => {
+    render(store.getState());
+    if (snapshot.run?.workflow_run_id !== loadedRunId) {
+      loadedRunId = snapshot.run?.workflow_run_id; loadRiskData();refreshRunList();
+    }
+    const identity = `${snapshot.run?.workflow_run_id}:${snapshot.run?.revision}`;
+    if (identity !== loadedRevision) { loadedRevision=identity;loadEvidence(); }
   });
   cleanups.push(unsubscribe);
   const controller = {
     store,
+    getSnapshot:coordinator.getSnapshot,
+    openCurrent() {
+      if (user.role === 'regulator') { element('regulatorVerificationTitle')?.scrollIntoView?.({block:'nearest'});element('regulatorReviewOpinion')?.focus?.();return Promise.resolve(); }
+      return startOrOpen();
+    },
+    resetCurrent,
     refreshRisk(payload) {
-      if (payload?.model_output?.record_id === 'REC-202511101149-02909') sourceData = payload;
+      if (payload?.model_output?.record_id === coordinator.getSnapshot().run?.algorithm?.record_id) sourceData = payload;
       render(store.getState());
     },
     destroy() {
+      destroyed=true;mediaSequence++;
       revokeEvidencePreviews(previewUrls);
       cleanups.forEach((cleanup) => cleanup());
-      store.destroy?.();
+      if (ownedCoordinator) coordinator.destroy();
     },
   };
   activeController = controller;
+  if (!coordinator.getSnapshot().initialized) await coordinator.refresh().catch(() => {});
   const initial = store.getState();
   render(initial);
+  refreshRunList();
   await loadEvidence();
-  if (initial.status !== DEMO_STATES.READY) await loadRiskData();
+  if (initial.status !== DEMO_STATES.READY) loadRiskData();
   if (element('disposalCompletedAt') && !element('disposalCompletedAt').value) element('disposalCompletedAt').value = localDateTimeValue();
   return controller;
 }
