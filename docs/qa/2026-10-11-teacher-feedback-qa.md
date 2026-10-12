@@ -35,6 +35,10 @@ RED/GREEN：前三文件首次 37 tests、33 pass、4 fail，duration_ms=3730.97
 
 本地修复与回归完成，2026-10-12 的独立定向复审已通过。F1/F2/M1/M2/M4/M5 均已解决，未发现修复引入的新 Critical/Important 问题，M3 的既有警告按原裁定延期。完整报告见[最终定向复审记录](2026-10-12-teacher-feedback-final-review.md)。外部验收继续待完成：新界面响应式/视觉、真实三角色与第二浏览器、IndexedDB 原件及缺失原件行为、Supabase SQL 实际执行与云并发/重启、获授权的真实 DeepSeek 生成。该批次未调用云端、真实 provider 或浏览器替代路径，未 push/deploy/merge，未修改生产账户。当前就绪范围为本地分支交接，外部验收待完成。
 
+### 交付时的 Git 维护提示
+
+2026-10-12 保存最后的审查文档时，Git 自动 geometric-repack 报告提交 `bad48426701ec2b0b2632191c3846811d84d33db` 的父对象 `ab77be67212b8d4a3c9d35eb62d28fe968e2cf67` 缺失。提交操作完成，但自动维护失败。只读 `git cat-file -p` 核实该父关系，`git cat-file -e` 对父对象返回 1。本次交付 HEAD `6d5a8b9313feba3adcf17fe91c78d97d5943c647` 的 `git rev-list --objects HEAD --missing=error` 返回 0，全部可达对象可读，整分支 `git diff --check` 也通过。未执行对象删除、全仓库历史重写或自动恢复；其他引用和 reflog 的完整性未做全面审计，发布前仍应单独检查维护问题。以上检查只涉及版本仓库，运行时代码和已记录测试结果未改变。后续仅保存此说明，提交时按命令级设置跳过已知失败的自动维护，不修改全局配置。
+
 ## Task4 历史本地 HTTP 证据
 
 以下结果来自最终修复前的运行时代码基线 `dbf9c25f3e7a0b38172573d58c36360c773b057a`，不替代上节本波结果。
