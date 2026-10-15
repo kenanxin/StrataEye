@@ -19,6 +19,8 @@ const {
 const { createSupabaseAuthService } = require('./server/supabase-auth-service.js');
 const { createExpertAdviceService } = require('./server/expert-advice-service.js');
 const { createAgentCollaborationService } = require('./server/agent-collaboration-service.js');
+const { createSupportSimulationService } = require('./server/support-simulation-service.js');
+const { createKnowledgeRetrievalService } = require('./server/knowledge-retrieval-service.js');
 const { WorkflowStoreError, createFileWorkflowStore, createSupabaseWorkflowStore } = require('./server/workflow-store.js');
 
 const ROOT = __dirname;
@@ -194,7 +196,9 @@ function createAppServer(options = {}) {
       serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     })
     : createAuthService());
-  const expertAdviceService = options.expertAdviceService || createExpertAdviceService();
+  const expertAdviceService = options.expertAdviceService || createExpertAdviceService({ cacheDirectory: process.env.DEEPSEEK_CACHE_DIR || path.join(root, '.runtime', 'expert-advice-cache') });
+  const supportSimulation = createSupportSimulationService({ adviceService: expertAdviceService });
+  const knowledgeService = createKnowledgeRetrievalService();
   const storageProvider = options.workflowStoreProvider || process.env.WORKFLOW_STORE_PROVIDER || (authService.provider === 'supabase' || process.env.AUTH_PROVIDER === 'supabase' ? 'supabase' : 'file');
   let workflowStore = options.workflowStore;
   if (!workflowStore) {
@@ -356,6 +360,30 @@ function createAppServer(options = {}) {
         return;
       }
 
+      if (pathname === '/api/roof-risk/support-simulation') {
+        assertMethod(req, ['GET']);
+        sendJson(res, supportSimulation.catalog());
+        return;
+      }
+      if (pathname === '/api/roof-risk/support-simulation/explain') {
+        assertMethod(req, ['POST']);
+        if (!['enterprise', 'expert', 'super_admin'].includes(session.user.role)) {
+          sendApiError(res, 403, 'FORBIDDEN', '仅企业、智库和管理员可发起模拟研究解释');
+          return;
+        }
+        const body = await readJsonBody(req);
+        if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(key => !['case_id', 'step'].includes(key))) {
+          throw new RoofRiskRepositoryError('INVALID_SIMULATION_INPUT', 'Only case_id and step are accepted; simulation values are server-owned', 400);
+        }
+        try { sendJson(res, await supportSimulation.explain({ caseId: body.case_id, step: body.step })); }
+        catch (error) {
+          if (error instanceof TypeError) throw new RoofRiskRepositoryError('INVALID_SIMULATION_INPUT', error.message, 400);
+          if (error.code === 'SIMULATION_ADVICE_BUSY') throw new RoofRiskRepositoryError(error.code, error.message, 429);
+          throw error;
+        }
+        return;
+      }
+
       if (pathname === '/api/roof-risk/current') {
         assertMethod(req, ['GET']);
         sendJson(res, repository.getCurrent());
@@ -472,14 +500,22 @@ function createAppServer(options = {}) {
           return;
         }
         const body = await readJsonBody(req);
-        const result = await expertAdviceService.generate(body);
-        sendJson(res, result);
+        const recordId = body?.recordId ?? repository.getCurrent().model_output.record_id;
+        const evaluated = repository.evaluateRecord(recordId);
+        const featureEvidence = Object.entries(evaluated.metrics).filter(([key]) => key !== 'data_quality').map(([key, metric]) => ({ ...metric, key, label: evaluated.feature_evidence.find(item => item.key === key)?.label || key, id: `feature:${recordId}:${key}` }));
+        const retrieval = knowledgeService.retrieve({ query: `${evaluated.model_output.predicted_class} ${featureEvidence.map(item => item.label).join(' ')} 支护 复核 工单` });
+        const result = await expertAdviceService.generateWorkflowAdvice({ risk: { predicted_class: evaluated.model_output.predicted_class, score: evaluated.risk.score, confidence: evaluated.model_output.confidence },
+          feature_evidence: featureEvidence, knowledge_chunks: retrieval.chunks, rule_recommendations: ['复核当前异常指标与支护状态', '结合检索依据提交人工研判', '按权限确认方案并记录核验结果'] });
+        const labels = new Map([...featureEvidence.map(item => [item.id, item.label]), ...retrieval.chunks.map(item => [item.id, item.title])]);
+        sendJson(res, { ...result, generatedAt: result.generated_at || new Date().toISOString(), riskLevel: evaluated.model_output.predicted_class,
+          timeHorizon: '候选建议，待人工确认', evidence: result.evidence_ids.map(id => labels.get(id) || id), knowledge_retrieval: retrieval, record_id: recordId });
         return;
       }
 
       if (pathname === '/api/roof-risk/expert-advice/status') {
         assertMethod(req, ['GET']);
-        sendJson(res, { configured: Boolean(expertAdviceService.configured), source: expertAdviceService.configured ? 'deepseek' : 'unconfigured' });
+        sendJson(res, { configured: Boolean(expertAdviceService.configured), source: expertAdviceService.configured ? 'deepseek' : 'unconfigured',
+          ...(typeof expertAdviceService.status === 'function' ? expertAdviceService.status() : {}) });
         return;
       }
 

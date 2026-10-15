@@ -3,6 +3,7 @@
 const { createHash } = require('node:crypto');
 const { WorkflowStoreError } = require('./workflow-store.js');
 const { createMultiAgentWorkflowService } = require('./multi-agent-workflow-service.js');
+const { createKnowledgeRetrievalService } = require('./knowledge-retrieval-service.js');
 const POLICY = Object.freeze({ ACKNOWLEDGE: 'enterprise', SUBMIT_DISPOSAL: 'enterprise', REJECT: 'regulator', APPROVE: 'regulator', ARCHIVE: 'expert', REPROCESS: 'enterprise', UPDATE_RESOURCES: 'enterprise', APPROVE_MEMORY: 'expert' });
 const ACTIVE = ['alert_triggered', 'disposal_in_progress', 'changes_requested', 'pending_review'];
 const COMMAND = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
@@ -38,7 +39,7 @@ function feedbackFor(type, payload, actor, at) {
   return feedback;
 }
 
-function createAgentCollaborationService({ repository, store, adviceService, now = () => new Date().toISOString() } = {}) {
+function createAgentCollaborationService({ repository, store, adviceService, knowledgeService = createKnowledgeRetrievalService(), now = () => new Date().toISOString() } = {}) {
   const builder = createMultiAgentWorkflowService(repository);
   const at = () => { const value = now(); return value instanceof Date ? value.toISOString() : String(value); };
   const available = () => { if (!store) throw new WorkflowStoreError('WORKFLOW_STORAGE_UNAVAILABLE', 'Durable workflow storage is unavailable', 503); };
@@ -69,13 +70,18 @@ function createAgentCollaborationService({ repository, store, adviceService, now
     const similarIds = run.nodes.find(node => node.agent_id === 'A2').output.cases.map(item => item.record_id);
     const memory = await reviewedMemory(run.algorithm.record_id, similarIds);
     run.nodes.find(node => node.agent_id === 'A2').output.reviewed_workflows = structuredClone(memory);
+    const retrieval = knowledgeService.retrieve({ query: `${evaluated.model_output.predicted_class} ${evaluated.feature_evidence.map(item => item.label).join(' ')} 支护 复核 工单` });
+    const knowledgeNode = run.nodes.find(node => node.agent_id === 'A2');
+    knowledgeNode.output.knowledge_retrieval = structuredClone(retrieval);
+    knowledgeNode.output_summary += ` 跨域RAG检索${retrieval.chunks.length}段资料（字符TF-IDF），实际引用另行记录。`;
     const input = { advice_invocation_id: `${run.workflow_run_id}:v${version}`, risk: { predicted_class: run.algorithm.predicted_class, confidence: run.algorithm.confidence, score: run.nodes[0].output.risk_score }, feature_evidence: featureEvidence, similar_record_ids: similarIds, reviewed_memory: structuredClone(memory), rule_recommendations: decision.output.actions };
+    input.knowledge_chunks = structuredClone(retrieval.chunks);
     const advice = await adviceService.generateWorkflowAdvice(input);
     decision.output = { ...decision.output, decision_mode: advice.source === 'deepseek' ? 'deepseek_proposal' : 'rule_assisted', actions: advice.recommendations, advice, plan_version: version };
     decision.output_summary = advice.summary;
     const control = run.nodes.find(node => node.agent_id === 'A4');
     if (control.output) control.output.portal_tasks.enterprise = advice.recommendations;
-    return { version, created_at: timestamp, source_record_id: run.algorithm.record_id, monitoring_evidence: 'original_csv_record', feedback_source: run.feedback.length ? 'human-input' : 'none', feedback_start_index: run.feedback.length, advice, retrieved_context: structuredClone(memory), resources: structuredClone(run.nodes.find(node => node.agent_id === 'A5').output.snapshot), approved: false };
+    return { version, created_at: timestamp, source_record_id: run.algorithm.record_id, monitoring_evidence: 'original_csv_record', feedback_source: run.feedback.length ? 'human-input' : 'none', feedback_start_index: run.feedback.length, advice, retrieved_context: structuredClone(memory), knowledge_retrieval: structuredClone(retrieval), resources: structuredClone(run.nodes.find(node => node.agent_id === 'A5').output.snapshot), approved: false };
   }
   function syncControl(run) {
     const control = run.nodes.find(node => node.agent_id === 'A4');

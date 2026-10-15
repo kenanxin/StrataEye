@@ -778,6 +778,9 @@ function createWorkingFace(root, materials, runtime) {
     support.position.set(-1.95, 0, -length / 2 + 0.9 + i * ((length - 1.8) / (supportCount - 1)));
     support.userData.supportIndex = i + 1;
     supports.add(support);
+    // Keep a dedicated device role: createMonitoring later reuses the legacy
+    // supportPressure03 role for its small sensor, not for the whole support.
+    if (i === 2) runtime.objectsByRole.set('simulationSupport01', support);
     if (i === 2) register(runtime, 'supportPressure03', support, {
       name: '支架压力 03',
       install: '工作面出口第 3 架液压支架',

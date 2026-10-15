@@ -3,8 +3,8 @@
    初始化、数据驱动、交互管理、灾害模拟
    ============================================================ */
 
-import { initScene, focusMineEquipment, focusRoofWarningStage, setRoofFieldMode, disasterEffects } from './scene.js';
-import { clearRoofRiskCharts, disposeCharts, initPortalCharts, resizeCharts, updateReplayChart, updateRoofRiskCharts } from './charts.js';
+import { initScene, focusMineEquipment, focusRoofWarningStage, setRoofFieldMode, setSupportSimulationFrame, disasterEffects } from './scene.js';
+import { clearRoofRiskCharts, disposeCharts, initPortalCharts, resizeCharts, updateReplayChart, updateRoofRiskCharts, updateSupportSimulationChart, disposeSupportSimulationChart } from './charts.js';
 import { init, startDisaster, resetDisaster, getEquipFaults, getEnvData, isActive, getState, tick, getDisasterList } from './disaster.js';
 import { EQUIPMENT, METRICS, getMetricLevel, getMineState, updateMineState } from './mine-data.js';
 import { mapRoofRiskViewModel, unavailableRoofRiskViewModel } from './roof-risk-view-model.mjs';
@@ -12,6 +12,9 @@ import { authFetch, bootstrapAuthenticatedPortal } from './auth-client.mjs';
 import { createReplayController } from './roof-risk-replay-controller.mjs';
 import { destroyWarningDemo, getWarningDemoAdviceContext, refreshWarningDemoRisk, setupWarningDemo } from './warning-demo-ui.mjs';
 import { setupMultiAgentWorkflow } from './multi-agent-workflow-ui.mjs';
+import { setupSupportSimulation } from './support-simulation-ui.mjs';
+import { renderKnowledgeEvidence } from './knowledge-evidence.mjs';
+import { adviceSourceLabel, adviceNotice, requestAdvice } from './advice-presentation.mjs';
 import { createWorkflowClient, createWorkflowCoordinator, projectWorkflowClosedLoop } from './workflow-client.mjs';
 
 let workflowCoordinator = null;
@@ -19,6 +22,7 @@ let warningController = null;
 let multiAgentController = null;
 let workflowUnsubscribe = null;
 let workflowRole = null;
+let supportSimulationController = null;
 
 function hasWorkflowAuthority() {
   const snapshot = workflowCoordinator?.getSnapshot();
@@ -1467,9 +1471,8 @@ function setupClosedLoopActions() {
 
 function setExpertAdviceResult(result) {
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-  const sourceLabel = result.source === 'deepseek' ? 'DeepSeek AI' : '本地专家规则';
-  const fallbackLabels = { not_configured: 'API未配置', provider_http_error: 'API返回错误', empty_provider_response: 'API返回空内容', provider_timeout: 'API请求超时', provider_unavailable: 'API连接失败' };
-  const fallbackNotice = result.fallback_reason ? `已使用本地规则：${fallbackLabels[result.fallback_reason] || 'API暂不可用'}${result.provider_status ? `（HTTP ${result.provider_status}）` : ''}。` : '';
+  const sourceLabel = adviceSourceLabel(result);
+  const fallbackNotice = adviceNotice(result);
   const source = document.getElementById('expertAdviceSource');
   const time = document.getElementById('expertAdviceTime');
   const resultPanel = document.getElementById('expertAdviceResult');
@@ -1487,7 +1490,7 @@ function setExpertAdviceResult(result) {
   if (time) time.textContent = result.generatedAt ? new Date(result.generatedAt).toLocaleString('zh-CN', { hour12: false }) : '--';
   if (sourceBadge) sourceBadge.textContent = sourceLabel;
   if (resultPanel) {
-    resultPanel.innerHTML = `<strong>${escapeHtml(result.riskLevel)} · ${escapeHtml(result.timeHorizon)}</strong>${fallbackNotice ? `<p role="status">${escapeHtml(fallbackNotice)}</p>` : ''}<p>${escapeHtml(result.summary)}</p><ul>${(result.recommendations || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
+    resultPanel.innerHTML = `<strong>${escapeHtml(result.riskLevel)} · ${escapeHtml(result.timeHorizon)}</strong>${fallbackNotice ? `<p role="status">${escapeHtml(fallbackNotice)}</p>` : ''}<p>${escapeHtml(result.summary)}</p><ul>${(result.recommendations || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>${result.knowledge_retrieval ? renderKnowledgeEvidence(result.knowledge_retrieval, result.evidence_ids) : ''}`;
   }
   if (copy) { copy.disabled = false; copy.dataset.copyText = text; }
 }
@@ -1499,7 +1502,7 @@ async function generateExpertAdvice() {
   button.textContent = '分析中…';
   try {
     const payload = latestRoofRiskApiPayload;
-    const response = await authFetch('/api/roof-risk/expert-advice', {
+    const result = await requestAdvice(authFetch, '/api/roof-risk/expert-advice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1510,9 +1513,8 @@ async function generateExpertAdvice() {
         evidence: payload.feature_evidence,
         closed_loop: getWarningDemoAdviceContext(payload.closed_loop),
       }),
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    setExpertAdviceResult(await response.json());
+    }, { onWait: () => { button.textContent = 'DeepSeek仍在处理…'; } });
+    setExpertAdviceResult(result);
   } catch (error) {
     const fallback = document.getElementById('expertAdviceResult');
     if (fallback) fallback.innerHTML = '<strong>建议生成失败</strong><p>当前无法连接建议服务，请稍后重试。已有模型解释仍可使用。</p>';
@@ -1615,6 +1617,10 @@ async function initApp(authenticatedUser) {
   });
   setupDisasterPanel();
   setupEquipmentFocus();
+  supportSimulationController?.destroy();
+  supportSimulationController = setupSupportSimulation({ authFetch, role: authenticatedUser.role,
+    onFrame: frame => setSupportSimulationFrame(frame), onFocus: frame => setSupportSimulationFrame(frame, { focus: true }),
+    renderChart: updateSupportSimulationChart, disposeChart: disposeSupportSimulationChart });
   await refreshRoofRiskApiStatus();
   if (authenticatedUser.role === 'enterprise') await initReplayWorkbench();
   refreshData();
@@ -1636,6 +1642,7 @@ async function initApp(authenticatedUser) {
     replayController?.dispose();
     destroyWarningDemo();
     multiAgentController?.destroy();
+    supportSimulationController?.destroy();
     workflowUnsubscribe?.();
     workflowCoordinator?.destroy();
     disposeCharts();

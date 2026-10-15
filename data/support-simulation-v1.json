@@ -1,0 +1,1075 @@
+{
+  "schema_version": 1,
+  "version": "support-point-v1-20261014",
+  "source_kind": "mechanics_simulation",
+  "computation_mode": "precomputed_solver_frames",
+  "model": "Euler–Bernoulli梁—单接地线性弹簧",
+  "object_id": "SIM-SUPPORT-01",
+  "scene_role": "simulationSupport01",
+  "mapping_kind": "illustrative_object_link",
+  "parameters": {
+    "length_m": 8.0,
+    "width_m": 1.0,
+    "thickness_m": 0.5,
+    "young_modulus_gpa": 8.0,
+    "elements": 24,
+    "spring_node": 12,
+    "spring_position_m": 4.0,
+    "boundary": "simply_supported"
+  },
+  "step_unit": "准静态加载步，无现场时间单位",
+  "disclaimer": "简化力学预计算演示，未经现场校准。模拟支护反力不等于液压支架实测工作阻力；三维对象仅作示意关联，不改变教师数据、风险等级或工单状态。",
+  "limitations": [
+    "线弹性、小变形与双向弹簧假设",
+    "无裂隙、离层或垮落动力学",
+    "无材料噪声或液压支架机构建模",
+    "刚度工况不代表已执行的现场补强措施"
+  ],
+  "provenance": {
+    "solver_source_sha256": "87ce0b08aee703becd4fbcba28a99a3c68981a071931fb4fd76cfda9e3073544",
+    "exporter_source_sha256": "39889443d811a53193b03c789e97e268cf7447c1bee06f5a85aa621d3807fd59",
+    "solver_verification": {
+      "passed": true,
+      "grids": [
+        12,
+        24,
+        48
+      ],
+      "analytic_cases": {
+        "simply_supported": [
+          {
+            "elements": 12,
+            "deflection_relative_error": 1.3211653993039363e-13,
+            "stress_relative_error": 0.004629629629787857,
+            "equilibrium_relative_error": 2.168235369026661e-14,
+            "residual_relative_error": 3.7643831403505895e-13,
+            "energy_relative_error": 1.3677947663381929e-13
+          },
+          {
+            "elements": 24,
+            "deflection_relative_error": 2.3359092438113294e-13,
+            "stress_relative_error": 0.0011574074072937535,
+            "equilibrium_relative_error": 5.711626727133989e-13,
+            "residual_relative_error": 6.270425549038164e-12,
+            "energy_relative_error": 2.0439205883349132e-13
+          },
+          {
+            "elements": 48,
+            "deflection_relative_error": 2.580957669806594e-11,
+            "stress_relative_error": 0.0002893518214885926,
+            "equilibrium_relative_error": 1.8278806237503887e-11,
+            "residual_relative_error": 1.0194019293785726e-10,
+            "energy_relative_error": 2.944733346055273e-11
+          }
+        ],
+        "cantilever": [
+          {
+            "elements": 12,
+            "deflection_relative_error": 6.350475700855895e-14,
+            "stress_relative_error": 0.0011574074074084395,
+            "equilibrium_relative_error": 8.221832104027271e-14,
+            "residual_relative_error": 2.493905106955353e-12,
+            "energy_relative_error": 2.8954616482224083e-13
+          },
+          {
+            "elements": 24,
+            "deflection_relative_error": 8.537281992460066e-12,
+            "stress_relative_error": 0.0002893518590124655,
+            "equilibrium_relative_error": 3.9643782656639815e-12,
+            "residual_relative_error": 3.647935614957524e-11,
+            "energy_relative_error": 1.0188960786194912e-11
+          },
+          {
+            "elements": 48,
+            "deflection_relative_error": 6.443690026003424e-11,
+            "stress_relative_error": 7.233801845873966e-05,
+            "equilibrium_relative_error": 3.594279405660927e-11,
+            "residual_relative_error": 6.628403141929229e-10,
+            "energy_relative_error": 1.36293087926731e-10
+          }
+        ]
+      },
+      "spring_checks": {
+        "equilibrium_relative_error": 4.548928700387478e-13,
+        "residual_relative_error": 2.9550345092847037e-12,
+        "energy_relative_error": 4.4853010194856324e-14,
+        "center_deflection_relative_error": 2.531308496145357e-13,
+        "center_spring_force_relative_error": 2.531308496145357e-13
+      },
+      "tolerances": {
+        "deflection": 0.0001,
+        "refined_stress": 0.005,
+        "conservation": 1e-07,
+        "center_spring": 0.0001
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "reference-support",
+      "label": "参考支护",
+      "spring_stiffness_mn_per_m": 80.0,
+      "frames": [
+        {
+          "step": 0,
+          "load_kn_per_m": 20.0,
+          "support_force_kn": 91.10320284697161,
+          "support_displacement_mm": 1.1387900355871452,
+          "max_deflection_mm": 1.1939923553446086,
+          "max_bending_stress_mpa": 0.7157137208382308,
+          "boundary_reactions_kn": [
+            34.4483985765179,
+            34.44839857651045
+          ],
+          "applied_load_kn": 160.0,
+          "equilibrium_relative_error": 1.8189894035458566e-16,
+          "residual_relative_error": 7.091261162344964e-13
+        },
+        {
+          "step": 1,
+          "load_kn_per_m": 24.0,
+          "support_force_kn": 109.32384341636596,
+          "support_displacement_mm": 1.3665480427045744,
+          "max_deflection_mm": 1.4327908264135307,
+          "max_bending_stress_mpa": 0.8588564650058965,
+          "boundary_reactions_kn": [
+            41.33807829181198,
+            41.33807829181198
+          ],
+          "applied_load_kn": 192.0,
+          "equilibrium_relative_error": 5.244752780223886e-14,
+          "residual_relative_error": 6.024618326190033e-13
+        },
+        {
+          "step": 2,
+          "load_kn_per_m": 28.0,
+          "support_force_kn": 127.54448398576034,
+          "support_displacement_mm": 1.594306049822004,
+          "max_deflection_mm": 1.6715892974824527,
+          "max_bending_stress_mpa": 1.0019992091735221,
+          "boundary_reactions_kn": [
+            48.22775800712841,
+            48.22775800711351
+          ],
+          "applied_load_kn": 224.0,
+          "equilibrium_relative_error": 1.0134369534041201e-14,
+          "residual_relative_error": 7.993739905323966e-13
+        },
+        {
+          "step": 3,
+          "load_kn_per_m": 32.0,
+          "support_force_kn": 145.76512455515476,
+          "support_displacement_mm": 1.8220640569394344,
+          "max_deflection_mm": 1.910387768551375,
+          "max_bending_stress_mpa": 1.145141953341179,
+          "boundary_reactions_kn": [
+            55.117437722427155,
+            55.11743772241784
+          ],
+          "applied_load_kn": 256.0,
+          "equilibrium_relative_error": 9.094947017729283e-16,
+          "residual_relative_error": 5.860147133873622e-13
+        },
+        {
+          "step": 4,
+          "load_kn_per_m": 36.0,
+          "support_force_kn": 163.98576512454903,
+          "support_displacement_mm": 2.0498220640568627,
+          "max_deflection_mm": 2.1491862396202968,
+          "max_bending_stress_mpa": 1.2882846975088187,
+          "boundary_reactions_kn": [
+            62.00711743774079,
+            62.007117437718435
+          ],
+          "applied_load_kn": 288.0,
+          "equilibrium_relative_error": 2.869961058927907e-14,
+          "residual_relative_error": 7.127766362175685e-13
+        },
+        {
+          "step": 5,
+          "load_kn_per_m": 40.0,
+          "support_force_kn": 182.20640569394322,
+          "support_displacement_mm": 2.2775800711742904,
+          "max_deflection_mm": 2.387984710689217,
+          "max_bending_stress_mpa": 1.4314274416764616,
+          "boundary_reactions_kn": [
+            68.8967971530358,
+            68.8967971530209
+          ],
+          "applied_load_kn": 320.0,
+          "equilibrium_relative_error": 1.8189894035458566e-16,
+          "residual_relative_error": 7.091261162344964e-13
+        },
+        {
+          "step": 6,
+          "load_kn_per_m": 44.0,
+          "support_force_kn": 200.4270462633377,
+          "support_displacement_mm": 2.5053380782917207,
+          "max_deflection_mm": 2.6267831817581406,
+          "max_bending_stress_mpa": 1.5745701858441221,
+          "boundary_reactions_kn": [
+            75.78647686833081,
+            75.78647686832336
+          ],
+          "applied_load_kn": 352.0,
+          "equilibrium_relative_error": 2.3150774226947265e-14,
+          "residual_relative_error": 5.871977020720337e-13
+        },
+        {
+          "step": 7,
+          "load_kn_per_m": 48.0,
+          "support_force_kn": 218.64768683273192,
+          "support_displacement_mm": 2.733096085409149,
+          "max_deflection_mm": 2.8655816528270615,
+          "max_bending_stress_mpa": 1.717712930011793,
+          "boundary_reactions_kn": [
+            82.67615658362396,
+            82.67615658362396
+          ],
+          "applied_load_kn": 384.0,
+          "equilibrium_relative_error": 5.244752780223886e-14,
+          "residual_relative_error": 6.024618326190033e-13
+        },
+        {
+          "step": 8,
+          "load_kn_per_m": 52.0,
+          "support_force_kn": 236.8683274021265,
+          "support_displacement_mm": 2.9608540925265814,
+          "max_deflection_mm": 3.1043801238959836,
+          "max_bending_stress_mpa": 1.8608556741794169,
+          "boundary_reactions_kn": [
+            89.56583629894506,
+            89.5658362989227
+          ],
+          "applied_load_kn": 416.0,
+          "equilibrium_relative_error": 1.3712381657499533e-14,
+          "residual_relative_error": 7.916549937075442e-13
+        },
+        {
+          "step": 9,
+          "load_kn_per_m": 56.0,
+          "support_force_kn": 255.08896797152067,
+          "support_displacement_mm": 3.188612099644008,
+          "max_deflection_mm": 3.3431785949649053,
+          "max_bending_stress_mpa": 2.0039984183470443,
+          "boundary_reactions_kn": [
+            96.45551601425682,
+            96.45551601422702
+          ],
+          "applied_load_kn": 448.0,
+          "equilibrium_relative_error": 1.0134369534041201e-14,
+          "residual_relative_error": 7.993739905323966e-13
+        },
+        {
+          "step": 10,
+          "load_kn_per_m": 60.0,
+          "support_force_kn": 273.3096085409151,
+          "support_displacement_mm": 3.416370106761439,
+          "max_deflection_mm": 3.581977066033828,
+          "max_bending_stress_mpa": 2.1471411625147225,
+          "boundary_reactions_kn": [
+            103.3451957295388,
+            103.34519572953135
+          ],
+          "applied_load_kn": 480.0,
+          "equilibrium_relative_error": 3.0680287939806777e-14,
+          "residual_relative_error": 5.379124029677083e-13
+        },
+        {
+          "step": 11,
+          "load_kn_per_m": 64.0,
+          "support_force_kn": 291.5302491103095,
+          "support_displacement_mm": 3.644128113878869,
+          "max_deflection_mm": 3.82077553710275,
+          "max_bending_stress_mpa": 2.290283906682358,
+          "boundary_reactions_kn": [
+            110.23487544485431,
+            110.23487544483568
+          ],
+          "applied_load_kn": 512.0,
+          "equilibrium_relative_error": 9.094947017729283e-16,
+          "residual_relative_error": 5.860147133873622e-13
+        },
+        {
+          "step": 12,
+          "load_kn_per_m": 68.0,
+          "support_force_kn": 309.7508896797037,
+          "support_displacement_mm": 3.871886120996296,
+          "max_deflection_mm": 4.05957400817167,
+          "max_bending_stress_mpa": 2.433426650849963,
+          "boundary_reactions_kn": [
+            117.1245551601549,
+            117.12455516012882
+          ],
+          "applied_load_kn": 544.0,
+          "equilibrium_relative_error": 2.3111865362700294e-14,
+          "residual_relative_error": 6.697216302857383e-13
+        },
+        {
+          "step": 13,
+          "load_kn_per_m": 72.0,
+          "support_force_kn": 327.97153024909807,
+          "support_displacement_mm": 4.0996441281137255,
+          "max_deflection_mm": 4.2983724792405935,
+          "max_bending_stress_mpa": 2.5765693950176374,
+          "boundary_reactions_kn": [
+            124.01423487548158,
+            124.01423487543687
+          ],
+          "applied_load_kn": 576.0,
+          "equilibrium_relative_error": 2.869961058927907e-14,
+          "residual_relative_error": 7.127766362175685e-13
+        },
+        {
+          "step": 14,
+          "load_kn_per_m": 76.0,
+          "support_force_kn": 346.19217081849246,
+          "support_displacement_mm": 4.327402135231156,
+          "max_deflection_mm": 4.537170950309514,
+          "max_bending_stress_mpa": 2.719712139185329,
+          "boundary_reactions_kn": [
+            130.9039145907561,
+            130.9039145907375
+          ],
+          "applied_load_kn": 608.0,
+          "equilibrium_relative_error": 2.297670825531608e-14,
+          "residual_relative_error": 7.322725313316837e-13
+        },
+        {
+          "step": 15,
+          "load_kn_per_m": 80.0,
+          "support_force_kn": 364.41281138788645,
+          "support_displacement_mm": 4.555160142348581,
+          "max_deflection_mm": 4.775969421378434,
+          "max_bending_stress_mpa": 2.8628548833529233,
+          "boundary_reactions_kn": [
+            137.7935943060716,
+            137.7935943060418
+          ],
+          "applied_load_kn": 640.0,
+          "equilibrium_relative_error": 1.8189894035458566e-16,
+          "residual_relative_error": 7.091261162344964e-13
+        },
+        {
+          "step": 16,
+          "load_kn_per_m": 84.0,
+          "support_force_kn": 382.633451957281,
+          "support_displacement_mm": 4.782918149466013,
+          "max_deflection_mm": 5.014767892447358,
+          "max_bending_stress_mpa": 3.0059976275205735,
+          "boundary_reactions_kn": [
+            144.68327402136103,
+            144.6832740213461
+          ],
+          "applied_load_kn": 672.0,
+          "equilibrium_relative_error": 1.7670182777302604e-14,
+          "residual_relative_error": 7.387604276172381e-13
+        },
+        {
+          "step": 17,
+          "load_kn_per_m": 88.0,
+          "support_force_kn": 400.8540925266754,
+          "support_displacement_mm": 5.0106761565834415,
+          "max_deflection_mm": 5.253566363516281,
+          "max_bending_stress_mpa": 3.1491403716882442,
+          "boundary_reactions_kn": [
+            151.57295373666162,
+            151.57295373664672
+          ],
+          "applied_load_kn": 704.0,
+          "equilibrium_relative_error": 2.3150774226947265e-14,
+          "residual_relative_error": 5.871977020720337e-13
+        },
+        {
+          "step": 18,
+          "load_kn_per_m": 92.0,
+          "support_force_kn": 419.0747330960697,
+          "support_displacement_mm": 5.2384341637008704,
+          "max_deflection_mm": 5.492364834585202,
+          "max_bending_stress_mpa": 3.2922831158558457,
+          "boundary_reactions_kn": [
+            158.4626334519734,
+            158.46263345194362
+          ],
+          "applied_load_kn": 736.0,
+          "equilibrium_relative_error": 1.8031721043845882e-14,
+          "residual_relative_error": 6.964299395976483e-13
+        },
+        {
+          "step": 19,
+          "load_kn_per_m": 96.0,
+          "support_force_kn": 437.29537366546384,
+          "support_displacement_mm": 5.466192170818298,
+          "max_deflection_mm": 5.731163305654123,
+          "max_bending_stress_mpa": 3.435425860023586,
+          "boundary_reactions_kn": [
+            165.35231316724793,
+            165.35231316724793
+          ],
+          "applied_load_kn": 768.0,
+          "equilibrium_relative_error": 5.244752780223886e-14,
+          "residual_relative_error": 6.024618326190033e-13
+        },
+        {
+          "step": 20,
+          "load_kn_per_m": 100.0,
+          "support_force_kn": 455.51601423485846,
+          "support_displacement_mm": 5.693950177935731,
+          "max_deflection_mm": 5.969961776723047,
+          "max_bending_stress_mpa": 3.578568604191201,
+          "boundary_reactions_kn": [
+            172.2419928825634,
+            172.2419928825448
+          ],
+          "applied_load_kn": 800.0,
+          "equilibrium_relative_error": 4.16184775531292e-14,
+          "residual_relative_error": 8.675457481448637e-13
+        }
+      ]
+    },
+    {
+      "id": "soft-support",
+      "label": "较低支护刚度",
+      "spring_stiffness_mn_per_m": 20.0,
+      "frames": [
+        {
+          "step": 0,
+          "load_kn_per_m": 20.0,
+          "support_force_kn": 71.91011235954001,
+          "support_displacement_mm": 3.5955056179770004,
+          "max_deflection_mm": 3.5955056179770004,
+          "max_bending_stress_mpa": 1.1642946317101812,
+          "boundary_reactions_kn": [
+            44.044943820228184,
+            44.04494382022073
+          ],
+          "applied_load_kn": 160.0,
+          "equilibrium_relative_error": 6.912159733474254e-14,
+          "residual_relative_error": 1.6694884299479992e-12
+        },
+        {
+          "step": 1,
+          "load_kn_per_m": 24.0,
+          "support_force_kn": 86.29213483144805,
+          "support_displacement_mm": 4.314606741572403,
+          "max_deflection_mm": 4.314606741572403,
+          "max_bending_stress_mpa": 1.3971535580521999,
+          "boundary_reactions_kn": [
+            52.85393258427084,
+            52.85393258426338
+          ],
+          "applied_load_kn": 192.0,
+          "equilibrium_relative_error": 9.231371222995222e-14,
+          "residual_relative_error": 1.2685731978098902e-12
+        },
+        {
+          "step": 2,
+          "load_kn_per_m": 28.0,
+          "support_force_kn": 100.67415730335601,
+          "support_displacement_mm": 5.0337078651678,
+          "max_deflection_mm": 5.0337078651678,
+          "max_bending_stress_mpa": 1.6300124843942088,
+          "boundary_reactions_kn": [
+            61.66292134833584,
+            61.662921348309766
+          ],
+          "applied_load_kn": 224.0,
+          "equilibrium_relative_error": 7.275957614183426e-15,
+          "residual_relative_error": 1.854091041649591e-12
+        },
+        {
+          "step": 3,
+          "load_kn_per_m": 32.0,
+          "support_force_kn": 115.0561797752641,
+          "support_displacement_mm": 5.752808988763205,
+          "max_deflection_mm": 5.752808988763205,
+          "max_bending_stress_mpa": 1.862871410736237,
+          "boundary_reactions_kn": [
+            70.4719101123785,
+            70.47191011235242
+          ],
+          "applied_load_kn": 256.0,
+          "equilibrium_relative_error": 1.9554136088117956e-14,
+          "residual_relative_error": 1.6467410998668632e-12
+        },
+        {
+          "step": 4,
+          "load_kn_per_m": 36.0,
+          "support_force_kn": 129.43820224717211,
+          "support_displacement_mm": 6.471910112358606,
+          "max_deflection_mm": 6.471910112358606,
+          "max_bending_stress_mpa": 2.0957303370783604,
+          "boundary_reactions_kn": [
+            79.28089887638762,
+            79.28089887639881
+          ],
+          "applied_load_kn": 288.0,
+          "equilibrium_relative_error": 1.4390227281384997e-13,
+          "residual_relative_error": 2.0722566589339307e-12
+        },
+        {
+          "step": 5,
+          "load_kn_per_m": 40.0,
+          "support_force_kn": 143.82022471908002,
+          "support_displacement_mm": 7.191011235954001,
+          "max_deflection_mm": 7.191011235954001,
+          "max_bending_stress_mpa": 2.3285892634203624,
+          "boundary_reactions_kn": [
+            88.08988764045637,
+            88.08988764044146
+          ],
+          "applied_load_kn": 320.0,
+          "equilibrium_relative_error": 6.912159733474254e-14,
+          "residual_relative_error": 1.6694884299479992e-12
+        },
+        {
+          "step": 6,
+          "load_kn_per_m": 44.0,
+          "support_force_kn": 158.20224719098815,
+          "support_displacement_mm": 7.910112359549408,
+          "max_deflection_mm": 7.910112359549408,
+          "max_bending_stress_mpa": 2.5614481897623906,
+          "boundary_reactions_kn": [
+            96.898876404499,
+            96.89887640448784
+          ],
+          "applied_load_kn": 352.0,
+          "equilibrium_relative_error": 7.110594941133803e-14,
+          "residual_relative_error": 1.6423438325814644e-12
+        },
+        {
+          "step": 7,
+          "load_kn_per_m": 48.0,
+          "support_force_kn": 172.5842696628961,
+          "support_displacement_mm": 8.629213483144806,
+          "max_deflection_mm": 8.629213483144806,
+          "max_bending_stress_mpa": 2.7943071161043997,
+          "boundary_reactions_kn": [
+            105.70786516854167,
+            105.70786516852677
+          ],
+          "applied_load_kn": 384.0,
+          "equilibrium_relative_error": 9.231371222995222e-14,
+          "residual_relative_error": 1.2685731978098902e-12
+        },
+        {
+          "step": 8,
+          "load_kn_per_m": 52.0,
+          "support_force_kn": 186.96629213480415,
+          "support_displacement_mm": 9.348314606740209,
+          "max_deflection_mm": 9.348314606740209,
+          "max_bending_stress_mpa": 3.0271660424465336,
+          "boundary_reactions_kn": [
+            114.51685393256197,
+            114.51685393257688
+          ],
+          "applied_load_kn": 416.0,
+          "equilibrium_relative_error": 1.3698389431318412e-13,
+          "residual_relative_error": 1.3619772172840863e-12
+        },
+        {
+          "step": 9,
+          "load_kn_per_m": 56.0,
+          "support_force_kn": 201.34831460671202,
+          "support_displacement_mm": 10.0674157303356,
+          "max_deflection_mm": 10.0674157303356,
+          "max_bending_stress_mpa": 3.2600249687884175,
+          "boundary_reactions_kn": [
+            123.32584269667169,
+            123.32584269661953
+          ],
+          "applied_load_kn": 448.0,
+          "equilibrium_relative_error": 7.275957614183426e-15,
+          "residual_relative_error": 1.854091041649591e-12
+        },
+        {
+          "step": 10,
+          "load_kn_per_m": 60.0,
+          "support_force_kn": 215.73033707862018,
+          "support_displacement_mm": 10.786516853931008,
+          "max_deflection_mm": 10.786516853931008,
+          "max_bending_stress_mpa": 3.4928838951304546,
+          "boundary_reactions_kn": [
+            132.13483146068455,
+            132.13483146066218
+          ],
+          "applied_load_kn": 480.0,
+          "equilibrium_relative_error": 6.887906541426976e-14,
+          "residual_relative_error": 1.9810223111757425e-12
+        },
+        {
+          "step": 11,
+          "load_kn_per_m": 64.0,
+          "support_force_kn": 230.1123595505282,
+          "support_displacement_mm": 11.50561797752641,
+          "max_deflection_mm": 11.50561797752641,
+          "max_bending_stress_mpa": 3.725742821472474,
+          "boundary_reactions_kn": [
+            140.943820224757,
+            140.94382022470484
+          ],
+          "applied_load_kn": 512.0,
+          "equilibrium_relative_error": 1.9554136088117956e-14,
+          "residual_relative_error": 1.6467410998668632e-12
+        },
+        {
+          "step": 12,
+          "load_kn_per_m": 68.0,
+          "support_force_kn": 244.4943820224362,
+          "support_displacement_mm": 12.22471910112181,
+          "max_deflection_mm": 12.22471910112181,
+          "max_bending_stress_mpa": 3.958601747814708,
+          "boundary_reactions_kn": [
+            149.75280898879967,
+            149.75280898875496
+          ],
+          "applied_load_kn": 544.0,
+          "equilibrium_relative_error": 1.690590151530855e-14,
+          "residual_relative_error": 2.8410967009951457e-12
+        },
+        {
+          "step": 13,
+          "load_kn_per_m": 72.0,
+          "support_force_kn": 258.87640449434423,
+          "support_displacement_mm": 12.943820224717212,
+          "max_deflection_mm": 12.943820224717212,
+          "max_bending_stress_mpa": 4.191460674156721,
+          "boundary_reactions_kn": [
+            158.56179775277525,
+            158.56179775279762
+          ],
+          "applied_load_kn": 576.0,
+          "equilibrium_relative_error": 1.4390227281384997e-13,
+          "residual_relative_error": 2.0722566589339307e-12
+        },
+        {
+          "step": 14,
+          "load_kn_per_m": 76.0,
+          "support_force_kn": 273.2584269662523,
+          "support_displacement_mm": 13.662921348312613,
+          "max_deflection_mm": 13.662921348312613,
+          "max_bending_stress_mpa": 4.424319600498383,
+          "boundary_reactions_kn": [
+            167.3707865168775,
+            167.3707865168328
+          ],
+          "applied_load_kn": 608.0,
+          "equilibrium_relative_error": 6.165416715176482e-14,
+          "residual_relative_error": 1.7120573706621885e-12
+        },
+        {
+          "step": 15,
+          "load_kn_per_m": 80.0,
+          "support_force_kn": 287.64044943816003,
+          "support_displacement_mm": 14.382022471908002,
+          "max_deflection_mm": 14.382022471908002,
+          "max_bending_stress_mpa": 4.657178526840725,
+          "boundary_reactions_kn": [
+            176.17977528091274,
+            176.17977528088292
+          ],
+          "applied_load_kn": 640.0,
+          "equilibrium_relative_error": 6.912159733474254e-14,
+          "residual_relative_error": 1.6694884299479992e-12
+        },
+        {
+          "step": 16,
+          "load_kn_per_m": 84.0,
+          "support_force_kn": 302.0224719100682,
+          "support_displacement_mm": 15.10112359550341,
+          "max_deflection_mm": 15.10112359550341,
+          "max_bending_stress_mpa": 4.890037453182755,
+          "boundary_reactions_kn": [
+            184.98876404497028,
+            184.98876404493302
+          ],
+          "applied_load_kn": 672.0,
+          "equilibrium_relative_error": 4.244308608273665e-14,
+          "residual_relative_error": 1.6353545851032687e-12
+        },
+        {
+          "step": 17,
+          "load_kn_per_m": 88.0,
+          "support_force_kn": 316.4044943819763,
+          "support_displacement_mm": 15.820224719098816,
+          "max_deflection_mm": 15.820224719098816,
+          "max_bending_stress_mpa": 5.122896379524781,
+          "boundary_reactions_kn": [
+            193.797752808998,
+            193.79775280897567
+          ],
+          "applied_load_kn": 704.0,
+          "equilibrium_relative_error": 7.110594941133803e-14,
+          "residual_relative_error": 1.6423438325814644e-12
+        },
+        {
+          "step": 18,
+          "load_kn_per_m": 92.0,
+          "support_force_kn": 330.7865168538842,
+          "support_displacement_mm": 16.53932584269421,
+          "max_deflection_mm": 16.53932584269421,
+          "max_bending_stress_mpa": 5.355755305867016,
+          "boundary_reactions_kn": [
+            202.6067415729662,
+            202.6067415730258
+          ],
+          "applied_load_kn": 736.0,
+          "equilibrium_relative_error": 1.682960630758949e-13,
+          "residual_relative_error": 2.2762631919851252e-12
+        },
+        {
+          "step": 19,
+          "load_kn_per_m": 96.0,
+          "support_force_kn": 345.1685393257922,
+          "support_displacement_mm": 17.258426966289612,
+          "max_deflection_mm": 17.258426966289612,
+          "max_bending_stress_mpa": 5.5886142322087995,
+          "boundary_reactions_kn": [
+            211.41573033708335,
+            211.41573033705353
+          ],
+          "applied_load_kn": 768.0,
+          "equilibrium_relative_error": 9.231371222995222e-14,
+          "residual_relative_error": 1.2685731978098902e-12
+        },
+        {
+          "step": 20,
+          "load_kn_per_m": 100.0,
+          "support_force_kn": 359.55056179770014,
+          "support_displacement_mm": 17.977528089885006,
+          "max_deflection_mm": 17.977528089885006,
+          "max_bending_stress_mpa": 5.821473158551013,
+          "boundary_reactions_kn": [
+            220.22471910117068,
+            220.22471910109618
+          ],
+          "applied_load_kn": 800.0,
+          "equilibrium_relative_error": 4.132743924856186e-14,
+          "residual_relative_error": 1.9884022155385514e-12
+        }
+      ]
+    },
+    {
+      "id": "stiff-support",
+      "label": "较高支护刚度",
+      "spring_stiffness_mn_per_m": 160.0,
+      "frames": [
+        {
+          "step": 0,
+          "load_kn_per_m": 20.0,
+          "support_force_kn": 95.34450651769697,
+          "support_displacement_mm": 0.5959031657356061,
+          "max_deflection_mm": 0.7431374577558301,
+          "max_bending_stress_mpa": 0.7320918684047529,
+          "boundary_reactions_kn": [
+            32.32774674116292,
+            32.327746741157334
+          ],
+          "applied_load_kn": 160.0,
+          "equilibrium_relative_error": 1.0768417268991471e-13,
+          "residual_relative_error": 6.313336326353643e-13
+        },
+        {
+          "step": 1,
+          "load_kn_per_m": 24.0,
+          "support_force_kn": 114.41340782123642,
+          "support_displacement_mm": 0.7150837988827277,
+          "max_deflection_mm": 0.8917649493069965,
+          "max_bending_stress_mpa": 0.8785102420857038,
+          "boundary_reactions_kn": [
+            38.79329608938843,
+            38.79329608938936
+          ],
+          "applied_load_kn": 192.0,
+          "equilibrium_relative_error": 7.397223574419816e-14,
+          "residual_relative_error": 2.9936621114869127e-13
+        },
+        {
+          "step": 2,
+          "load_kn_per_m": 28.0,
+          "support_force_kn": 133.48230912477584,
+          "support_displacement_mm": 0.834264432029849,
+          "max_deflection_mm": 1.0403924408581622,
+          "max_bending_stress_mpa": 1.024928615766646,
+          "boundary_reactions_kn": [
+            45.25884543761859,
+            45.25884543761952
+          ],
+          "applied_load_kn": 224.0,
+          "equilibrium_relative_error": 6.236535097871508e-14,
+          "residual_relative_error": 4.710784964832701e-13
+        },
+        {
+          "step": 3,
+          "load_kn_per_m": 32.0,
+          "support_force_kn": 152.5512104283153,
+          "support_displacement_mm": 0.9534450651769706,
+          "max_deflection_mm": 1.1890199324093291,
+          "max_bending_stress_mpa": 1.1713469894476023,
+          "boundary_reactions_kn": [
+            51.72439478585155,
+            51.72439478585248
+          ],
+          "applied_load_kn": 256.0,
+          "equilibrium_relative_error": 7.548806024715305e-14,
+          "residual_relative_error": 3.2330202611108633e-13
+        },
+        {
+          "step": 4,
+          "load_kn_per_m": 36.0,
+          "support_force_kn": 171.62011173185468,
+          "support_displacement_mm": 1.0726256983240916,
+          "max_deflection_mm": 1.3376474239604954,
+          "max_bending_stress_mpa": 1.3177653631285486,
+          "boundary_reactions_kn": [
+            58.18994413407892,
+            58.189944134084506
+          ],
+          "applied_load_kn": 288.0,
+          "equilibrium_relative_error": 6.28561893891957e-14,
+          "residual_relative_error": 6.631646205551679e-13
+        },
+        {
+          "step": 5,
+          "load_kn_per_m": 40.0,
+          "support_force_kn": 190.68901303539394,
+          "support_displacement_mm": 1.1918063314712122,
+          "max_deflection_mm": 1.4862749155116601,
+          "max_bending_stress_mpa": 1.4641837368095059,
+          "boundary_reactions_kn": [
+            64.65549348232584,
+            64.65549348231467
+          ],
+          "applied_load_kn": 320.0,
+          "equilibrium_relative_error": 1.0768417268991471e-13,
+          "residual_relative_error": 6.313336326353643e-13
+        },
+        {
+          "step": 6,
+          "load_kn_per_m": 44.0,
+          "support_force_kn": 209.7579143389335,
+          "support_displacement_mm": 1.3109869646183343,
+          "max_deflection_mm": 1.6349024070628275,
+          "max_bending_stress_mpa": 1.6106021104904347,
+          "boundary_reactions_kn": [
+            71.12104283052807,
+            71.12104283054482
+          ],
+          "applied_load_kn": 352.0,
+          "equilibrium_relative_error": 1.8189894035458565e-14,
+          "residual_relative_error": 4.895774067830637e-13
+        },
+        {
+          "step": 7,
+          "load_kn_per_m": 48.0,
+          "support_force_kn": 228.82681564247284,
+          "support_displacement_mm": 1.4301675977654553,
+          "max_deflection_mm": 1.783529898613993,
+          "max_bending_stress_mpa": 1.7570204841714077,
+          "boundary_reactions_kn": [
+            77.58659217877685,
+            77.58659217877872
+          ],
+          "applied_load_kn": 384.0,
+          "equilibrium_relative_error": 7.397223574419816e-14,
+          "residual_relative_error": 2.9936621114869127e-13
+        },
+        {
+          "step": 8,
+          "load_kn_per_m": 52.0,
+          "support_force_kn": 247.8957169460122,
+          "support_displacement_mm": 1.5493482309125763,
+          "max_deflection_mm": 1.9321573901651596,
+          "max_bending_stress_mpa": 1.9034388578523256,
+          "boundary_reactions_kn": [
+            84.05214152701075,
+            84.05214152700889
+          ],
+          "applied_load_kn": 416.0,
+          "equilibrium_relative_error": 7.653747721073719e-14,
+          "residual_relative_error": 4.2629453773396164e-13
+        },
+        {
+          "step": 9,
+          "load_kn_per_m": 56.0,
+          "support_force_kn": 266.9646182495517,
+          "support_displacement_mm": 1.668528864059698,
+          "max_deflection_mm": 2.0807848817163244,
+          "max_bending_stress_mpa": 2.049857231533292,
+          "boundary_reactions_kn": [
+            90.51769087523718,
+            90.51769087523904
+          ],
+          "applied_load_kn": 448.0,
+          "equilibrium_relative_error": 6.236535097871508e-14,
+          "residual_relative_error": 4.710784964832701e-13
+        },
+        {
+          "step": 10,
+          "load_kn_per_m": 60.0,
+          "support_force_kn": 286.033519553091,
+          "support_displacement_mm": 1.787709497206819,
+          "max_deflection_mm": 2.229412373267492,
+          "max_bending_stress_mpa": 2.1962756052142556,
+          "boundary_reactions_kn": [
+            96.9832402234748,
+            96.98324022347293
+          ],
+          "applied_load_kn": 480.0,
+          "equilibrium_relative_error": 8.076312951743603e-14,
+          "residual_relative_error": 3.5188701870322615e-13
+        },
+        {
+          "step": 11,
+          "load_kn_per_m": 64.0,
+          "support_force_kn": 305.1024208566306,
+          "support_displacement_mm": 1.9068901303539412,
+          "max_deflection_mm": 2.3780398648186583,
+          "max_bending_stress_mpa": 2.3426939788952046,
+          "boundary_reactions_kn": [
+            103.4487895717031,
+            103.44878957170496
+          ],
+          "applied_load_kn": 512.0,
+          "equilibrium_relative_error": 7.548806024715305e-14,
+          "residual_relative_error": 3.2330202611108633e-13
+        },
+        {
+          "step": 12,
+          "load_kn_per_m": 68.0,
+          "support_force_kn": 324.1713221601698,
+          "support_displacement_mm": 2.026070763501061,
+          "max_deflection_mm": 2.526667356369823,
+          "max_bending_stress_mpa": 2.48911235257616,
+          "boundary_reactions_kn": [
+            109.91433891992209,
+            109.91433891993326
+          ],
+          "applied_load_kn": 544.0,
+          "equilibrium_relative_error": 4.622373072540059e-14,
+          "residual_relative_error": 4.484641626584354e-13
+        },
+        {
+          "step": 13,
+          "load_kn_per_m": 72.0,
+          "support_force_kn": 343.24022346370936,
+          "support_displacement_mm": 2.145251396648183,
+          "max_deflection_mm": 2.675294847920991,
+          "max_bending_stress_mpa": 2.6355307262570973,
+          "boundary_reactions_kn": [
+            116.37988826815784,
+            116.37988826816901
+          ],
+          "applied_load_kn": 576.0,
+          "equilibrium_relative_error": 6.28561893891957e-14,
+          "residual_relative_error": 6.631646205551679e-13
+        },
+        {
+          "step": 14,
+          "load_kn_per_m": 76.0,
+          "support_force_kn": 362.3091247672489,
+          "support_displacement_mm": 2.2644320297953056,
+          "max_deflection_mm": 2.8239223394721567,
+          "max_bending_stress_mpa": 2.781949099937972,
+          "boundary_reactions_kn": [
+            122.84543761638055,
+            122.84543761639546
+          ],
+          "applied_load_kn": 608.0,
+          "equilibrium_relative_error": 4.097512972198034e-14,
+          "residual_relative_error": 4.835646906864324e-13
+        },
+        {
+          "step": 15,
+          "load_kn_per_m": 80.0,
+          "support_force_kn": 381.3780260707879,
+          "support_displacement_mm": 2.3836126629424244,
+          "max_deflection_mm": 2.9725498310233203,
+          "max_bending_stress_mpa": 2.9283674736190117,
+          "boundary_reactions_kn": [
+            129.31098696465168,
+            129.31098696462934
+          ],
+          "applied_load_kn": 640.0,
+          "equilibrium_relative_error": 1.0768417268991471e-13,
+          "residual_relative_error": 6.313336326353643e-13
+        },
+        {
+          "step": 16,
+          "load_kn_per_m": 84.0,
+          "support_force_kn": 400.4469273743273,
+          "support_displacement_mm": 2.5027932960895454,
+          "max_deflection_mm": 3.121177322574487,
+          "max_bending_stress_mpa": 3.0747858472999923,
+          "boundary_reactions_kn": [
+            135.7765363128446,
+            135.77653631286324
+          ],
+          "applied_load_kn": 672.0,
+          "equilibrium_relative_error": 5.2317599987699874e-14,
+          "residual_relative_error": 6.305041618165759e-13
+        },
+        {
+          "step": 17,
+          "load_kn_per_m": 88.0,
+          "support_force_kn": 419.515828677867,
+          "support_displacement_mm": 2.6219739292366686,
+          "max_deflection_mm": 3.269804814125655,
+          "max_bending_stress_mpa": 3.2212042209808693,
+          "boundary_reactions_kn": [
+            142.24208566105614,
+            142.24208566108965
+          ],
+          "applied_load_kn": 704.0,
+          "equilibrium_relative_error": 1.8189894035458565e-14,
+          "residual_relative_error": 4.895774067830637e-13
+        },
+        {
+          "step": 18,
+          "load_kn_per_m": 92.0,
+          "support_force_kn": 438.5847299814063,
+          "support_displacement_mm": 2.741154562383789,
+          "max_deflection_mm": 3.41843230567682,
+          "max_bending_stress_mpa": 3.367622594661834,
+          "boundary_reactions_kn": [
+            148.70763500931238,
+            148.70763500931983
+          ],
+          "applied_load_kn": 736.0,
+          "equilibrium_relative_error": 5.235526022379813e-14,
+          "residual_relative_error": 4.3255562181815635e-13
+        },
+        {
+          "step": 19,
+          "load_kn_per_m": 96.0,
+          "support_force_kn": 457.6536312849457,
+          "support_displacement_mm": 2.8603351955309106,
+          "max_deflection_mm": 3.567059797227986,
+          "max_bending_stress_mpa": 3.5140409683428153,
+          "boundary_reactions_kn": [
+            155.1731843575537,
+            155.17318435755743
+          ],
+          "applied_load_kn": 768.0,
+          "equilibrium_relative_error": 7.397223574419816e-14,
+          "residual_relative_error": 2.9936621114869127e-13
+        },
+        {
+          "step": 20,
+          "load_kn_per_m": 100.0,
+          "support_force_kn": 476.72253258848514,
+          "support_displacement_mm": 2.979515828678032,
+          "max_deflection_mm": 3.7156872887791526,
+          "max_bending_stress_mpa": 3.6604593420236693,
+          "boundary_reactions_kn": [
+            161.63873370578386,
+            161.6387337057876
+          ],
+          "applied_load_kn": 800.0,
+          "equilibrium_relative_error": 7.07223080098629e-14,
+          "residual_relative_error": 3.7475245083436154e-13
+        }
+      ]
+    }
+  ]
+}

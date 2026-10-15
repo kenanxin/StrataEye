@@ -1,5 +1,6 @@
 import { buildRoofRiskChartModel } from './roof-risk-chart-model.mjs';
 import { buildExpertResearchModel } from './expert-research-model.mjs';
+import { buildSupportSimulationOption } from './support-simulation-model.mjs';
 
 const CHART_IDS = [
   'thresholdTrendChart',
@@ -425,6 +426,17 @@ export function updateReplayChart({ current = {}, history = {} } = {}) {
   });
   chart.setOption(option, { notMerge: true });
   return model.thresholdTrend;
+}
+
+export function updateSupportSimulationChart(item, selectedStep) {
+  const chart = chartFor('supportSimulationChart');
+  if (chart) chart.setOption(buildSupportSimulationOption(item, selectedStep));
+}
+
+export function disposeSupportSimulationChart() {
+  const chart = chartInstances.get('supportSimulationChart');
+  if (chart && !chart.isDisposed()) { resizeObserver?.unobserve(chart.getDom()); chart.dispose(); }
+  chartInstances.delete('supportSimulationChart');
 }
 
 export function clearRoofRiskCharts(message = '真实数据暂不可用') {

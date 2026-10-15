@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#10191e">
 <title>智慧矿山数字孪生综合管控平台</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/support-simulation.css">
 <!-- ECharts -->
 <script src="./js/vendor/echarts.min.js"></script>
 </head>
@@ -602,7 +603,7 @@
         <article class="research-advice" id="expertAdvicePanel">
           <header><div><span class="research-eyebrow">EXPERT ADVICE</span><strong>专家建议生成器</strong></div><button id="generateExpertAdvice" type="button">生成建议</button></header>
           <div class="advice-meta"><span id="expertAdviceSource">未生成</span><span id="expertAdviceTime">--</span></div>
-          <div class="advice-result" id="expertAdviceResult"><strong>建议尚未生成</strong><p>点击“生成建议”，系统将基于当前真实记录、模型证据和闭环状态生成可追溯的专家建议。</p></div>
+          <div class="advice-result" id="expertAdviceResult"><strong>建议尚未生成</strong><p>点击“生成建议”，系统结合当前教师数据记录、模型证据与跨域RAG资料生成待人工复核的候选建议，并展示引用出处。</p></div>
           <button class="advice-copy" id="copyExpertAdvice" type="button" disabled>复制建议文本</button>
         </article>
       </section>
@@ -766,6 +767,34 @@
     <span>预测标签 <b id="replayPredictedClass">--</b></span>
     <span>说明 <b>历史数据回放，非实时传感器采集</b></span>
   </div>
+</section>
+
+<section class="support-lab" id="supportSimulationLab" aria-labelledby="supportLabTitle" hidden>
+  <header class="support-lab-head">
+    <div><span class="support-lab-kicker">力学研究 · 跨域知识增强</span><h2 id="supportLabTitle">一个支护点，看清受力与变形</h2><p>梁—弹簧预计算工况 · 与教师数据监测独立 · 不改变原预警和工单</p></div>
+    <span class="support-lab-badge">SIM-SUPPORT-01 · 模拟</span>
+  </header>
+  <div class="support-lab-grid">
+    <div class="support-lab-controls">
+      <label for="supportCase">选择支护刚度工况</label><select id="supportCase" disabled></select>
+      <label for="supportStep">加载步 <output id="supportStepLabel">--</output></label><input id="supportStep" type="range" min="0" max="20" value="0" step="1" disabled>
+      <div class="support-lab-values"><div><span>模拟支护反力</span><b id="supportForce">--</b><small>kN</small></div><div><span>支护点顶板位移</span><b id="supportDisplacement">--</b><small>mm</small></div></div>
+      <p id="supportParameters">正在读取计算工况…</p>
+      <button type="button" id="supportFocus" disabled>在井下定位该支护点 ↑</button>
+      <button type="button" id="supportClear" disabled>移除三维模拟标记</button>
+      <p id="supportSceneStatus" role="status">仅企业端支持井下定位。</p>
+      <small>三维关联仅为示意，不表示原设备的实测位置或液压参数已校准。</small>
+    </div>
+    <div class="support-lab-analysis">
+      <div class="support-lab-plot-head"><strong>相同载荷下，反力和位移一起看</strong><span>左轴 kN · 右轴 mm</span></div>
+      <div id="supportSimulationChart" class="support-lab-chart" role="img" aria-label="模拟支护反力和顶板位移随加载步变化"></div>
+      <p class="support-lab-caution">刚度较低时，反力可能下降而位移增大。数值变化需要结合工况解释，不能据此认定整改有效。</p>
+      <div class="support-lab-advice-head"><h3>检索依据与辅助解释</h3><button type="button" id="supportExplain" disabled>检索资料并生成辅助解释</button></div>
+      <p id="supportAdviceStatus" role="status">选择工况后可发起研判；需要人工复核。</p>
+      <div id="supportAdvice"></div><div id="supportKnowledge"></div>
+    </div>
+  </div>
+  <footer class="support-lab-foot"><span id="supportSource">来源待核验</span><p>简化线弹性、准静态模型，未经现场校准；加载步不对应实际时间。无真实裂隙、离层或垮落动力学。</p></footer>
 </section>
 
 <!-- ============ 底部信息栏 ============ -->

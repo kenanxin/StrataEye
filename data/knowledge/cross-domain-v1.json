@@ -1,0 +1,78 @@
+{
+  "version": "cross-domain-rag-v1-20261014",
+  "description": "公开资料的短转述与项目实现说明。文本是检索资料，不是现场工程设计；无真实事故案例库。",
+  "chunks": [
+    {
+      "id": "knowledge:mine-roof:inspection",
+      "domain": "矿山安全管理",
+      "title": "顶板安全管理：巡查与隐患闭环",
+      "source_title": "国家矿山安全监察局关于进一步强化矿山顶板安全管理工作的通知",
+      "source_kind": "official_notice_paraphrase",
+      "source_url": "https://www.chinamine-safety.gov.cn/zfxxgk/fdzdgknr/tzgg/202605/t20260515_603742.shtml",
+      "locator": "矿安〔2026〕65号，第（一）、（十三）项",
+      "verified_on": "2026-10-14",
+      "tags": ["顶板", "支护", "检查", "巡查", "复查", "整改", "工单"],
+      "text": "通知要求建立巷道巡查与维修制度，形成隐患登记、整改、复查和销号的闭环；日常应检查支护完好性，支护强度不符合设计要求时需补强。具体作业仍按适用设计和现场审批组织。"
+    },
+    {
+      "id": "knowledge:mine-roof:abnormal",
+      "domain": "矿山安全管理",
+      "title": "顶板安全管理：异常征兆与现场复核",
+      "source_title": "国家矿山安全监察局关于进一步强化矿山顶板安全管理工作的通知",
+      "source_kind": "official_notice_paraphrase",
+      "source_url": "https://www.chinamine-safety.gov.cn/zfxxgk/fdzdgknr/tzgg/202605/t20260515_603742.shtml",
+      "locator": "矿安〔2026〕65号，第（五）、（十四）项",
+      "verified_on": "2026-10-14",
+      "tags": ["支架阻力", "顶板离层", "淋水", "矿压", "骤增", "异常", "撤离", "设计"],
+      "text": "支护设计应结合巷道围岩地质力学评估。发现离层越限、淋水异常、矿压骤增或顶板破裂等冒顶征兆时，通知要求停止作业、撤离人员，经隐患消除并验收后恢复。软件模拟量本身不能确认这些现场征兆。"
+    },
+    {
+      "id": "knowledge:monitoring:load-convergence",
+      "domain": "矿压监测研究",
+      "title": "支护载荷与围岩变形的联合观察",
+      "source_title": "Mobile Roof Support Safety Research – an Update (1999)",
+      "source_kind": "research_abstract_paraphrase",
+      "source_url": "https://stacks.cdc.gov/view/cdc/226547",
+      "locator": "NIOSH收录研究摘要，MRS载荷变化率与顶底板收敛",
+      "verified_on": "2026-10-14",
+      "tags": ["支护", "支架阻力", "载荷", "反力", "变形", "位移", "变化率", "监测"],
+      "text": "该移动顶板支护研究结合支护载荷变化率与顶底板收敛观察稳定性。其研究对象和试验条件特定，可参考联合观察思路；不能据此给本项目设定通用预警阈值，也不能把梁节点位移直接当作实测收敛或离层。"
+    },
+    {
+      "id": "knowledge:mechanics:beam",
+      "domain": "结构力学",
+      "title": "梁模型中的弯曲、刚度与位移",
+      "source_title": "TU Delft Computational Modelling: Euler–Bernoulli beam elements",
+      "source_kind": "textbook_paraphrase",
+      "source_url": "https://teachbooks.tudelft.nl/computational-modelling/structural_linear/euler_bernouilli.html",
+      "locator": "第4.1节，弯曲控制方程与Hermite梁单元",
+      "verified_on": "2026-10-14",
+      "tags": ["梁", "支护", "刚度", "位移", "弯曲", "载荷", "弹性", "反力"],
+      "text": "Euler–Bernoulli梁以弯曲描述细长构件响应，刚度涉及弹性模量和截面惯性矩。梁单元求解节点位移与转角，并由位移场恢复弯曲响应。本项目另加接地弹簧表示简化支护，适用范围由项目模型说明限定。"
+    },
+    {
+      "id": "knowledge:project:support-model",
+      "domain": "项目模型说明",
+      "title": "本项目单支护点的计算量和解释边界",
+      "source_title": "项目梁—弹簧求解器与已交付研究说明",
+      "source_kind": "project_implementation_note",
+      "source_url": null,
+      "locator": "tools/roof_mechanics/solver.py: solve_beam；支护演示工件另附源码哈希",
+      "verified_on": "2026-10-14",
+      "tags": ["模拟", "支护", "反力", "支架阻力", "刚度", "位移", "加载步", "参数"],
+      "text": "项目使用小变形梁和双向线性弹簧，弹簧反力由刚度乘所在节点位移计算。预设加载步表示准静态平衡，不对应真实时间。模拟反力不等于液压支架实测工作阻力；反力降低也可能伴随变形增加，需要结合载荷和刚度分析，不能单凭反力下降认定整改有效。"
+    },
+    {
+      "id": "knowledge:project:human-review",
+      "domain": "协同处置流程",
+      "title": "候选建议、人工确认和复盘的职责边界",
+      "source_title": "项目六智能体协同服务实现",
+      "source_kind": "project_implementation_note",
+      "source_url": null,
+      "locator": "server/agent-collaboration-service.js；server/multi-agent-workflow-service.js",
+      "verified_on": "2026-10-14",
+      "tags": ["工单", "人工", "复核", "整改", "支护", "监管", "方案", "归档"],
+      "text": "项目候选方案需经企业人工确认，资源校验不足时阻断；监管可以通过或驳回，智库负责复盘与案例记忆审核。模拟研究解释与教师数据事件分开保存语义，研究建议不代表工单已执行、监管已通过或真实设备已控制。"
+    }
+  ]
+}

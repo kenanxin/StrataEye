@@ -43,6 +43,41 @@ let targetLookAt = new THREE.Vector3();
 let isTransitioning = false;
 let focusHighlight = null;
 let focusHighlightUntil = 0;
+let supportSimulationMarker = null;
+
+// Separate, reversible research overlay. It never changes the original device,
+// sensor values, roof geometry, teacher risk state or camera during frame updates.
+export function setSupportSimulationFrame(frame, { focus = false } = {}) {
+  const object = sceneAdapter?.getObject('simulationSupport01');
+  if (!frame) {
+    if (supportSimulationMarker) {
+      scene?.remove(supportSimulationMarker.box);
+      supportSimulationMarker.box.geometry.dispose(); supportSimulationMarker.box.material.dispose();
+      supportSimulationMarker.label.remove(); supportSimulationMarker = null;
+    }
+    return false;
+  }
+  if (!object || !scene || !Number.isFinite(frame.support_force_kn) || !Number.isFinite(frame.support_displacement_mm)) return false;
+  object.updateWorldMatrix(true, true);
+  const bounds = new THREE.Box3().setFromObject(object);
+  const center = bounds.getCenter(new THREE.Vector3());
+  if (!supportSimulationMarker) {
+    const box = new THREE.BoxHelper(object, 0x32c7d9);
+    box.material.depthTest = false; box.material.transparent = true; box.material.opacity = .85; box.renderOrder = 20;
+    const label = document.createElement('div');
+    label.className = 'support-simulation-scene-note';
+    label.dataset.sceneRole = 'simulationSupport01';
+    label.style.cssText = 'position:absolute;left:12px;bottom:70px;z-index:6;width:340px;max-width:calc(100% - 24px);box-sizing:border-box;background:#10191ef2;color:#75d8e4;border:1px solid #32c7d9;padding:8px 10px;font:12px monospace;white-space:pre-line;line-height:1.7;pointer-events:none;';
+    diagnosticsElement.appendChild(label);
+    scene.add(box); supportSimulationMarker = { box, label };
+  }
+  supportSimulationMarker.box.update();
+  supportSimulationMarker.label.textContent = `SIM-SUPPORT-01 · 模拟关联\n反力 ${frame.support_force_kn.toFixed(2)} kN · 位移 ${frame.support_displacement_mm.toFixed(3)} mm\n非液压支架实测值`;
+  if (focus) {
+    applyCameraFocusPreset({ position: [center.x + 3.2, center.y + 1.8, center.z + 6.4], target: center.toArray(), fov: 42 }, true);
+  }
+  return true;
+}
 
 let controlMode = 'rotate';
 
