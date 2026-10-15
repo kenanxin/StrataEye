@@ -18,6 +18,7 @@ import { buildMineV2 } from './scene/mine-v2/mine-v2.js';
 import { animateRoofFieldCloud, createRoofFieldCloud, setRoofFieldCloudMode, updateRoofFieldCloud } from './scene/mine-v2/roof-field-cloud.js';
 import { EQUIPMENT } from './mine-data.js';
 import { EQUIPMENT_FOCUS_ZONES } from './scene/mine-v2/equipment-focus-map.mjs';
+import { createSupportDeformationOverlay } from './scene/support-deformation.mjs';
 
 // ==================== 全局 ====================
 let scene, camera, renderer, composer, labelRenderer, controls;
@@ -51,9 +52,11 @@ export function setSupportSimulationFrame(frame, { focus = false } = {}) {
   const object = sceneAdapter?.getObject('simulationSupport01');
   if (!frame) {
     if (supportSimulationMarker) {
+      supportSimulationMarker.deformation?.dispose();
       scene?.remove(supportSimulationMarker.box);
       supportSimulationMarker.box.geometry.dispose(); supportSimulationMarker.box.material.dispose();
       supportSimulationMarker.label.remove(); supportSimulationMarker = null;
+      if(diagnosticsElement)for(const key of ['supportSimulationStep','supportSimulationScale','supportSimulationDrop'])delete diagnosticsElement.dataset[key];
     }
     return false;
   }
@@ -71,10 +74,21 @@ export function setSupportSimulationFrame(frame, { focus = false } = {}) {
     diagnosticsElement.appendChild(label);
     scene.add(box); supportSimulationMarker = { box, label };
   }
+  if(frame.beam_profile){
+    if(!supportSimulationMarker.deformation){
+      const anchor=center.clone();anchor.y=bounds.max.y+.55;
+      supportSimulationMarker.deformation=createSupportDeformationOverlay({scene,anchor});
+    }
+    const snapshot=supportSimulationMarker.deformation.update(frame,frame.display_scale||30);
+    diagnosticsElement.dataset.supportSimulationStep=String(frame.step);
+    diagnosticsElement.dataset.supportSimulationScale=String(snapshot.scale);
+    diagnosticsElement.dataset.supportSimulationDrop=String(snapshot.centerDropM);
+  }
   supportSimulationMarker.box.update();
-  supportSimulationMarker.label.textContent = `SIM-SUPPORT-01 · 模拟关联\n反力 ${frame.support_force_kn.toFixed(2)} kN · 位移 ${frame.support_displacement_mm.toFixed(3)} mm\n非液压支架实测值`;
+  supportSimulationMarker.label.textContent = `SIM-SUPPORT-01 · 梁—弹簧研究\n反力 ${frame.support_force_kn.toFixed(2)} kN · 位移 ${frame.support_displacement_mm.toFixed(3)} mm\n${frame.beam_profile?`位移显示 ×${frame.display_scale||30} · 虚线为无载参考`:'模拟对象关联'}\n非液压支架实测值 · 箭头仅示意方向`;
+  const target=center.clone();target.y=bounds.max.y-.1;
   if (focus) {
-    applyCameraFocusPreset({ position: [center.x + 3.2, center.y + 1.8, center.z + 6.4], target: center.toArray(), fov: 42 }, true);
+    applyCameraFocusPreset({ position: [center.x + 8.5, target.y + 3.2, center.z + 6.4], target: target.toArray(), fov: 48 }, true);
   }
   return true;
 }

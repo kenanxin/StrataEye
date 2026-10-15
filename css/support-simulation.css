@@ -38,3 +38,29 @@
 .knowledge-card a { color: #75d8e4; text-decoration: underline; }.knowledge-card code { font-size: 10px; overflow-wrap: anywhere; }
 .support-lab-foot { padding: 16px 28px; background: #152229; border-top: 1px solid #2c424b; overflow-wrap: anywhere; }.support-lab-foot > span { color: #91a9b5; font: 11px Consolas, monospace; }
 @media (max-width: 980px) { .support-lab-grid { grid-template-columns: minmax(0, 1fr); }.support-lab-controls { border-right: 0; border-bottom: 1px solid #2c424b; }.support-lab { margin: 16px 12px; }.support-lab-analysis, .support-lab-head { padding: 20px; } }
+.support-scene-controls { position:absolute; right:12px; bottom:42px; z-index:8; width:300px; max-width:calc(100% - 24px); box-sizing:border-box; padding:16px; border:1px solid #3c6875; border-top:3px solid #32c7d9; background:#10191ef5; color:#e8f1f5; border-radius:4px; box-shadow:0 12px 30px #0006; }
+.support-scene-controls[hidden] { display:none; }
+#threeContainer[data-support-simulation-step] .roof-warning-card,#threeContainer[data-support-simulation-step] .roof-field-panel { display:none; }
+.support-scene-controls header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.support-scene-controls header span { display:block; font:10px Consolas,monospace; color:#7dd8e3; letter-spacing:.04em; }
+.support-scene-controls header strong { display:block; font-size:18px; margin-top:5px; }
+.support-scene-controls button,.support-scene-controls select { padding:7px 9px; background:#173039; border:1px solid #3b6875; color:#e8f1f5; border-radius:3px; cursor:pointer; font-size:12px; }
+.support-scene-controls header button { padding:1px 8px; font-size:22px; }
+.support-scene-controls>select { width:100%; margin:6px 0 12px; }
+.support-scene-controls label { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; color:#bacad3; }
+.support-scene-controls input[type=range] { width:100%; accent-color:#32c7d9; margin:8px 0 12px; }
+.support-scene-values { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px 0 14px; border-top:1px solid #2c424b; }
+.support-scene-values span { display:block; font-size:11px; color:#a7b7c0; }.support-scene-values b { display:block; font:600 17px Consolas,monospace; color:#54cfdf; margin-top:6px; }.support-scene-values>div+div b { color:#f2b84b; }
+.support-scene-actions { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.support-scene-legend { display:grid; gap:6px; padding-top:12px; color:#bacad3; font-size:11px; line-height:1.6; }.support-scene-legend>span:first-child { color:#f2b84b; }.support-scene-legend small { color:#75d8e4; font-size:10px; }
+.support-scene-boundary { color:#a7b7c0; font-size:10px; line-height:1.7; margin:9px 0; }
+.support-scene-controls :focus-visible { outline:2px solid #f2b84b; outline-offset:3px; }
+.support-lab-comparison { padding:12px 15px; margin:0 0 25px; background:#142731; border-left:3px solid #32c7d9; font-size:12px; color:#bacad3; line-height:1.8; }
+.knowledge-domains { display:grid; gap:7px; padding:12px 15px; border:1px solid #35505c; color:#a7b7c0; font-size:12px; line-height:1.7; }.knowledge-domains strong { color:#75d8e4; font-weight:500; }
+@media(max-width:700px){.support-scene-controls{right:6px;bottom:32px;width:250px;padding:10px;}.support-scene-controls header strong{font-size:15px;}.support-scene-values b{font-size:14px;}.support-simulation-scene-note{display:none;}}
+@media(max-width:1279px){
+  body.portal-enterprise .main-container { flex:0 0 auto; grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(720px,75vh) auto auto; grid-template-areas:"center" "right" "left"; overflow:visible; }
+  body.portal-enterprise .panel-center { grid-area:center; min-width:0; min-height:720px; }
+  body.portal-enterprise .panel-left,body.portal-enterprise .panel-right { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); min-width:0; }
+}
+@media(max-width:700px){body.portal-enterprise .panel-left,body.portal-enterprise .panel-right{grid-template-columns:minmax(0,1fr);}}

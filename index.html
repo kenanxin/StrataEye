@@ -118,6 +118,16 @@
 
   <!-- 中间3D场景 -->
   <main class="panel panel-center" id="threeContainer">
+    <aside class="support-scene-controls" id="supportScenePanel" aria-label="单支护点力学研究控制" hidden>
+      <header><div><span>SIM-SUPPORT-01 · 模拟研究</span><strong>顶板—支护响应</strong></div><button id="sceneSupportClose" type="button" aria-label="关闭力学研究层">×</button></header>
+      <p class="support-scene-boundary">梁—理想弹簧示意 · 原设备保持不变</p>
+      <label for="sceneSupportCase">支护刚度</label><select id="sceneSupportCase"></select>
+      <div class="support-scene-values"><div><span>支护反力</span><b id="sceneSupportForce">--</b></div><div><span>支护点位移</span><b id="sceneSupportDisplacement">--</b></div></div>
+      <label for="sceneSupportStep">加载步 <output id="sceneSupportStepLabel">--</output></label><input id="sceneSupportStep" type="range" min="0" max="20" step="1" value="0">
+      <div class="support-scene-actions"><button id="sceneSupportPlay" type="button">播放加载</button><label for="sceneSupportScale">位移显示<select id="sceneSupportScale"><option value="10">×10</option><option value="30" selected>×30</option><option value="50">×50</option></select></label></div>
+      <div class="support-scene-legend"><span>↓ 均布载荷 <b id="sceneSupportLoad">--</b></span><span>↑ 弹簧反力 · 虚线为无载参考</span><small id="sceneSupportLegend">位移色标待加载</small></div>
+      <p class="support-scene-boundary">位移放大仅用于观察；非液压机构、离层或垮落仿真。</p>
+    </aside>
     <div class="scene-overlay-top">
       <span class="scene-tag">数字孪生 · 实时渲染</span>
     </div>
@@ -780,7 +790,7 @@
       <label for="supportStep">加载步 <output id="supportStepLabel">--</output></label><input id="supportStep" type="range" min="0" max="20" value="0" step="1" disabled>
       <div class="support-lab-values"><div><span>模拟支护反力</span><b id="supportForce">--</b><small>kN</small></div><div><span>支护点顶板位移</span><b id="supportDisplacement">--</b><small>mm</small></div></div>
       <p id="supportParameters">正在读取计算工况…</p>
-      <button type="button" id="supportFocus" disabled>在井下定位该支护点 ↑</button>
+      <button type="button" id="supportFocus" disabled>在巷道展开力学研究 ↑</button>
       <button type="button" id="supportClear" disabled>移除三维模拟标记</button>
       <p id="supportSceneStatus" role="status">仅企业端支持井下定位。</p>
       <small>三维关联仅为示意，不表示原设备的实测位置或液压参数已校准。</small>
@@ -789,6 +799,7 @@
       <div class="support-lab-plot-head"><strong>相同载荷下，反力和位移一起看</strong><span>左轴 kN · 右轴 mm</span></div>
       <div id="supportSimulationChart" class="support-lab-chart" role="img" aria-label="模拟支护反力和顶板位移随加载步变化"></div>
       <p class="support-lab-caution">刚度较低时，反力可能下降而位移增大。数值变化需要结合工况解释，不能据此认定整改有效。</p>
+      <p id="supportComparison" class="support-lab-comparison">同载荷参考工况待加载。</p>
       <div class="support-lab-advice-head"><h3>检索依据与辅助解释</h3><button type="button" id="supportExplain" disabled>检索资料并生成辅助解释</button></div>
       <p id="supportAdviceStatus" role="status">选择工况后可发起研判；需要人工复核。</p>
       <div id="supportAdvice"></div><div id="supportKnowledge"></div>

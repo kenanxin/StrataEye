@@ -6,11 +6,15 @@ export function setupSupportSimulation({ authFetch, role, onFrame = () => {}, on
   const root = el('supportSimulationLab');
   if (!root) return { destroy() {} };
   root.hidden = false;
-  let data = null, destroyed = false, revision = 0, pending = false, marking = false;
+  let data = null, destroyed = false, revision = 0, pending = false, marking = false, displayScale=30,playTimer=null;
   const listeners = [];
   const canExplain = ['enterprise', 'expert', 'super_admin'].includes(role);
   const canFocus = role === 'enterprise';
-  const listen = (id, event, fn) => { el(id).addEventListener(event, fn); listeners.push(() => el(id).removeEventListener(event, fn)); };
+  const listen = (id, event, fn) => { if(!el(id))return;el(id).addEventListener(event, fn); listeners.push(() => el(id)?.removeEventListener(event, fn)); };
+  const text=(id,value)=>{if(el(id))el(id).textContent=value;};
+  function sceneFrame(item,frame){return {...frame,case_id:item.id,object_id:data.object_id,display_scale:displayScale};}
+  function pause(){clearInterval(playTimer);playTimer=null;text('sceneSupportPlay','播放加载');}
+  function clearStudy(){pause();marking=false;onFrame(null);if(el('supportScenePanel'))el('supportScenePanel').hidden=true;el('supportSceneStatus').textContent='三维研究层已移除，曲线和解释保留。';}
   function selection() { const item = data?.cases.find(c => c.id === el('supportCase').value); return item ? { item, frame: item.frames[Number(el('supportStep').value)] } : null; }
   function renderFrame() {
     const selected = selection(); if (!selected) return;
@@ -23,17 +27,37 @@ export function setupSupportSimulation({ authFetch, role, onFrame = () => {}, on
     el('supportAdvice').innerHTML = ''; el('supportKnowledge').innerHTML = '';
     el('supportAdviceStatus').textContent = canExplain ? '当前工况尚未生成解释；切换工况或加载步后，旧解释自动清除。' : '可查看模拟曲线；辅助解释由企业或智库人员发起。';
     renderChart(item, frame.step);
-    if (marking) onFrame({ ...frame, case_id: item.id, object_id: data.object_id });
+    if(el('sceneSupportCase'))el('sceneSupportCase').value=item.id;
+    if(el('sceneSupportStep'))el('sceneSupportStep').value=String(frame.step);
+    text('sceneSupportStepLabel',`${frame.step} / ${item.frames.length-1}`);
+    text('sceneSupportForce',`${frame.support_force_kn.toFixed(2)} kN`);
+    text('sceneSupportDisplacement',`${frame.support_displacement_mm.toFixed(3)} mm`);
+    text('sceneSupportLoad',`${frame.load_kn_per_m.toFixed(0)} kN/m`);
+    text('sceneSupportLegend',`位移色标 0—${(data.display_reference_max_mm||frame.max_deflection_mm).toFixed(2)} mm · 位移显示 ×${displayScale}`);
+    const base=data.cases.find(c=>c.id==='reference-support')?.frames[frame.step];
+    if(base)text('supportComparison',`同载荷参考支护（80 MN/m）：反力 ${base.support_force_kn.toFixed(2)} kN · 位移 ${base.support_displacement_mm.toFixed(3)} mm。与当前工况联合比较，不作风险等级推断。`);
+    if (marking) onFrame(sceneFrame(item,frame));
   }
-  listen('supportCase', 'change', renderFrame); listen('supportStep', 'input', renderFrame);
+  listen('supportCase', 'change', ()=>{pause();renderFrame();}); listen('supportStep', 'input', ()=>{pause();renderFrame();});
   listen('supportFocus', 'click', () => {
     const selected = selection(); if (!selected) return;
+    if(!selected.frame.beam_profile){el('supportSceneStatus').textContent='服务端尚未提供形变工件，请更新服务端后再展开研究层。';return;}
     marking = true;
-    const ready = onFocus({ ...selected.frame, case_id: selected.item.id, object_id: data.object_id });
-    el('supportSceneStatus').textContent = ready ? '三维中已标记模拟关联支护点；后续滑动加载步仅更新标签，不自动移动镜头。' : '井下场景尚未就绪，请稍后再点击定位；曲线和研究解释仍可使用。';
+    const ready = onFocus(sceneFrame(selected.item,selected.frame));
+    if(el('supportScenePanel'))el('supportScenePanel').hidden=!ready;
+    el('supportSceneStatus').textContent = ready ? '三维研究层已展开；梁形变、支护响应与当前工况同步。显示倍率不改变计算值，加载步不对应现场时间。' : '井下场景尚未就绪，请稍后再点击定位；曲线和研究解释仍可使用。';
     if (ready) el('threeContainer')?.scrollIntoView({ behavior: 'auto', block: 'center' });
   });
-  listen('supportClear', 'click', () => { marking = false; onFrame(null); el('supportSceneStatus').textContent = '三维模拟标记已移除，曲线和研究解释保留。'; });
+  listen('supportClear', 'click', clearStudy);listen('sceneSupportClose','click',clearStudy);
+  listen('sceneSupportCase','change',()=>{pause();el('supportCase').value=el('sceneSupportCase').value;renderFrame();});
+  listen('sceneSupportStep','input',()=>{pause();el('supportStep').value=el('sceneSupportStep').value;renderFrame();});
+  listen('sceneSupportScale','change',()=>{const value=Number(el('sceneSupportScale').value);if(![10,30,50].includes(value))return;displayScale=value;const s=selection();if(s&&marking)onFrame(sceneFrame(s.item,s.frame));text('sceneSupportLegend',`位移色标 0—${data.display_reference_max_mm.toFixed(2)} mm · 位移显示 ×${displayScale}`);});
+  listen('sceneSupportPlay','click',()=>{
+    if(playTimer){pause();return;}
+    if(Number(el('supportStep').value)>=20){el('supportStep').value='0';renderFrame();}
+    text('sceneSupportPlay','暂停加载');
+    playTimer=setInterval(()=>{const step=Number(el('supportStep').value)+1;el('supportStep').value=String(Math.min(step,20));renderFrame();if(step>=20)pause();},1000);
+  });
   listen('supportExplain', 'click', async () => {
     const selected = selection(); if (!selected || pending || !canExplain) return;
     pending = true; el('supportExplain').disabled = true;
@@ -60,13 +84,14 @@ export function setupSupportSimulation({ authFetch, role, onFrame = () => {}, on
       data = payload;
       el('supportCase').innerHTML = data.cases.map(item => `<option value="${escape(item.id)}">${escape(item.label)} · ${escape(item.spring_stiffness_mn_per_m)} MN/m</option>`).join('');
       el('supportCase').value = data.cases[0].id;
+      if(el('sceneSupportCase'))el('sceneSupportCase').innerHTML=el('supportCase').innerHTML;
       el('supportCase').disabled = false; el('supportStep').disabled = false;
       el('supportExplain').disabled = !canExplain;
-      el('supportFocus').disabled = !canFocus; el('supportClear').disabled = !canFocus;
+      el('supportFocus').disabled = !canFocus || !data.deformation_version; el('supportClear').disabled = !canFocus;
       el('supportSceneStatus').textContent = canFocus ? '点击定位查看模拟关联设备；未定位时不影响原三维场景。' : '本端可查看模拟研究；三维定位请使用企业端。';
       el('supportSource').textContent = `${data.version} · 求解器 ${data.provenance.solver_source_sha256.slice(0, 12)} · 工况 ${data.artifact_sha256.slice(0, 12)} · 预计算，非在线实测`;
       renderFrame();
     } catch (error) { if (!destroyed) el('supportAdviceStatus').textContent = `模拟工况加载失败：${error.message}，请刷新后重试。`; }
   })();
-  return { ready, destroy() { destroyed = true; revision++; listeners.forEach(fn => fn()); onFrame(null); disposeChart(); } };
+  return { ready, destroy() { pause();destroyed = true; revision++; listeners.forEach(fn => fn()); onFrame(null);if(el('supportScenePanel'))el('supportScenePanel').hidden=true; disposeChart(); } };
 }

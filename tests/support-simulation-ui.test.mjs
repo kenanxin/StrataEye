@@ -4,7 +4,9 @@ import { readFile } from 'node:fs/promises';
 import { setupSupportSimulation } from '../js/support-simulation-ui.mjs';
 import { buildSupportSimulationOption } from '../js/support-simulation-model.mjs';
 import { renderKnowledgeEvidence } from '../js/knowledge-evidence.mjs';
-const catalog = JSON.parse(await readFile(new URL('../data/support-simulation-v1.json', import.meta.url), 'utf8'));
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const catalog = require('../server/support-simulation-service.js').createSupportSimulationService().catalog();
 catalog.artifact_sha256 = 'a'.repeat(64);
 class Element {
   constructor() { this.listeners = new Map(); this.value = '0'; this.innerHTML = ''; this.textContent = ''; this.disabled = true; }
@@ -94,4 +96,23 @@ test('three-dimensional simulation uses a distinct whole-support role and only e
   assert.match(feature, /if \(focus\) \{\s*applyCameraFocusPreset/);
   assert.doesNotMatch(feature, /object\.(position|rotation|scale)\s*[.=]/);
   assert.match(feature, /width:340px/);
+});
+test('scene controls synchronize physical selection; magnification preserves generated advice; closing stops playback',async t=>{
+  t.mock.timers.enable({apis:['setInterval']});
+  const el=documentFixture(t);const frames=[];
+  const widget=setupSupportSimulation({role:'enterprise',authFetch:async()=>({ok:true,json:async()=>structuredClone(catalog)}),onFocus:()=>true,onFrame:f=>frames.push(f)});
+  await widget.ready;await el('supportFocus').click();
+  el('sceneSupportCase').value='soft-support';el('sceneSupportCase').change();
+  assert.equal(el('supportCase').value,'soft-support');
+  el('sceneSupportStep').value='20';el('sceneSupportStep').input();
+  assert.equal(el('supportStep').value,'20');assert.equal(frames.at(-1).beam_profile.displacement_mm.length,25);
+  el('supportAdvice').innerHTML='keep valid evidence';el('sceneSupportScale').value='50';el('sceneSupportScale').change();
+  assert.equal(frames.at(-1).display_scale,50);assert.equal(el('supportAdvice').innerHTML,'keep valid evidence');
+  el('sceneSupportPlay').click();t.mock.timers.tick(3000);assert.equal(el('supportStep').value,'3');
+  el('sceneSupportClose').click();t.mock.timers.tick(3000);assert.equal(el('supportStep').value,'3');assert.equal(frames.at(-1),null);widget.destroy();
+});
+test('retrieved domain and actual cited domain coverage stay distinct',()=>{
+  const html=renderKnowledgeEvidence({chunks:[{id:'knowledge:mechanics:beam',domain:'结构力学',title:'梁',text:'弯曲'},{id:'knowledge:monitoring:joint',domain:'矿压监测',title:'监测',text:'联合'}]},['knowledge:mechanics:beam']);
+  assert.match(html,/检索领域：结构力学 \/ 矿压监测/);assert.match(html,/建议实际引用领域：结构力学<\/strong>/);
+  assert.doesNotMatch(html,/建议实际引用领域：结构力学 \/ 矿压监测/);
 });
