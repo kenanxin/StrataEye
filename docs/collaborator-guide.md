@@ -13,6 +13,8 @@ git pull --ff-only origin main
 
 若本地存在未提交改动，先自行保存；不要强制覆盖。首次获取可用 `git clone https://github.com/kenanxin/StrataEye.git`。`main` 为团队获取入口，`deploy/mine-v2-balanced` 为原部署分支。
 
+部分历史三维素材使用Git LFS，完整本地演示前需确认Git LFS已安装，并在仓库内执行 `git lfs pull`。图形素材下载、npm依赖安装和源码拉取都依赖本机网络；页面上的DeepSeek生成另需后端配置。
+
 ## 已实现的重点与代码
 
 | 内容 | 查看位置 | 范围 |
@@ -42,3 +44,5 @@ npm start
 ## 本次核验口径
 
 GitHub API确认 `Richard110206` 为write协作者，仓库为公开仓库。另通过新建临时克隆检查远端文件和研究工件；这些是仓库侧访问证据。协作者本人电脑的网络、Python环境、网站登录及实际操作仍由其本机确认。
+
+本次完整核验范围和网络限制见[2026-10-17交付核验](qa/2026-10-17-collaborator-research-delivery.md)。
