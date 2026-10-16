@@ -1,0 +1,77 @@
+{
+  "study": "roof-mechanics-known-limits",
+  "status": "offline mechanics_simulation; human scientific review pending",
+  "output_dir": "D:/矿业/outputs/roof-mechanics-known-limits/2026-10-13",
+  "created_utc": "2026-10-13T00:30:49.896422+00:00",
+  "protocol_sha256": "034573c052d48b0b118df9c78ce505d214c7c16b19d35dc7d92ee63766899d7d",
+  "manifest_sha256": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+  "manifest_checked_files": 26,
+  "teacher_csv_sha256_before_after": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+  "source_design": "fixed future-three-step labels, first-crossing stop, step 0 excluded, same group split across protocols",
+  "information_condition": {
+    "raw4": "four current physical observations",
+    "known_limits4": "same four observations divided by exact hypothetical simulator deflection, support and bending limits"
+  },
+  "replicates": {
+    "replicate-a": {
+      "seeds": [41101, 42101, 43101],
+      "eligible_rows": 15097,
+      "group_counts": [300, 100, 100, 100],
+      "row_counts": [7537, 2497, 2533, 2530],
+      "metrics_sha256": "7e0be6da1f5f94c1083a849e29ac0b1a69607efecb1b90209701f31e124c8167",
+      "observations_sha256": "d353ee95269fb2f7919e9c2f8fc5fa12800203b946fcb6ae244270f6323bdf42",
+      "selected_models": {"raw4": "xgboost", "known_limits4": "xgboost"},
+      "test_macro_f1": {"raw4": 0.547191297432032, "known_limits4": 0.943669680356111},
+      "ood_macro_f1": {"raw4": 0.580605957792781, "known_limits4": 0.945471675232485},
+      "test_class3_recall": {"raw4": 0.373737373737374, "known_limits4": 0.96969696969697},
+      "test_alert2": {"raw4": {"timely": [56, 66], "non_limit_alert": [32, 34]}, "known_limits4": {"timely": [66, 66], "non_limit_alert": [31, 34]}},
+      "test_alert3": {"raw4": {"timely": [30, 66], "non_limit_alert": [15, 34]}, "known_limits4": {"timely": [66, 66], "non_limit_alert": [7, 34]}}
+    },
+    "replicate-b": {
+      "seeds": [41102, 42102, 43102],
+      "eligible_rows": 15286,
+      "group_counts": [300, 100, 100, 100],
+      "row_counts": [7622, 2595, 2514, 2555],
+      "metrics_sha256": "ae7de31745bc6017631b2853c604264f47fb9583170e7bc3d7c77980a38110d8",
+      "observations_sha256": "59fb7b7bedae5ad82ea4de137bf09fe298e0132a28fec5ea2e05aae72d7738ad",
+      "selected_models": {"raw4": "xgboost", "known_limits4": "xgboost"},
+      "test_macro_f1": {"raw4": 0.539702911929098, "known_limits4": 0.936510435723191},
+      "ood_macro_f1": {"raw4": 0.542967233532369, "known_limits4": 0.947674141425115},
+      "test_class3_recall": {"raw4": 0.333333333333333, "known_limits4": 0.942222222222222},
+      "test_alert2": {"raw4": {"timely": [56, 75], "non_limit_alert": [25, 25]}, "known_limits4": {"timely": [75, 75], "non_limit_alert": [25, 25]}},
+      "test_alert3": {"raw4": {"timely": [30, 75], "non_limit_alert": [16, 25]}, "known_limits4": {"timely": [75, 75], "non_limit_alert": [3, 25]}}
+    }
+  },
+  "readback": {
+    "passed": true,
+    "future_targets_and_normalized_rows_checked": [15097, 15286],
+    "group_overlap": 0,
+    "native_xgboost_reload": true,
+    "event_and_selection_recomputed": true,
+    "rf_joblib_loaded": false
+  },
+  "post_fix_readback": {
+    "audited_utc": "2026-10-13T00:54:05+00:00",
+    "passed": true,
+    "new_checks": "metadata and persisted per-domain counts plus requested steps reconciled to the original frozen protocol",
+    "auditor_study_code_sha256": "7ed15d34563aec7db5e7e3dd2e3420b9afb365b344dde7482216747c2c74f5d6",
+    "auditor_test_code_sha256": "b4ea5f64ccb3e628ae27aa47a6d4874618264cdcd5f1ac42afabf96263ca2708",
+    "original_protocol_source_hashes": "pre-fix training and first readback code; deliberately unchanged",
+    "original_manifest_sha256_unchanged": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "rows_checked": [15097, 15286],
+    "scenarios_checked": [600, 600]
+  },
+  "post_final_readback": {
+    "audited_utc": "2026-10-13T01:13:06+00:00",
+    "passed": true,
+    "new_check": "reconstructed pre-filter supervised row count equals original metadata.row_count",
+    "unfiltered_rows_checked": [15697, 15886],
+    "eligible_rows_checked": [15097, 15286],
+    "auditor_study_code_sha256": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52",
+    "auditor_test_code_sha256": "d5210b057fc1a8008b171c2d2b9045e266cc3097c80a302d05c55bd93be28d28",
+    "original_protocol_source_hashes": "pre-fix training code; deliberately unchanged",
+    "original_manifest_sha256_unchanged": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "manifest_checked_files": 26
+  },
+  "scope": "Descriptive results from two fixed simulator replicates; no field calibration, noise validation, confidence intervals, or production claim."
+}

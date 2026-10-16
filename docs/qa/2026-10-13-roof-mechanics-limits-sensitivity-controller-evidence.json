@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-13",
+  "scope": "offline_post_hoc_saved_model_limit_sensitivity",
+  "human_scientific_review": "pending",
+  "original_formal_evaluator_snapshot": {
+    "status": "post_run_snapshot_before_provenance_fix; not pre_run_capture",
+    "captured_utc": "2026-10-13T05:06:49.0702950Z",
+    "formal_protocol_sha256": "23c0a6b35f12b52aff1d5d72d04f4b4aad00b5df27fea7f16a59cd08d2ccaf72",
+    "code_sha256": {
+      "tools/roof_mechanics/limits_sensitivity.py": "54b56065ee983f5157245234708e337fa06a28fd94ccc3b1482283b71676d6a1",
+      "tests/roof_mechanics/test_limits_sensitivity.py": "ce0c4eccdc2982e5929b7038984467aa4d96e0d11660e022e9c52bf6611b3a67",
+      "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab",
+      "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+      "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+      "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+      "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52"
+    }
+  },
+  "controller_source_and_original_output_check": {
+    "captured_utc": "2026-10-13T05:21:10.0629581Z",
+    "manifests": [
+      {
+        "directory": "D:\\矿业\\outputs\\roof-mechanics-limits-sensitivity\\2026-10-13",
+        "files_checked": 6,
+        "manifest_sha256": "ee78b6e789f7344461e58c9e6e94bcdd93a92cff5f281622b09677a1e29c35bf",
+        "passed": true
+      },
+      {
+        "directory": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13",
+        "files_checked": 26,
+        "manifest_sha256": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+        "passed": true
+      }
+    ],
+    "teacher_csv": "D:\\矿业\\worktrees\\teacher-feedback-v1\\data\\teacher_roof_monitoring.csv",
+    "teacher_sha256": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+    "teacher_unchanged": true,
+    "formal_protocol_sha256": "23c0a6b35f12b52aff1d5d72d04f4b4aad00b5df27fea7f16a59cd08d2ccaf72"
+  },
+  "controller_separate_reproduction_check": {
+    "captured_utc": "2026-10-13T05:34:45.9551610Z",
+    "new_directory": "D:\\矿业\\outputs\\roof-mechanics-limits-sensitivity\\2026-10-13-provenance-verification",
+    "new_manifest_files_checked": 6,
+    "new_protocol_created_utc": "2026-10-13T05:31:41.165792+00:00",
+    "new_protocol_sha256": "1a826f836c01dee4aaecc1d4c8bdb3d22f560f135fbdaed6b24e58bad23a75cf",
+    "new_manifest_sha256": "2ac52ca42730ae8223d4bed8fbeffd07ed34f738fa96b11e38eb1f47b7be8eba",
+    "code_hashes_checked": 7,
+    "all_current_code_matches": true,
+    "reproducible_command": [
+      "D:\\矿业\\smart-mine-v2-balanced\\.venv-data\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "tools.roof_mechanics.limits_sensitivity",
+      "--source-dir",
+      "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13",
+      "--output-dir",
+      "D:\\矿业\\outputs\\roof-mechanics-limits-sensitivity\\2026-10-13-provenance-verification",
+      "--expected-manifest-sha256",
+      "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537"
+    ],
+    "byte_equality": [
+      {
+        "file": "results.json",
+        "sha256": "d912406dcc7e2f1f0abfd60d3373b47a8b4bae1eaa2a0c0f100a1d9fd3f9a81e",
+        "byte_identical": true
+      },
+      {
+        "file": "predictions.json",
+        "sha256": "91993399030beaf352368509ea1bb78b939aedb3e845fb929c27186e6910f3d4",
+        "byte_identical": true
+      },
+      {
+        "file": "comparison.csv",
+        "sha256": "b49a1afa22463fcd4a5b2656babf3739ac0292655197531e5eb75248549940bf",
+        "byte_identical": true
+      }
+    ],
+    "timestamp_note": "Protocol timestamp preserved as raw JSON text; PowerShell ConvertFrom-Json had rendered the same instant in local +08:00."
+  },
+  "scope_limits": [
+    "same source, persisted models, true labels, splits and nineteen cases",
+    "no new independent samples or field-validity evidence",
+    "original historical pre-scoring-code gap retained",
+    "no production, deployment or remote push"
+  ],
+  "task_review": {
+    "spec_diff_verifiable": "approved",
+    "first_quality": "needs_fixes",
+    "fix_round": 1,
+    "important_addressed": 1,
+    "minor_addressed": 1,
+    "new_issues": 0
+  },
+  "implementation_head": "c9ed4a6b7325164f082016ea3e5bf7b0decb3647"
+}

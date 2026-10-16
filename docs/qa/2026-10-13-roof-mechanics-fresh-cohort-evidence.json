@@ -1,0 +1,3965 @@
+{
+  "document_type": "internal_simulation_QA_descriptive_report",
+  "scope": "fresh_seed_same_simulator_recheck",
+  "analysis_intent": "same_simulator_new_seed_descriptive_recheck",
+  "formal_invocation_count": 1,
+  "formal_code_baseline": "085dfa9de1b6f126396289dd76c55be937f1c547",
+  "phase_base": "7d261e5",
+  "technical_status": {
+    "task1_spec": "Spec compliant",
+    "task1_quality": "Quality Approved",
+    "task1_findings": [],
+    "task2_self_review": "complete",
+    "task2_independent_review": "Spec compliant / Quality Approved; no findings",
+    "task2_independent_review_evidence_id": "E14",
+    "final_whole_delta_initial_review_evidence_id": "E15",
+    "final_whole_delta_review": "Spec compliant / Quality Approved after single documentation corrective wave",
+    "final_whole_delta_scoped_review_evidence_id": "E16",
+    "final_findings_resolved": 2,
+    "final_open_findings": [],
+    "final_review_ranges": [
+      "7d261e5..c107cc4",
+      "c107cc4..50360d8"
+    ]
+  },
+  "human_scientific_approval": "pending",
+  "literature_human_verification": "pending",
+  "submission_ready": false,
+  "no_live_integration": true,
+  "execution": {
+    "cwd": "D:/矿业/worktrees/teacher-feedback-v1",
+    "actual_command": "& 'D:\\矿业\\smart-mine-v2-balanced\\.venv-data\\Scripts\\python.exe' -B -m tools.roof_mechanics.fresh_cohort_study --output-dir 'D:\\矿业\\outputs\\roof-mechanics-fresh-cohort\\2026-10-13'",
+    "start_utc_raw": "2026-10-13T15:54:00.9725838Z",
+    "end_utc_raw": "2026-10-13T15:59:31.3286592Z",
+    "protocol_created_utc_raw": "2026-10-13T15:54:21.750344+00:00",
+    "exit_code": 0,
+    "output_absent_before_call": true,
+    "archive_overwrite": false,
+    "seed_changes": false,
+    "repeated_formal_run": false,
+    "additional_full_readback_call": false,
+    "formal_archive": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13",
+    "protocol_reproducible_command": [
+      "D:\\矿业\\smart-mine-v2-balanced\\.venv-data\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "tools.roof_mechanics.fresh_cohort_study",
+      "--source-dir",
+      "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13",
+      "--output-dir",
+      "D:\\矿业\\outputs\\roof-mechanics-fresh-cohort\\2026-10-13",
+      "--expected-manifest-sha256",
+      "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+      "--in-domain-scenarios",
+      "100",
+      "--ood-scenarios",
+      "100",
+      "--steps",
+      "32"
+    ],
+    "stdout_encoding_note": "CLI terminal Chinese paths rendered incorrectly; original UTF-8 JSON is intact; lightweight metadata export used ensure_ascii=True",
+    "source_repeated_scoring_boundary": "formal runner performs source readback and one full fresh audit as implemented; no external repeat scoring"
+  },
+  "protocol": {
+    "scope": "fresh_seed_same_simulator_recheck",
+    "frozen": true,
+    "cohorts": [
+      {
+        "name": "fresh-replicate-a",
+        "model_replicate": "replicate-a",
+        "in_domain_seed": 51101,
+        "ood_seed": 52101
+      },
+      {
+        "name": "fresh-replicate-b",
+        "model_replicate": "replicate-b",
+        "in_domain_seed": 51102,
+        "ood_seed": 52102
+      }
+    ],
+    "groups": [
+      {
+        "split": "fresh_in_domain",
+        "domain": "in_domain"
+      },
+      {
+        "split": "fresh_ood",
+        "domain": "ood"
+      }
+    ],
+    "relative_error_bound": 0.2,
+    "grid": [
+      [
+        -0.2,
+        -0.2,
+        -0.2
+      ],
+      [
+        -0.2,
+        -0.2,
+        0
+      ],
+      [
+        -0.2,
+        -0.2,
+        0.2
+      ],
+      [
+        -0.2,
+        0,
+        -0.2
+      ],
+      [
+        -0.2,
+        0,
+        0
+      ],
+      [
+        -0.2,
+        0,
+        0.2
+      ],
+      [
+        -0.2,
+        0.2,
+        -0.2
+      ],
+      [
+        -0.2,
+        0.2,
+        0
+      ],
+      [
+        -0.2,
+        0.2,
+        0.2
+      ],
+      [
+        0,
+        -0.2,
+        -0.2
+      ],
+      [
+        0,
+        -0.2,
+        0
+      ],
+      [
+        0,
+        -0.2,
+        0.2
+      ],
+      [
+        0,
+        0,
+        -0.2
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0.2
+      ],
+      [
+        0,
+        0.2,
+        -0.2
+      ],
+      [
+        0,
+        0.2,
+        0
+      ],
+      [
+        0,
+        0.2,
+        0.2
+      ],
+      [
+        0.2,
+        -0.2,
+        -0.2
+      ],
+      [
+        0.2,
+        -0.2,
+        0
+      ],
+      [
+        0.2,
+        -0.2,
+        0.2
+      ],
+      [
+        0.2,
+        0,
+        -0.2
+      ],
+      [
+        0.2,
+        0,
+        0
+      ],
+      [
+        0.2,
+        0,
+        0.2
+      ],
+      [
+        0.2,
+        0.2,
+        -0.2
+      ],
+      [
+        0.2,
+        0.2,
+        0
+      ],
+      [
+        0.2,
+        0.2,
+        0.2
+      ]
+    ],
+    "cases": [
+      {
+        "case_id": "exact",
+        "relative_errors": [
+          0,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "deflection_limit_mm_minus20",
+        "relative_errors": [
+          -0.2,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.2,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "deflection_limit_mm_minus10",
+        "relative_errors": [
+          -0.1,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.1,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "deflection_limit_mm_minus5",
+        "relative_errors": [
+          -0.05,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.05,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "deflection_limit_mm_plus5",
+        "relative_errors": [
+          0.05,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.05,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "deflection_limit_mm_plus10",
+        "relative_errors": [
+          0.1,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.1,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "deflection_limit_mm_plus20",
+        "relative_errors": [
+          0.2,
+          0,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.2,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "capacity_n_minus20",
+        "relative_errors": [
+          0,
+          -0.2,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": -0.2,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "capacity_n_minus10",
+        "relative_errors": [
+          0,
+          -0.1,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": -0.1,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "capacity_n_minus5",
+        "relative_errors": [
+          0,
+          -0.05,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": -0.05,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "capacity_n_plus5",
+        "relative_errors": [
+          0,
+          0.05,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0.05,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "capacity_n_plus10",
+        "relative_errors": [
+          0,
+          0.1,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0.1,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "capacity_n_plus20",
+        "relative_errors": [
+          0,
+          0.2,
+          0
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0.2,
+          "bending_strength_mpa": 0
+        }
+      },
+      {
+        "case_id": "bending_strength_mpa_minus20",
+        "relative_errors": [
+          0,
+          0,
+          -0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": -0.2
+        }
+      },
+      {
+        "case_id": "bending_strength_mpa_minus10",
+        "relative_errors": [
+          0,
+          0,
+          -0.1
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": -0.1
+        }
+      },
+      {
+        "case_id": "bending_strength_mpa_minus5",
+        "relative_errors": [
+          0,
+          0,
+          -0.05
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": -0.05
+        }
+      },
+      {
+        "case_id": "bending_strength_mpa_plus5",
+        "relative_errors": [
+          0,
+          0,
+          0.05
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0.05
+        }
+      },
+      {
+        "case_id": "bending_strength_mpa_plus10",
+        "relative_errors": [
+          0,
+          0,
+          0.1
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0.1
+        }
+      },
+      {
+        "case_id": "bending_strength_mpa_plus20",
+        "relative_errors": [
+          0,
+          0,
+          0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0,
+          "capacity_n": 0,
+          "bending_strength_mpa": 0.2
+        }
+      },
+      {
+        "case_id": "joint_minus20_minus20_minus20",
+        "relative_errors": [
+          -0.2,
+          -0.2,
+          -0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.2,
+          "capacity_n": -0.2,
+          "bending_strength_mpa": -0.2
+        }
+      },
+      {
+        "case_id": "joint_minus20_minus20_plus20",
+        "relative_errors": [
+          -0.2,
+          -0.2,
+          0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.2,
+          "capacity_n": -0.2,
+          "bending_strength_mpa": 0.2
+        }
+      },
+      {
+        "case_id": "joint_minus20_plus20_minus20",
+        "relative_errors": [
+          -0.2,
+          0.2,
+          -0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.2,
+          "capacity_n": 0.2,
+          "bending_strength_mpa": -0.2
+        }
+      },
+      {
+        "case_id": "joint_minus20_plus20_plus20",
+        "relative_errors": [
+          -0.2,
+          0.2,
+          0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": -0.2,
+          "capacity_n": 0.2,
+          "bending_strength_mpa": 0.2
+        }
+      },
+      {
+        "case_id": "joint_plus20_minus20_minus20",
+        "relative_errors": [
+          0.2,
+          -0.2,
+          -0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.2,
+          "capacity_n": -0.2,
+          "bending_strength_mpa": -0.2
+        }
+      },
+      {
+        "case_id": "joint_plus20_minus20_plus20",
+        "relative_errors": [
+          0.2,
+          -0.2,
+          0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.2,
+          "capacity_n": -0.2,
+          "bending_strength_mpa": 0.2
+        }
+      },
+      {
+        "case_id": "joint_plus20_plus20_minus20",
+        "relative_errors": [
+          0.2,
+          0.2,
+          -0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.2,
+          "capacity_n": 0.2,
+          "bending_strength_mpa": -0.2
+        }
+      },
+      {
+        "case_id": "joint_plus20_plus20_plus20",
+        "relative_errors": [
+          0.2,
+          0.2,
+          0.2
+        ],
+        "center_bias": {
+          "deflection_limit_mm": 0.2,
+          "capacity_n": 0.2,
+          "bending_strength_mpa": 0.2
+        }
+      }
+    ],
+    "candidates": [
+      "center",
+      "sampled_upper",
+      "estimated_current_limit"
+    ],
+    "cell_count": 324,
+    "summary_count": 108,
+    "prediction_lists": 108,
+    "finite_sample_count": 27,
+    "excluded_step": 0,
+    "future_window_steps": 3,
+    "class_thresholds": [
+      0.5,
+      0.8,
+      1
+    ],
+    "evaluation_only": true,
+    "fitting": false,
+    "model_selection": false,
+    "hypothetical_width": true,
+    "continuous_domain_guarantee": false,
+    "confidence_bound": false,
+    "field_calibrated": false,
+    "live_integration": false,
+    "human_scientific_approval": "pending",
+    "submission_ready": false,
+    "fingerprint_contract": "canonical_json_domain_family_parameters_sha256",
+    "in_domain_scenarios": 100,
+    "ood_scenarios": 100,
+    "steps": 32,
+    "source_file_hashes": {
+      "protocol.json": {
+        "sha256": "034573c052d48b0b118df9c78ce505d214c7c16b19d35dc7d92ee63766899d7d",
+        "bytes": 4187
+      },
+      "replicate-a/metadata.json": {
+        "sha256": "33b7f84de6dfb371c932605fc7cf58472d59035cb42cb99d19907ac900fcc972",
+        "bytes": 1176
+      },
+      "replicate-a/metrics.json": {
+        "sha256": "7e0be6da1f5f94c1083a849e29ac0b1a69607efecb1b90209701f31e124c8167",
+        "bytes": 322079
+      },
+      "replicate-a/models/known_limits4/random_forest.joblib": {
+        "sha256": "dfeae0e374baf941e0d20f148a91816abea5445f97738d795f4c940d60c72ab1",
+        "bytes": 11042937
+      },
+      "replicate-a/models/known_limits4/xgboost.json": {
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "bytes": 2143078
+      },
+      "replicate-a/models/raw4/random_forest.joblib": {
+        "sha256": "1b4bcbd5beb1789163e1410b5ee678809bff57442c89e4901d59fd9824e08dbf",
+        "bytes": 34167993
+      },
+      "replicate-a/models/raw4/xgboost.json": {
+        "sha256": "c1c6dfb681fb50246dce7d5bc08fa92510cfed45de421e5b7480e86aa56a707b",
+        "bytes": 1901400
+      },
+      "replicate-a/normalized_observations.csv": {
+        "sha256": "46cf039c3a55ba0c1af0a21b09571e692029f49dcee71383dd4bc541dbbb9d6a",
+        "bytes": 1667100
+      },
+      "replicate-a/observations.csv": {
+        "sha256": "d353ee95269fb2f7919e9c2f8fc5fa12800203b946fcb6ae244270f6323bdf42",
+        "bytes": 3165173
+      },
+      "replicate-a/predictions.json": {
+        "sha256": "00168c30b4aea1350790807f6d6472d8c8fc6fb189d8d9162ef9d1e007667288",
+        "bytes": 666209
+      },
+      "replicate-a/scenarios.json": {
+        "sha256": "fc0ea45b00d7d5d31905fa4ab13b49af2795a8c3ff414d795824a2d214ffdb49",
+        "bytes": 49237337
+      },
+      "replicate-a/splits.json": {
+        "sha256": "375f6e36d237bae4ea1ec1d0a26893486eee6b533175a9afc9b0cf8c75f0971e",
+        "bytes": 207636
+      },
+      "replicate-a/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "replicate-b/metadata.json": {
+        "sha256": "2245568587efb0bb95ea561a2a9f0c596487a9ebb343c0d29fa1d5816b1984d3",
+        "bytes": 1176
+      },
+      "replicate-b/metrics.json": {
+        "sha256": "ae7de31745bc6017631b2853c604264f47fb9583170e7bc3d7c77980a38110d8",
+        "bytes": 325516
+      },
+      "replicate-b/models/known_limits4/random_forest.joblib": {
+        "sha256": "63db9d492b3e46a818e90288c23af5412af013c8c21f5f26728d42dcd26e2bc3",
+        "bytes": 10644729
+      },
+      "replicate-b/models/known_limits4/xgboost.json": {
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "bytes": 2233065
+      },
+      "replicate-b/models/raw4/random_forest.joblib": {
+        "sha256": "6370ba13fea0e6db3e1fa4e6d0ae6b7e35f2c2667ef8aa375f51a8a707d03d6e",
+        "bytes": 34116153
+      },
+      "replicate-b/models/raw4/xgboost.json": {
+        "sha256": "6f60728fe2092745b2e0d4bee48b6af0d849a32e199c4bb21c2fadb2899b7840",
+        "bytes": 2448481
+      },
+      "replicate-b/normalized_observations.csv": {
+        "sha256": "c05e908b1c9f45c0c6c81d0cbd78c7cce6916261414b4bb26bd33115ff663e0d",
+        "bytes": 1687764
+      },
+      "replicate-b/observations.csv": {
+        "sha256": "59fb7b7bedae5ad82ea4de137bf09fe298e0132a28fec5ea2e05aae72d7738ad",
+        "bytes": 3204728
+      },
+      "replicate-b/predictions.json": {
+        "sha256": "6460e57a23aaa68d0530ae7646dac77e17597bd796d8905d3b6e0ad5bf65b0db",
+        "bytes": 675361
+      },
+      "replicate-b/scenarios.json": {
+        "sha256": "c9f8557ee96991a86d6867d52769bc6119f47cbdd7447a46f3225542d940b90f",
+        "bytes": 49789743
+      },
+      "replicate-b/splits.json": {
+        "sha256": "3a243e96ad436f1264970215b6c1bb47ab32736fdc627b241fb9e72950287953",
+        "bytes": 210093
+      },
+      "replicate-b/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "teacher-csv-check.json": {
+        "sha256": "c4c3100ddd0e41e01a490769a06f5e96f0885b11f708e6a464adb0663f2e1734",
+        "bytes": 176
+      }
+    },
+    "source_software_versions": {
+      "python": "3.10.10",
+      "numpy": "1.26.4",
+      "sklearn": "1.7.2",
+      "xgboost": "3.2.0",
+      "joblib": "1.6.0",
+      "platform": "Windows-10-10.0.26200-SP0"
+    },
+    "analysis_software_versions": {
+      "python": "3.10.10",
+      "numpy": "1.26.4",
+      "sklearn": "1.7.2",
+      "xgboost": "3.2.0",
+      "joblib": "1.6.0",
+      "platform": "Windows-10-10.0.26200-SP0"
+    },
+    "teacher_csv": {
+      "path": "D:\\矿业\\worktrees\\teacher-feedback-v1\\data\\teacher_roof_monitoring.csv",
+      "sha256": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a"
+    },
+    "saved_models": {
+      "replicate-a": {
+        "path": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13\\replicate-a\\models\\known_limits4\\xgboost.json",
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "protocol": "known_limits4",
+        "model": "xgboost",
+        "selection": "predeclared; original validation choice retained separately"
+      },
+      "replicate-b": {
+        "path": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13\\replicate-b\\models\\known_limits4\\xgboost.json",
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "protocol": "known_limits4",
+        "model": "xgboost",
+        "selection": "predeclared; original validation choice retained separately"
+      }
+    },
+    "original_selections": {
+      "replicate-a": {
+        "raw4": {
+          "split": "validation",
+          "selected_model": "xgboost",
+          "eligible": true,
+          "eligible_candidates": [
+            "xgboost"
+          ],
+          "minimum_macro_f1": 0.5,
+          "maximum_low_class_false_positive_fraction": 0.2,
+          "required_present_class": 3,
+          "priority": [
+            "recall_class_3",
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "fallback": [
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "frozen_before_test_and_ood": true
+        },
+        "known_limits4": {
+          "split": "validation",
+          "selected_model": "xgboost",
+          "eligible": true,
+          "eligible_candidates": [
+            "random_forest",
+            "xgboost"
+          ],
+          "minimum_macro_f1": 0.5,
+          "maximum_low_class_false_positive_fraction": 0.2,
+          "required_present_class": 3,
+          "priority": [
+            "recall_class_3",
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "fallback": [
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "frozen_before_test_and_ood": true
+        }
+      },
+      "replicate-b": {
+        "raw4": {
+          "split": "validation",
+          "selected_model": "xgboost",
+          "eligible": true,
+          "eligible_candidates": [
+            "random_forest",
+            "xgboost"
+          ],
+          "minimum_macro_f1": 0.5,
+          "maximum_low_class_false_positive_fraction": 0.2,
+          "required_present_class": 3,
+          "priority": [
+            "recall_class_3",
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "fallback": [
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "frozen_before_test_and_ood": true
+        },
+        "known_limits4": {
+          "split": "validation",
+          "selected_model": "xgboost",
+          "eligible": true,
+          "eligible_candidates": [
+            "random_forest",
+            "xgboost"
+          ],
+          "minimum_macro_f1": 0.5,
+          "maximum_low_class_false_positive_fraction": 0.2,
+          "required_present_class": 3,
+          "priority": [
+            "recall_class_3",
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "fallback": [
+            "macro_f1",
+            "xgboost_tie"
+          ],
+          "frozen_before_test_and_ood": true
+        }
+      }
+    },
+    "created_utc": "2026-10-13T15:54:21.750344+00:00",
+    "source_kind": "mechanics_simulation",
+    "source_dir": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13",
+    "source_manifest_sha256": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "analysis_code_sha256": {
+      "tools/roof_mechanics/fresh_cohort_study.py": "15e20d97ee406bb216f62f39094143a29c5f92feae826df37a1ac52e4969a344",
+      "tests/roof_mechanics/test_fresh_cohort_study.py": "1a4b81df7aefb0f5c729c6f5359fe90850d3ca0c7276d40f303b17d873a1dd5a",
+      "tools/roof_mechanics/solver.py": "87ce0b08aee703becd4fbcba28a99a3c68981a071931fb4fd76cfda9e3073544",
+      "tools/roof_mechanics/uncertainty_study.py": "b6dbba0e0315b8bf7d30db94ce2c8c20dff153d21274884a83158779c3d5bb95",
+      "tests/roof_mechanics/test_uncertainty_study.py": "9fc548c84edf920c39b62ad6eae024ae4b88a2c9f119845d4f3723d3942034e4",
+      "tools/roof_mechanics/limit_uncertainty.py": "82354615767571138b389ec49212debefc3afed30f9706e6a90d4c2acd115a83",
+      "tests/roof_mechanics/test_limit_uncertainty.py": "993b78760ecee242dc46a0e1fc29ff8313805810b8da3ee52a501f3846ce7b10",
+      "tools/roof_mechanics/limits_sensitivity.py": "e7b88d314d767cb71abd68cee64944e65892bf71d7afecd7ba57e066e3aeb4e8",
+      "tests/roof_mechanics/test_limits_sensitivity.py": "cfbefb10e45942ea875d250b101674b15c20fac35f77dd2eeeb8790a13a494bc",
+      "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52",
+      "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+      "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+      "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+      "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab"
+    },
+    "expected_files": [
+      "cohorts/fresh-replicate-a/dataset.json",
+      "cohorts/fresh-replicate-b/dataset.json",
+      "comparison.csv",
+      "disjointness.json",
+      "manifest.json",
+      "predictions.json",
+      "protocol.json",
+      "readback.json",
+      "results.json",
+      "source-check.json"
+    ],
+    "reproducible_command": [
+      "D:\\矿业\\smart-mine-v2-balanced\\.venv-data\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "tools.roof_mechanics.fresh_cohort_study",
+      "--source-dir",
+      "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13",
+      "--output-dir",
+      "D:\\矿业\\outputs\\roof-mechanics-fresh-cohort\\2026-10-13",
+      "--expected-manifest-sha256",
+      "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+      "--in-domain-scenarios",
+      "100",
+      "--ood-scenarios",
+      "100",
+      "--steps",
+      "32"
+    ]
+  },
+  "source_manifest": {
+    "sha256": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "algorithm": "sha256",
+    "excludes": [
+      "manifest.json"
+    ],
+    "files": {
+      "protocol.json": {
+        "sha256": "034573c052d48b0b118df9c78ce505d214c7c16b19d35dc7d92ee63766899d7d",
+        "bytes": 4187
+      },
+      "replicate-a/metadata.json": {
+        "sha256": "33b7f84de6dfb371c932605fc7cf58472d59035cb42cb99d19907ac900fcc972",
+        "bytes": 1176
+      },
+      "replicate-a/metrics.json": {
+        "sha256": "7e0be6da1f5f94c1083a849e29ac0b1a69607efecb1b90209701f31e124c8167",
+        "bytes": 322079
+      },
+      "replicate-a/models/known_limits4/random_forest.joblib": {
+        "sha256": "dfeae0e374baf941e0d20f148a91816abea5445f97738d795f4c940d60c72ab1",
+        "bytes": 11042937
+      },
+      "replicate-a/models/known_limits4/xgboost.json": {
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "bytes": 2143078
+      },
+      "replicate-a/models/raw4/random_forest.joblib": {
+        "sha256": "1b4bcbd5beb1789163e1410b5ee678809bff57442c89e4901d59fd9824e08dbf",
+        "bytes": 34167993
+      },
+      "replicate-a/models/raw4/xgboost.json": {
+        "sha256": "c1c6dfb681fb50246dce7d5bc08fa92510cfed45de421e5b7480e86aa56a707b",
+        "bytes": 1901400
+      },
+      "replicate-a/normalized_observations.csv": {
+        "sha256": "46cf039c3a55ba0c1af0a21b09571e692029f49dcee71383dd4bc541dbbb9d6a",
+        "bytes": 1667100
+      },
+      "replicate-a/observations.csv": {
+        "sha256": "d353ee95269fb2f7919e9c2f8fc5fa12800203b946fcb6ae244270f6323bdf42",
+        "bytes": 3165173
+      },
+      "replicate-a/predictions.json": {
+        "sha256": "00168c30b4aea1350790807f6d6472d8c8fc6fb189d8d9162ef9d1e007667288",
+        "bytes": 666209
+      },
+      "replicate-a/scenarios.json": {
+        "sha256": "fc0ea45b00d7d5d31905fa4ab13b49af2795a8c3ff414d795824a2d214ffdb49",
+        "bytes": 49237337
+      },
+      "replicate-a/splits.json": {
+        "sha256": "375f6e36d237bae4ea1ec1d0a26893486eee6b533175a9afc9b0cf8c75f0971e",
+        "bytes": 207636
+      },
+      "replicate-a/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "replicate-b/metadata.json": {
+        "sha256": "2245568587efb0bb95ea561a2a9f0c596487a9ebb343c0d29fa1d5816b1984d3",
+        "bytes": 1176
+      },
+      "replicate-b/metrics.json": {
+        "sha256": "ae7de31745bc6017631b2853c604264f47fb9583170e7bc3d7c77980a38110d8",
+        "bytes": 325516
+      },
+      "replicate-b/models/known_limits4/random_forest.joblib": {
+        "sha256": "63db9d492b3e46a818e90288c23af5412af013c8c21f5f26728d42dcd26e2bc3",
+        "bytes": 10644729
+      },
+      "replicate-b/models/known_limits4/xgboost.json": {
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "bytes": 2233065
+      },
+      "replicate-b/models/raw4/random_forest.joblib": {
+        "sha256": "6370ba13fea0e6db3e1fa4e6d0ae6b7e35f2c2667ef8aa375f51a8a707d03d6e",
+        "bytes": 34116153
+      },
+      "replicate-b/models/raw4/xgboost.json": {
+        "sha256": "6f60728fe2092745b2e0d4bee48b6af0d849a32e199c4bb21c2fadb2899b7840",
+        "bytes": 2448481
+      },
+      "replicate-b/normalized_observations.csv": {
+        "sha256": "c05e908b1c9f45c0c6c81d0cbd78c7cce6916261414b4bb26bd33115ff663e0d",
+        "bytes": 1687764
+      },
+      "replicate-b/observations.csv": {
+        "sha256": "59fb7b7bedae5ad82ea4de137bf09fe298e0132a28fec5ea2e05aae72d7738ad",
+        "bytes": 3204728
+      },
+      "replicate-b/predictions.json": {
+        "sha256": "6460e57a23aaa68d0530ae7646dac77e17597bd796d8905d3b6e0ad5bf65b0db",
+        "bytes": 675361
+      },
+      "replicate-b/scenarios.json": {
+        "sha256": "c9f8557ee96991a86d6867d52769bc6119f47cbdd7447a46f3225542d940b90f",
+        "bytes": 49789743
+      },
+      "replicate-b/splits.json": {
+        "sha256": "3a243e96ad436f1264970215b6c1bb47ab32736fdc627b241fb9e72950287953",
+        "bytes": 210093
+      },
+      "replicate-b/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "teacher-csv-check.json": {
+        "sha256": "c4c3100ddd0e41e01a490769a06f5e96f0885b11f708e6a464adb0663f2e1734",
+        "bytes": 176
+      }
+    }
+  },
+  "formal_manifest": {
+    "sha256": "4af915e447446e5d1fd0a52cd1effa14631820c9f1b0cdec8483d97accc325e8",
+    "algorithm": "sha256",
+    "excludes": [
+      "manifest.json"
+    ],
+    "files": {
+      "cohorts/fresh-replicate-a/dataset.json": {
+        "sha256": "d324266ec8b9a095110b6c93dc9f0e434f73afa9359bcca9e2102a62ff032982",
+        "bytes": 20550037
+      },
+      "cohorts/fresh-replicate-b/dataset.json": {
+        "sha256": "bc1a49bf306a0f108b25ac9dcad0aa0beab7008c01b79b3af352ac6f54711dff",
+        "bytes": 20691571
+      },
+      "comparison.csv": {
+        "sha256": "d6b78133c671944e6b0ea9b126ceafc0b4c3ca5f32b61542094dee54ef715399",
+        "bytes": 121569
+      },
+      "disjointness.json": {
+        "sha256": "0e8058bf2b4f6a4bed9b1238f0d33d74cc30ced7ef6ee031d8af97cdd996ab0f",
+        "bytes": 249990
+      },
+      "predictions.json": {
+        "sha256": "6a2b1140c054f7550b02dccf9b7f62ae40bd951948cc389f72ce7de4170a4d02",
+        "bytes": 30219755
+      },
+      "protocol.json": {
+        "sha256": "488a7fe50adf89033dc39457cf7f37800fbdd1671f9c2ada89a3b9f56734550a",
+        "bytes": 20284
+      },
+      "readback.json": {
+        "sha256": "d0965e7f2bd412c40b95c6440038a8ebe397b6e3308ef59232b9f21858377691",
+        "bytes": 618
+      },
+      "results.json": {
+        "sha256": "d5ad0afe9062eef93ee76af76e9b6835fc8ccdf91b8e36295caa0e5e749b26c8",
+        "bytes": 1937093
+      },
+      "source-check.json": {
+        "sha256": "0de8c752ca5525be1be8c5f39c0345bef726e6538756adcbcb7b8ef68121136f",
+        "bytes": 10104
+      }
+    }
+  },
+  "source_model_teacher_before_after": {
+    "source_manifest_before": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "source_manifest_after": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "source_files_before": {
+      "protocol.json": {
+        "sha256": "034573c052d48b0b118df9c78ce505d214c7c16b19d35dc7d92ee63766899d7d",
+        "bytes": 4187
+      },
+      "replicate-a/metadata.json": {
+        "sha256": "33b7f84de6dfb371c932605fc7cf58472d59035cb42cb99d19907ac900fcc972",
+        "bytes": 1176
+      },
+      "replicate-a/metrics.json": {
+        "sha256": "7e0be6da1f5f94c1083a849e29ac0b1a69607efecb1b90209701f31e124c8167",
+        "bytes": 322079
+      },
+      "replicate-a/models/known_limits4/random_forest.joblib": {
+        "sha256": "dfeae0e374baf941e0d20f148a91816abea5445f97738d795f4c940d60c72ab1",
+        "bytes": 11042937
+      },
+      "replicate-a/models/known_limits4/xgboost.json": {
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "bytes": 2143078
+      },
+      "replicate-a/models/raw4/random_forest.joblib": {
+        "sha256": "1b4bcbd5beb1789163e1410b5ee678809bff57442c89e4901d59fd9824e08dbf",
+        "bytes": 34167993
+      },
+      "replicate-a/models/raw4/xgboost.json": {
+        "sha256": "c1c6dfb681fb50246dce7d5bc08fa92510cfed45de421e5b7480e86aa56a707b",
+        "bytes": 1901400
+      },
+      "replicate-a/normalized_observations.csv": {
+        "sha256": "46cf039c3a55ba0c1af0a21b09571e692029f49dcee71383dd4bc541dbbb9d6a",
+        "bytes": 1667100
+      },
+      "replicate-a/observations.csv": {
+        "sha256": "d353ee95269fb2f7919e9c2f8fc5fa12800203b946fcb6ae244270f6323bdf42",
+        "bytes": 3165173
+      },
+      "replicate-a/predictions.json": {
+        "sha256": "00168c30b4aea1350790807f6d6472d8c8fc6fb189d8d9162ef9d1e007667288",
+        "bytes": 666209
+      },
+      "replicate-a/scenarios.json": {
+        "sha256": "fc0ea45b00d7d5d31905fa4ab13b49af2795a8c3ff414d795824a2d214ffdb49",
+        "bytes": 49237337
+      },
+      "replicate-a/splits.json": {
+        "sha256": "375f6e36d237bae4ea1ec1d0a26893486eee6b533175a9afc9b0cf8c75f0971e",
+        "bytes": 207636
+      },
+      "replicate-a/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "replicate-b/metadata.json": {
+        "sha256": "2245568587efb0bb95ea561a2a9f0c596487a9ebb343c0d29fa1d5816b1984d3",
+        "bytes": 1176
+      },
+      "replicate-b/metrics.json": {
+        "sha256": "ae7de31745bc6017631b2853c604264f47fb9583170e7bc3d7c77980a38110d8",
+        "bytes": 325516
+      },
+      "replicate-b/models/known_limits4/random_forest.joblib": {
+        "sha256": "63db9d492b3e46a818e90288c23af5412af013c8c21f5f26728d42dcd26e2bc3",
+        "bytes": 10644729
+      },
+      "replicate-b/models/known_limits4/xgboost.json": {
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "bytes": 2233065
+      },
+      "replicate-b/models/raw4/random_forest.joblib": {
+        "sha256": "6370ba13fea0e6db3e1fa4e6d0ae6b7e35f2c2667ef8aa375f51a8a707d03d6e",
+        "bytes": 34116153
+      },
+      "replicate-b/models/raw4/xgboost.json": {
+        "sha256": "6f60728fe2092745b2e0d4bee48b6af0d849a32e199c4bb21c2fadb2899b7840",
+        "bytes": 2448481
+      },
+      "replicate-b/normalized_observations.csv": {
+        "sha256": "c05e908b1c9f45c0c6c81d0cbd78c7cce6916261414b4bb26bd33115ff663e0d",
+        "bytes": 1687764
+      },
+      "replicate-b/observations.csv": {
+        "sha256": "59fb7b7bedae5ad82ea4de137bf09fe298e0132a28fec5ea2e05aae72d7738ad",
+        "bytes": 3204728
+      },
+      "replicate-b/predictions.json": {
+        "sha256": "6460e57a23aaa68d0530ae7646dac77e17597bd796d8905d3b6e0ad5bf65b0db",
+        "bytes": 675361
+      },
+      "replicate-b/scenarios.json": {
+        "sha256": "c9f8557ee96991a86d6867d52769bc6119f47cbdd7447a46f3225542d940b90f",
+        "bytes": 49789743
+      },
+      "replicate-b/splits.json": {
+        "sha256": "3a243e96ad436f1264970215b6c1bb47ab32736fdc627b241fb9e72950287953",
+        "bytes": 210093
+      },
+      "replicate-b/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "teacher-csv-check.json": {
+        "sha256": "c4c3100ddd0e41e01a490769a06f5e96f0885b11f708e6a464adb0663f2e1734",
+        "bytes": 176
+      }
+    },
+    "source_files_after": {
+      "protocol.json": {
+        "sha256": "034573c052d48b0b118df9c78ce505d214c7c16b19d35dc7d92ee63766899d7d",
+        "bytes": 4187
+      },
+      "replicate-a/metadata.json": {
+        "sha256": "33b7f84de6dfb371c932605fc7cf58472d59035cb42cb99d19907ac900fcc972",
+        "bytes": 1176
+      },
+      "replicate-a/metrics.json": {
+        "sha256": "7e0be6da1f5f94c1083a849e29ac0b1a69607efecb1b90209701f31e124c8167",
+        "bytes": 322079
+      },
+      "replicate-a/models/known_limits4/random_forest.joblib": {
+        "sha256": "dfeae0e374baf941e0d20f148a91816abea5445f97738d795f4c940d60c72ab1",
+        "bytes": 11042937
+      },
+      "replicate-a/models/known_limits4/xgboost.json": {
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "bytes": 2143078
+      },
+      "replicate-a/models/raw4/random_forest.joblib": {
+        "sha256": "1b4bcbd5beb1789163e1410b5ee678809bff57442c89e4901d59fd9824e08dbf",
+        "bytes": 34167993
+      },
+      "replicate-a/models/raw4/xgboost.json": {
+        "sha256": "c1c6dfb681fb50246dce7d5bc08fa92510cfed45de421e5b7480e86aa56a707b",
+        "bytes": 1901400
+      },
+      "replicate-a/normalized_observations.csv": {
+        "sha256": "46cf039c3a55ba0c1af0a21b09571e692029f49dcee71383dd4bc541dbbb9d6a",
+        "bytes": 1667100
+      },
+      "replicate-a/observations.csv": {
+        "sha256": "d353ee95269fb2f7919e9c2f8fc5fa12800203b946fcb6ae244270f6323bdf42",
+        "bytes": 3165173
+      },
+      "replicate-a/predictions.json": {
+        "sha256": "00168c30b4aea1350790807f6d6472d8c8fc6fb189d8d9162ef9d1e007667288",
+        "bytes": 666209
+      },
+      "replicate-a/scenarios.json": {
+        "sha256": "fc0ea45b00d7d5d31905fa4ab13b49af2795a8c3ff414d795824a2d214ffdb49",
+        "bytes": 49237337
+      },
+      "replicate-a/splits.json": {
+        "sha256": "375f6e36d237bae4ea1ec1d0a26893486eee6b533175a9afc9b0cf8c75f0971e",
+        "bytes": 207636
+      },
+      "replicate-a/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "replicate-b/metadata.json": {
+        "sha256": "2245568587efb0bb95ea561a2a9f0c596487a9ebb343c0d29fa1d5816b1984d3",
+        "bytes": 1176
+      },
+      "replicate-b/metrics.json": {
+        "sha256": "ae7de31745bc6017631b2853c604264f47fb9583170e7bc3d7c77980a38110d8",
+        "bytes": 325516
+      },
+      "replicate-b/models/known_limits4/random_forest.joblib": {
+        "sha256": "63db9d492b3e46a818e90288c23af5412af013c8c21f5f26728d42dcd26e2bc3",
+        "bytes": 10644729
+      },
+      "replicate-b/models/known_limits4/xgboost.json": {
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "bytes": 2233065
+      },
+      "replicate-b/models/raw4/random_forest.joblib": {
+        "sha256": "6370ba13fea0e6db3e1fa4e6d0ae6b7e35f2c2667ef8aa375f51a8a707d03d6e",
+        "bytes": 34116153
+      },
+      "replicate-b/models/raw4/xgboost.json": {
+        "sha256": "6f60728fe2092745b2e0d4bee48b6af0d849a32e199c4bb21c2fadb2899b7840",
+        "bytes": 2448481
+      },
+      "replicate-b/normalized_observations.csv": {
+        "sha256": "c05e908b1c9f45c0c6c81d0cbd78c7cce6916261414b4bb26bd33115ff663e0d",
+        "bytes": 1687764
+      },
+      "replicate-b/observations.csv": {
+        "sha256": "59fb7b7bedae5ad82ea4de137bf09fe298e0132a28fec5ea2e05aae72d7738ad",
+        "bytes": 3204728
+      },
+      "replicate-b/predictions.json": {
+        "sha256": "6460e57a23aaa68d0530ae7646dac77e17597bd796d8905d3b6e0ad5bf65b0db",
+        "bytes": 675361
+      },
+      "replicate-b/scenarios.json": {
+        "sha256": "c9f8557ee96991a86d6867d52769bc6119f47cbdd7447a46f3225542d940b90f",
+        "bytes": 49789743
+      },
+      "replicate-b/splits.json": {
+        "sha256": "3a243e96ad436f1264970215b6c1bb47ab32736fdc627b241fb9e72950287953",
+        "bytes": 210093
+      },
+      "replicate-b/verification.json": {
+        "sha256": "15fcf06b56be5cd9529c66280ee6a8d4080c3f9cddc788ffd71afbf1f2f85551",
+        "bytes": 2591
+      },
+      "teacher-csv-check.json": {
+        "sha256": "c4c3100ddd0e41e01a490769a06f5e96f0885b11f708e6a464adb0663f2e1734",
+        "bytes": 176
+      }
+    },
+    "models_before": {
+      "replicate-a": {
+        "path": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13\\replicate-a\\models\\known_limits4\\xgboost.json",
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "protocol": "known_limits4",
+        "model": "xgboost",
+        "selection": "predeclared; original validation choice retained separately"
+      },
+      "replicate-b": {
+        "path": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13\\replicate-b\\models\\known_limits4\\xgboost.json",
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "protocol": "known_limits4",
+        "model": "xgboost",
+        "selection": "predeclared; original validation choice retained separately"
+      }
+    },
+    "models_after": {
+      "replicate-a": {
+        "path": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13\\replicate-a\\models\\known_limits4\\xgboost.json",
+        "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f",
+        "protocol": "known_limits4",
+        "model": "xgboost",
+        "selection": "predeclared; original validation choice retained separately"
+      },
+      "replicate-b": {
+        "path": "D:\\矿业\\outputs\\roof-mechanics-known-limits\\2026-10-13\\replicate-b\\models\\known_limits4\\xgboost.json",
+        "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d",
+        "protocol": "known_limits4",
+        "model": "xgboost",
+        "selection": "predeclared; original validation choice retained separately"
+      }
+    },
+    "teacher_before": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+    "teacher_after": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+    "equal": true
+  },
+  "analysis_code_sha256_before": {
+    "tools/roof_mechanics/fresh_cohort_study.py": "15e20d97ee406bb216f62f39094143a29c5f92feae826df37a1ac52e4969a344",
+    "tests/roof_mechanics/test_fresh_cohort_study.py": "1a4b81df7aefb0f5c729c6f5359fe90850d3ca0c7276d40f303b17d873a1dd5a",
+    "tools/roof_mechanics/solver.py": "87ce0b08aee703becd4fbcba28a99a3c68981a071931fb4fd76cfda9e3073544",
+    "tools/roof_mechanics/uncertainty_study.py": "b6dbba0e0315b8bf7d30db94ce2c8c20dff153d21274884a83158779c3d5bb95",
+    "tests/roof_mechanics/test_uncertainty_study.py": "9fc548c84edf920c39b62ad6eae024ae4b88a2c9f119845d4f3723d3942034e4",
+    "tools/roof_mechanics/limit_uncertainty.py": "82354615767571138b389ec49212debefc3afed30f9706e6a90d4c2acd115a83",
+    "tests/roof_mechanics/test_limit_uncertainty.py": "993b78760ecee242dc46a0e1fc29ff8313805810b8da3ee52a501f3846ce7b10",
+    "tools/roof_mechanics/limits_sensitivity.py": "e7b88d314d767cb71abd68cee64944e65892bf71d7afecd7ba57e066e3aeb4e8",
+    "tests/roof_mechanics/test_limits_sensitivity.py": "cfbefb10e45942ea875d250b101674b15c20fac35f77dd2eeeb8790a13a494bc",
+    "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52",
+    "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+    "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+    "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+    "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab"
+  },
+  "analysis_code_sha256_after": {
+    "tools/roof_mechanics/fresh_cohort_study.py": "15e20d97ee406bb216f62f39094143a29c5f92feae826df37a1ac52e4969a344",
+    "tests/roof_mechanics/test_fresh_cohort_study.py": "1a4b81df7aefb0f5c729c6f5359fe90850d3ca0c7276d40f303b17d873a1dd5a",
+    "tools/roof_mechanics/solver.py": "87ce0b08aee703becd4fbcba28a99a3c68981a071931fb4fd76cfda9e3073544",
+    "tools/roof_mechanics/uncertainty_study.py": "b6dbba0e0315b8bf7d30db94ce2c8c20dff153d21274884a83158779c3d5bb95",
+    "tests/roof_mechanics/test_uncertainty_study.py": "9fc548c84edf920c39b62ad6eae024ae4b88a2c9f119845d4f3723d3942034e4",
+    "tools/roof_mechanics/limit_uncertainty.py": "82354615767571138b389ec49212debefc3afed30f9706e6a90d4c2acd115a83",
+    "tests/roof_mechanics/test_limit_uncertainty.py": "993b78760ecee242dc46a0e1fc29ff8313805810b8da3ee52a501f3846ce7b10",
+    "tools/roof_mechanics/limits_sensitivity.py": "e7b88d314d767cb71abd68cee64944e65892bf71d7afecd7ba57e066e3aeb4e8",
+    "tests/roof_mechanics/test_limits_sensitivity.py": "cfbefb10e45942ea875d250b101674b15c20fac35f77dd2eeeb8790a13a494bc",
+    "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52",
+    "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+    "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+    "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+    "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab"
+  },
+  "audit_totals": {
+    "passed": true,
+    "cells_checked": 324,
+    "summaries_checked": 108,
+    "predictions_checked": 108,
+    "csv_rows_checked": 324,
+    "datasets_checked": 2,
+    "regenerated_scenarios": 400,
+    "reconstructed_raw_rows": 10515,
+    "eligible_rows_checked": 10115,
+    "deterministic_replay": true,
+    "replay_is_independent_source": false,
+    "disjointness_checked": true,
+    "source_readback_passed": true,
+    "source_manifest_unchanged": true,
+    "saved_models_unchanged": true,
+    "teacher_csv_unchanged": true,
+    "independent_denominator_reconstruction": true,
+    "analysis_code_provenance": "pre_generation_code_hashes_verified"
+  },
+  "lightweight_archive_audit": {
+    "passed": true,
+    "formal_total_files": 10,
+    "covered_files": 9,
+    "original_source_files_checked": 26,
+    "code_test_helper_files_checked": 14,
+    "teacher_bytes_checked": true,
+    "no_generation_or_inference": true,
+    "source_timestamp": "raw JSON string preserved"
+  },
+  "datasets": {
+    "fresh-replicate-a": {
+      "metadata": {
+        "simulator_version": "eb-spring-v1",
+        "dataset_version": "roof-mechanics-v1",
+        "source_kind": "mechanics_simulation",
+        "feature_names": [
+          "max_deflection_mm",
+          "deflection_increment_mm_per_step",
+          "max_support_force_kn",
+          "max_bending_stress_mpa"
+        ],
+        "class_names": [
+          "低利用率",
+          "中等利用率",
+          "接近假设极限",
+          "达到假设极限"
+        ],
+        "thresholds": [
+          0.5,
+          0.8,
+          1
+        ],
+        "future_window_steps": 3,
+        "noise": false,
+        "seeds": {
+          "in_domain": 51101,
+          "ood": 52101
+        },
+        "uniform_support_capacity": true,
+        "in_domain_scenarios": 100,
+        "ood_scenarios": 100,
+        "steps": 32,
+        "row_count": 5245,
+        "scenario_count": 200,
+        "ood_scope": "span in (12, 14] m; all other ranges shared with in-domain",
+        "step_semantics": "quasi-static loading step; no physical time unit",
+        "limit_semantics": "hypothetical screening limits; no field calibration or accident probability",
+        "assumptions": [
+          "homogeneous slender linear-elastic Euler-Bernoulli strip",
+          "bilateral grounded linear springs",
+          "prescribed stiffness degradation",
+          "no post-limit collapse dynamics",
+          "no sensor noise"
+        ]
+      },
+      "verification": {
+        "passed": true,
+        "grids": [
+          12,
+          24,
+          48
+        ],
+        "analytic_cases": {
+          "simply_supported": [
+            {
+              "elements": 12,
+              "deflection_relative_error": 1.3211653993039363e-13,
+              "stress_relative_error": 0.004629629629787857,
+              "equilibrium_relative_error": 2.168235369026661e-14,
+              "residual_relative_error": 3.7643831403505895e-13,
+              "energy_relative_error": 1.3677947663381929e-13
+            },
+            {
+              "elements": 24,
+              "deflection_relative_error": 2.3359092438113294e-13,
+              "stress_relative_error": 0.0011574074072937535,
+              "equilibrium_relative_error": 5.711626727133989e-13,
+              "residual_relative_error": 6.270425549038164e-12,
+              "energy_relative_error": 2.0439205883349132e-13
+            },
+            {
+              "elements": 48,
+              "deflection_relative_error": 2.580957669806594e-11,
+              "stress_relative_error": 0.0002893518214885926,
+              "equilibrium_relative_error": 1.8278806237503887e-11,
+              "residual_relative_error": 1.0194019293785726e-10,
+              "energy_relative_error": 2.944733346055273e-11
+            }
+          ],
+          "cantilever": [
+            {
+              "elements": 12,
+              "deflection_relative_error": 6.350475700855895e-14,
+              "stress_relative_error": 0.0011574074074084395,
+              "equilibrium_relative_error": 8.221832104027271e-14,
+              "residual_relative_error": 2.493905106955353e-12,
+              "energy_relative_error": 2.8954616482224083e-13
+            },
+            {
+              "elements": 24,
+              "deflection_relative_error": 8.537281992460066e-12,
+              "stress_relative_error": 0.0002893518590124655,
+              "equilibrium_relative_error": 3.9643782656639815e-12,
+              "residual_relative_error": 3.647935614957524e-11,
+              "energy_relative_error": 1.0188960786194912e-11
+            },
+            {
+              "elements": 48,
+              "deflection_relative_error": 6.443690026003424e-11,
+              "stress_relative_error": 0.00007233801845873966,
+              "equilibrium_relative_error": 3.594279405660927e-11,
+              "residual_relative_error": 6.628403141929229e-10,
+              "energy_relative_error": 1.36293087926731e-10
+            }
+          ]
+        },
+        "spring_checks": {
+          "equilibrium_relative_error": 4.548928700387478e-13,
+          "residual_relative_error": 2.9550345092847037e-12,
+          "energy_relative_error": 4.4853010194856324e-14,
+          "center_deflection_relative_error": 2.531308496145357e-13,
+          "center_spring_force_relative_error": 2.531308496145357e-13
+        },
+        "tolerances": {
+          "deflection": 0.0001,
+          "refined_stress": 0.005,
+          "conservation": 1e-7,
+          "center_spring": 0.0001
+        }
+      },
+      "raw_rows": 5245,
+      "eligible_rows": 5045,
+      "scenario_count": 200
+    },
+    "fresh-replicate-b": {
+      "metadata": {
+        "simulator_version": "eb-spring-v1",
+        "dataset_version": "roof-mechanics-v1",
+        "source_kind": "mechanics_simulation",
+        "feature_names": [
+          "max_deflection_mm",
+          "deflection_increment_mm_per_step",
+          "max_support_force_kn",
+          "max_bending_stress_mpa"
+        ],
+        "class_names": [
+          "低利用率",
+          "中等利用率",
+          "接近假设极限",
+          "达到假设极限"
+        ],
+        "thresholds": [
+          0.5,
+          0.8,
+          1
+        ],
+        "future_window_steps": 3,
+        "noise": false,
+        "seeds": {
+          "in_domain": 51102,
+          "ood": 52102
+        },
+        "uniform_support_capacity": true,
+        "in_domain_scenarios": 100,
+        "ood_scenarios": 100,
+        "steps": 32,
+        "row_count": 5270,
+        "scenario_count": 200,
+        "ood_scope": "span in (12, 14] m; all other ranges shared with in-domain",
+        "step_semantics": "quasi-static loading step; no physical time unit",
+        "limit_semantics": "hypothetical screening limits; no field calibration or accident probability",
+        "assumptions": [
+          "homogeneous slender linear-elastic Euler-Bernoulli strip",
+          "bilateral grounded linear springs",
+          "prescribed stiffness degradation",
+          "no post-limit collapse dynamics",
+          "no sensor noise"
+        ]
+      },
+      "verification": {
+        "passed": true,
+        "grids": [
+          12,
+          24,
+          48
+        ],
+        "analytic_cases": {
+          "simply_supported": [
+            {
+              "elements": 12,
+              "deflection_relative_error": 1.3211653993039363e-13,
+              "stress_relative_error": 0.004629629629787857,
+              "equilibrium_relative_error": 2.168235369026661e-14,
+              "residual_relative_error": 3.7643831403505895e-13,
+              "energy_relative_error": 1.3677947663381929e-13
+            },
+            {
+              "elements": 24,
+              "deflection_relative_error": 2.3359092438113294e-13,
+              "stress_relative_error": 0.0011574074072937535,
+              "equilibrium_relative_error": 5.711626727133989e-13,
+              "residual_relative_error": 6.270425549038164e-12,
+              "energy_relative_error": 2.0439205883349132e-13
+            },
+            {
+              "elements": 48,
+              "deflection_relative_error": 2.580957669806594e-11,
+              "stress_relative_error": 0.0002893518214885926,
+              "equilibrium_relative_error": 1.8278806237503887e-11,
+              "residual_relative_error": 1.0194019293785726e-10,
+              "energy_relative_error": 2.944733346055273e-11
+            }
+          ],
+          "cantilever": [
+            {
+              "elements": 12,
+              "deflection_relative_error": 6.350475700855895e-14,
+              "stress_relative_error": 0.0011574074074084395,
+              "equilibrium_relative_error": 8.221832104027271e-14,
+              "residual_relative_error": 2.493905106955353e-12,
+              "energy_relative_error": 2.8954616482224083e-13
+            },
+            {
+              "elements": 24,
+              "deflection_relative_error": 8.537281992460066e-12,
+              "stress_relative_error": 0.0002893518590124655,
+              "equilibrium_relative_error": 3.9643782656639815e-12,
+              "residual_relative_error": 3.647935614957524e-11,
+              "energy_relative_error": 1.0188960786194912e-11
+            },
+            {
+              "elements": 48,
+              "deflection_relative_error": 6.443690026003424e-11,
+              "stress_relative_error": 0.00007233801845873966,
+              "equilibrium_relative_error": 3.594279405660927e-11,
+              "residual_relative_error": 6.628403141929229e-10,
+              "energy_relative_error": 1.36293087926731e-10
+            }
+          ]
+        },
+        "spring_checks": {
+          "equilibrium_relative_error": 4.548928700387478e-13,
+          "residual_relative_error": 2.9550345092847037e-12,
+          "energy_relative_error": 4.4853010194856324e-14,
+          "center_deflection_relative_error": 2.531308496145357e-13,
+          "center_spring_force_relative_error": 2.531308496145357e-13
+        },
+        "tolerances": {
+          "deflection": 0.0001,
+          "refined_stress": 0.005,
+          "conservation": 1e-7,
+          "center_spring": 0.0001
+        }
+      },
+      "raw_rows": 5270,
+      "eligible_rows": 5070,
+      "scenario_count": 200
+    }
+  },
+  "disjointness": {
+    "passed": true,
+    "fingerprint_contract": "canonical_json_domain_family_parameters_sha256",
+    "original_scenarios": 1200,
+    "fresh_scenarios": 400,
+    "unique_ids": 1600,
+    "unique_fingerprints": 1600,
+    "old_new_duplicates": 0,
+    "new_new_duplicates": 0,
+    "duplicate_ids": 0,
+    "definition": "SHA256 of canonical JSON {domain,family,parameters}, sort_keys=True, separators=(',',':'), allow_nan=False; IDs and trajectories excluded; duplicate ID, old/new and new/new full parameter fingerprints rejected"
+  },
+  "tables": {
+    "T01": {
+      "name": "exact/strength+20 row metrics",
+      "columns": [
+        "condition",
+        "group",
+        "rows/scenarios",
+        "macro_f1 C/U/P",
+        "class3 under C/U/P",
+        "class3 denominator",
+        "low false positive C/U/P",
+        "low denominator"
+      ],
+      "rows": [
+        [
+          "exact",
+          "A 新域内",
+          "2527/100",
+          "0.9393/0.4632/0.5263",
+          "14/1/201",
+          "201",
+          "7/282/0",
+          "592"
+        ],
+        [
+          "exact",
+          "A 新OOD",
+          "2518/100",
+          "0.9465/0.4667/0.5254",
+          "10/0/207",
+          "207",
+          "11/284/0",
+          "606"
+        ],
+        [
+          "exact",
+          "B 新域内",
+          "2505/100",
+          "0.9389/0.4558/0.5215",
+          "12/0/198",
+          "198",
+          "11/273/0",
+          "601"
+        ],
+        [
+          "exact",
+          "B 新OOD",
+          "2565/100",
+          "0.9335/0.4588/0.5304",
+          "16/0/189",
+          "189",
+          "12/275/0",
+          "639"
+        ],
+        [
+          "强度 +20%",
+          "A 新域内",
+          "2527/100",
+          "0.4100/0.9318/0.2671",
+          "200/4/201",
+          "201",
+          "0/16/0",
+          "592"
+        ],
+        [
+          "强度 +20%",
+          "A 新OOD",
+          "2518/100",
+          "0.4236/0.9386/0.2599",
+          "205/2/207",
+          "207",
+          "0/21/0",
+          "606"
+        ],
+        [
+          "强度 +20%",
+          "B 新域内",
+          "2505/100",
+          "0.4290/0.9261/0.2646",
+          "195/5/198",
+          "198",
+          "0/23/0",
+          "601"
+        ],
+        [
+          "强度 +20%",
+          "B 新OOD",
+          "2565/100",
+          "0.4337/0.9218/0.2727",
+          "187/3/189",
+          "189",
+          "0/20/0",
+          "639"
+        ]
+      ]
+    },
+    "T02": {
+      "name": "review and coverage",
+      "rows": [
+        [
+          "exact",
+          "A 新域内",
+          "2053/2527",
+          "100/100",
+          "14/201",
+          "0/201",
+          "13/14",
+          "2523/2527",
+          "2522/2527"
+        ],
+        [
+          "exact",
+          "A 新OOD",
+          "2035/2518",
+          "100/100",
+          "10/207",
+          "0/207",
+          "10/10",
+          "2518/2518",
+          "2517/2518"
+        ],
+        [
+          "exact",
+          "B 新域内",
+          "2048/2505",
+          "100/100",
+          "12/198",
+          "0/198",
+          "12/12",
+          "2505/2505",
+          "2504/2505"
+        ],
+        [
+          "exact",
+          "B 新OOD",
+          "2062/2565",
+          "100/100",
+          "16/189",
+          "0/189",
+          "16/16",
+          "2565/2565",
+          "2564/2565"
+        ],
+        [
+          "强度 +20%",
+          "A 新域内",
+          "1708/2527",
+          "100/100",
+          "200/201",
+          "0/201",
+          "196/200",
+          "2494/2527",
+          "2494/2527"
+        ],
+        [
+          "强度 +20%",
+          "A 新OOD",
+          "1687/2518",
+          "100/100",
+          "205/207",
+          "0/207",
+          "203/205",
+          "2501/2518",
+          "2501/2518"
+        ],
+        [
+          "强度 +20%",
+          "B 新域内",
+          "1728/2505",
+          "100/100",
+          "195/198",
+          "0/198",
+          "190/195",
+          "2490/2505",
+          "2490/2505"
+        ],
+        [
+          "强度 +20%",
+          "B 新OOD",
+          "1740/2565",
+          "100/100",
+          "187/189",
+          "0/189",
+          "184/187",
+          "2546/2565",
+          "2546/2565"
+        ]
+      ]
+    },
+    "T03": {
+      "name": "alert2/alert3 timely and non-limit counts",
+      "rows": [
+        [
+          "exact",
+          "A 新域内",
+          "67/67,67/67,67/67",
+          "30/33,33/33,24/33",
+          "66/67,67/67,0/67",
+          "1/33,27/33,0/33"
+        ],
+        [
+          "exact",
+          "A 新OOD",
+          "69/69,69/69,69/69",
+          "28/31,31/31,25/31",
+          "69/69,69/69,0/69",
+          "7/31,26/31,0/31"
+        ],
+        [
+          "exact",
+          "B 新域内",
+          "66/66,66/66,66/66",
+          "32/34,34/34,24/34",
+          "66/66,66/66,0/66",
+          "6/34,32/34,0/34"
+        ],
+        [
+          "exact",
+          "B 新OOD",
+          "63/63,63/63,63/63",
+          "35/37,37/37,27/37",
+          "63/63,63/63,0/63",
+          "5/37,32/37,0/37"
+        ],
+        [
+          "强度 +20%",
+          "A 新域内",
+          "66/67,67/67,63/67",
+          "6/33,31/33,1/33",
+          "1/67,66/67,0/67",
+          "0/33,4/33,0/33"
+        ],
+        [
+          "强度 +20%",
+          "A 新OOD",
+          "69/69,69/69,64/69",
+          "13/31,28/31,0/31",
+          "1/69,69/69,0/69",
+          "0/31,8/31,0/31"
+        ],
+        [
+          "强度 +20%",
+          "B 新域内",
+          "66/66,66/66,61/66",
+          "12/34,33/34,0/34",
+          "2/66,66/66,0/66",
+          "0/34,6/34,0/34"
+        ],
+        [
+          "强度 +20%",
+          "B 新OOD",
+          "63/63,63/63,57/63",
+          "12/37,35/37,0/37",
+          "1/63,63/63,0/63",
+          "0/37,5/37,0/37"
+        ]
+      ]
+    },
+    "T04": {
+      "name": "separate joint adverse maxima with every tie",
+      "maxima": [
+        {
+          "group": "fresh-replicate-a/fresh_in_domain",
+          "center": {
+            "numerator": 201,
+            "denominator": 201,
+            "ties": [
+              "joint_plus20_minus20_plus20",
+              "joint_plus20_plus20_plus20"
+            ]
+          },
+          "upper": {
+            "numerator": 8,
+            "denominator": 201,
+            "ties": [
+              "joint_plus20_minus20_plus20"
+            ]
+          },
+          "low": {
+            "numerator": 459,
+            "denominator": 592,
+            "ties": [
+              "joint_minus20_minus20_minus20"
+            ]
+          },
+          "review": {
+            "numerator": 2093,
+            "denominator": 2527,
+            "ties": [
+              "joint_minus20_minus20_minus20"
+            ]
+          }
+        },
+        {
+          "group": "fresh-replicate-a/fresh_ood",
+          "center": {
+            "numerator": 207,
+            "denominator": 207,
+            "ties": [
+              "joint_plus20_minus20_plus20",
+              "joint_plus20_plus20_plus20"
+            ]
+          },
+          "upper": {
+            "numerator": 3,
+            "denominator": 207,
+            "ties": [
+              "joint_plus20_minus20_plus20",
+              "joint_plus20_plus20_plus20"
+            ]
+          },
+          "low": {
+            "numerator": 467,
+            "denominator": 606,
+            "ties": [
+              "joint_minus20_minus20_minus20"
+            ]
+          },
+          "review": {
+            "numerator": 2053,
+            "denominator": 2518,
+            "ties": [
+              "joint_minus20_plus20_minus20",
+              "joint_plus20_plus20_minus20"
+            ]
+          }
+        },
+        {
+          "group": "fresh-replicate-b/fresh_in_domain",
+          "center": {
+            "numerator": 198,
+            "denominator": 198,
+            "ties": [
+              "joint_plus20_minus20_plus20",
+              "joint_plus20_plus20_plus20"
+            ]
+          },
+          "upper": {
+            "numerator": 7,
+            "denominator": 198,
+            "ties": [
+              "joint_plus20_minus20_plus20"
+            ]
+          },
+          "low": {
+            "numerator": 469,
+            "denominator": 601,
+            "ties": [
+              "joint_minus20_plus20_minus20"
+            ]
+          },
+          "review": {
+            "numerator": 2077,
+            "denominator": 2505,
+            "ties": [
+              "joint_minus20_plus20_minus20"
+            ]
+          }
+        },
+        {
+          "group": "fresh-replicate-b/fresh_ood",
+          "center": {
+            "numerator": 189,
+            "denominator": 189,
+            "ties": [
+              "joint_plus20_minus20_plus20",
+              "joint_plus20_plus20_plus20"
+            ]
+          },
+          "upper": {
+            "numerator": 7,
+            "denominator": 189,
+            "ties": [
+              "joint_plus20_minus20_plus20"
+            ]
+          },
+          "low": {
+            "numerator": 487,
+            "denominator": 639,
+            "ties": [
+              "joint_minus20_plus20_minus20"
+            ]
+          },
+          "review": {
+            "numerator": 2129,
+            "denominator": 2565,
+            "ties": [
+              "joint_minus20_minus20_minus20",
+              "joint_minus20_plus20_minus20"
+            ]
+          }
+        }
+      ]
+    },
+    "T05": {
+      "name": "all eight joint conditions in four groups",
+      "rows": [
+        [
+          "A 新域内",
+          "MMM",
+          "0/201",
+          "0/201",
+          "459/592",
+          "2093/2527",
+          "0/201"
+        ],
+        [
+          "A 新域内",
+          "MMP",
+          "193/201",
+          "1/201",
+          "36/592",
+          "1700/2527",
+          "0/201"
+        ],
+        [
+          "A 新域内",
+          "MPM",
+          "0/201",
+          "0/201",
+          "458/592",
+          "2092/2527",
+          "0/201"
+        ],
+        [
+          "A 新域内",
+          "MPP",
+          "193/201",
+          "2/201",
+          "35/592",
+          "1720/2527",
+          "0/201"
+        ],
+        [
+          "A 新域内",
+          "PMM",
+          "4/201",
+          "0/201",
+          "453/592",
+          "2088/2527",
+          "0/201"
+        ],
+        [
+          "A 新域内",
+          "PMP",
+          "201/201",
+          "8/201",
+          "17/592",
+          "1700/2527",
+          "1/201"
+        ],
+        [
+          "A 新域内",
+          "PPM",
+          "4/201",
+          "0/201",
+          "452/592",
+          "2081/2527",
+          "0/201"
+        ],
+        [
+          "A 新域内",
+          "PPP",
+          "201/201",
+          "5/201",
+          "15/592",
+          "1712/2527",
+          "1/201"
+        ],
+        [
+          "A 新OOD",
+          "MMM",
+          "0/207",
+          "0/207",
+          "467/606",
+          "2052/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "MMP",
+          "199/207",
+          "1/207",
+          "32/606",
+          "1689/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "MPM",
+          "0/207",
+          "0/207",
+          "466/606",
+          "2053/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "MPP",
+          "199/207",
+          "1/207",
+          "29/606",
+          "1699/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "PMM",
+          "0/207",
+          "0/207",
+          "464/606",
+          "2048/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "PMP",
+          "207/207",
+          "3/207",
+          "18/606",
+          "1690/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "PPM",
+          "0/207",
+          "0/207",
+          "465/606",
+          "2053/2518",
+          "0/207"
+        ],
+        [
+          "A 新OOD",
+          "PPP",
+          "207/207",
+          "3/207",
+          "16/606",
+          "1696/2518",
+          "0/207"
+        ],
+        [
+          "B 新域内",
+          "MMM",
+          "0/198",
+          "0/198",
+          "467/601",
+          "2073/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "MMP",
+          "184/198",
+          "4/198",
+          "31/601",
+          "1744/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "MPM",
+          "0/198",
+          "0/198",
+          "469/601",
+          "2077/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "MPP",
+          "186/198",
+          "4/198",
+          "34/601",
+          "1745/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "PMM",
+          "0/198",
+          "0/198",
+          "466/601",
+          "2072/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "PMP",
+          "198/198",
+          "7/198",
+          "18/601",
+          "1712/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "PPM",
+          "0/198",
+          "0/198",
+          "467/601",
+          "2075/2505",
+          "0/198"
+        ],
+        [
+          "B 新域内",
+          "PPP",
+          "198/198",
+          "6/198",
+          "20/601",
+          "1711/2505",
+          "0/198"
+        ],
+        [
+          "B 新OOD",
+          "MMM",
+          "0/189",
+          "0/189",
+          "485/639",
+          "2129/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "MMP",
+          "178/189",
+          "3/189",
+          "31/639",
+          "1752/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "MPM",
+          "0/189",
+          "0/189",
+          "487/639",
+          "2129/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "MPP",
+          "178/189",
+          "2/189",
+          "34/639",
+          "1760/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "PMM",
+          "0/189",
+          "0/189",
+          "483/639",
+          "2112/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "PMP",
+          "189/189",
+          "7/189",
+          "18/639",
+          "1727/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "PPM",
+          "0/189",
+          "0/189",
+          "485/639",
+          "2120/2565",
+          "0/189"
+        ],
+        [
+          "B 新OOD",
+          "PPP",
+          "189/189",
+          "3/189",
+          "18/639",
+          "1730/2565",
+          "0/189"
+        ]
+      ]
+    },
+    "T06": {
+      "name": "different-population descriptive old/new C/U ratios",
+      "rows": [
+        [
+          "exact",
+          "A 旧test→新域内",
+          "2533→2527",
+          "6/198 (3.03%), 0/198 (0.00%)",
+          "14/201 (6.97%), 1/201 (0.50%)",
+          "8/601 (1.33%), 278/601 (46.26%)",
+          "7/592 (1.18%), 282/592 (47.64%)"
+        ],
+        [
+          "exact",
+          "A 旧OOD→新OOD",
+          "2530→2518",
+          "14/207 (6.76%), 0/207 (0.00%)",
+          "10/207 (4.83%), 0/207 (0.00%)",
+          "13/641 (2.03%), 271/641 (42.28%)",
+          "11/606 (1.82%), 284/606 (46.86%)"
+        ],
+        [
+          "exact",
+          "B 旧test→新域内",
+          "2514→2505",
+          "13/225 (5.78%), 0/225 (0.00%)",
+          "12/198 (6.06%), 0/198 (0.00%)",
+          "8/621 (1.29%), 255/621 (41.06%)",
+          "11/601 (1.83%), 273/601 (45.42%)"
+        ],
+        [
+          "exact",
+          "B 旧OOD→新OOD",
+          "2555→2565",
+          "9/207 (4.35%), 0/207 (0.00%)",
+          "16/189 (8.47%), 0/189 (0.00%)",
+          "4/622 (0.64%), 278/622 (44.69%)",
+          "12/639 (1.88%), 275/639 (43.04%)"
+        ],
+        [
+          "强度 +20%",
+          "A 旧test→新域内",
+          "2533→2527",
+          "198/198 (100.00%), 2/198 (1.01%)",
+          "200/201 (99.50%), 4/201 (1.99%)",
+          "0/601 (0.00%), 12/601 (2.00%)",
+          "0/592 (0.00%), 16/592 (2.70%)"
+        ],
+        [
+          "强度 +20%",
+          "A 旧OOD→新OOD",
+          "2530→2518",
+          "199/207 (96.14%), 1/207 (0.48%)",
+          "205/207 (99.03%), 2/207 (0.97%)",
+          "0/641 (0.00%), 22/641 (3.43%)",
+          "0/606 (0.00%), 21/606 (3.47%)"
+        ],
+        [
+          "强度 +20%",
+          "B 旧test→新域内",
+          "2514→2505",
+          "223/225 (99.11%), 2/225 (0.89%)",
+          "195/198 (98.48%), 5/198 (2.53%)",
+          "0/621 (0.00%), 16/621 (2.58%)",
+          "0/601 (0.00%), 23/601 (3.83%)"
+        ],
+        [
+          "强度 +20%",
+          "B 旧OOD→新OOD",
+          "2555→2565",
+          "201/207 (97.10%), 6/207 (2.90%)",
+          "187/189 (98.94%), 3/189 (1.59%)",
+          "0/622 (0.00%), 16/622 (2.57%)",
+          "0/639 (0.00%), 20/639 (3.13%)"
+        ]
+      ]
+    }
+  },
+  "display_provenance": {
+    "creator": "Task2 AI executor",
+    "date": "2026-10-13 UTC",
+    "transform": "CSV keyed selection; exact integer counts/denominators; Macro-F1 rounded to4decimals, comparison percentages to2decimals; joint maxima calculated separately and ties retained",
+    "reviewer": "AI self-review; accountable human pending",
+    "uncertainty": "no inferential uncertainty or significance calculated",
+    "analysis_population": "all new eligible rows (step>=1); original test/ood separate in T06",
+    "rights": "local simulation records; no external data transfer"
+  },
+  "tests_reused": {
+    "source": {
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task1-execution.md",
+      "sha256": "dd4570dcf4d36f0c0f31d23fb352e48cee1248d7bad88c30686e86112bc146c3",
+      "original_input_path": "D:\\矿业\\worktrees\\teacher-feedback-v1\\.superpowers\\sdd\\2026-10-13-roof-mechanics-fresh-cohort\\task-1-report.md"
+    },
+    "focused": {
+      "tests": 2,
+      "seconds": 24.38,
+      "exit_code": 0,
+      "status": "OK"
+    },
+    "full": {
+      "tests": 56,
+      "seconds": 81.353,
+      "exit_code": 0,
+      "status": "OK"
+    },
+    "task2_repeated_suites": false
+  },
+  "source_manifest_registry": [
+    {
+      "evidence_id": "E01",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/protocol.json",
+      "sha256": "488a7fe50adf89033dc39457cf7f37800fbdd1671f9c2ada89a3b9f56734550a",
+      "bytes": 20284,
+      "locator": "complete file",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E02",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/results.json",
+      "sha256": "d5ad0afe9062eef93ee76af76e9b6835fc8ccdf91b8e36295caa0e5e749b26c8",
+      "bytes": 1937093,
+      "locator": "cells/summaries keyed by replicate, split, case_id, candidate",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E03",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/comparison.csv",
+      "sha256": "d6b78133c671944e6b0ea9b126ceafc0b4c3ca5f32b61542094dee54ef715399",
+      "bytes": 121569,
+      "locator": "all 324 rows keyed by replicate, split, case_id, candidate",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E04",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/readback.json",
+      "sha256": "d0965e7f2bd412c40b95c6440038a8ebe397b6e3308ef59232b9f21858377691",
+      "bytes": 618,
+      "locator": "complete file",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E05",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/source-check.json",
+      "sha256": "0de8c752ca5525be1be8c5f39c0345bef726e6538756adcbcb7b8ef68121136f",
+      "bytes": 10104,
+      "locator": "complete file",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E06A",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/cohorts/fresh-replicate-a/dataset.json",
+      "sha256": "d324266ec8b9a095110b6c93dc9f0e434f73afa9359bcca9e2102a62ff032982",
+      "bytes": 20550037,
+      "locator": "complete file",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E06B",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/cohorts/fresh-replicate-b/dataset.json",
+      "sha256": "bc1a49bf306a0f108b25ac9dcad0aa0beab7008c01b79b3af352ac6f54711dff",
+      "bytes": 20691571,
+      "locator": "complete file",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E07",
+      "kind": "local_formal_archive",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/disjointness.json",
+      "sha256": "0e8058bf2b4f6a4bed9b1238f0d33d74cc30ced7ef6ee031d8af97cdd996ab0f",
+      "bytes": 249990,
+      "locator": "complete file",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E08",
+      "kind": "formal_archive_manifest",
+      "path": "D:/矿业/outputs/roof-mechanics-fresh-cohort/2026-10-13/manifest.json",
+      "sha256": "4af915e447446e5d1fd0a52cd1effa14631820c9f1b0cdec8483d97accc325e8",
+      "locator": "files/excludes/algorithm",
+      "human_verification": "pending"
+    },
+    {
+      "evidence_id": "E09",
+      "kind": "prior_task_execution_evidence",
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task1-execution.md",
+      "sha256": "dd4570dcf4d36f0c0f31d23fb352e48cee1248d7bad88c30686e86112bc146c3",
+      "locator": "Actual TDD commands and outcomes; commit; preservation",
+      "human_verification": "pending",
+      "original_input_path": "D:\\矿业\\worktrees\\teacher-feedback-v1\\.superpowers\\sdd\\2026-10-13-roof-mechanics-fresh-cohort\\task-1-report.md"
+    },
+    {
+      "evidence_id": "E10",
+      "kind": "workflow_reference_only",
+      "title": "Scientific Agent Skills: A Library of Procedural Knowledge for Research Agents",
+      "authors": [
+        "Timothy Kassis",
+        "Vinayak Agarwal",
+        "Yuhuan He",
+        "Darshil Patel",
+        "Aubrey M. Brueckner"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2609.00065",
+      "doi": "10.48550/arXiv.2609.00065",
+      "journal_reference": null,
+      "metadata_check": {
+        "opened_by": "root controller AI",
+        "date": "2026-10-13",
+        "record": "current arXiv record",
+        "reported_result": "five authors/year/DOI checked; no journal reference"
+      },
+      "human_verification": "pending",
+      "supports": "writing workflow only; no mechanics or performance result",
+      "local_skill": "C:/Users/欣/.codex/skills/scientific-writing/SKILL.md"
+    },
+    {
+      "evidence_id": "E11",
+      "kind": "old_same_simulator_comparison",
+      "path": "D:/矿业/outputs/roof-mechanics-uncertainty/2026-10-13/comparison.csv",
+      "sha256": "22fa5bd6e66e8f0d30a0f2e39d65088fbecd4e700939a4608093f196249ca649",
+      "locator": "exact and bending_strength_mpa_plus20; replicate-a/b; test/ood; center/sampled_upper",
+      "human_verification": "pending",
+      "population_boundary": "distinct original test/ood vs newly generated fresh_in_domain/fresh_ood; no pooling"
+    },
+    {
+      "evidence_id": "E12",
+      "kind": "task2_execution_and_controller_gate_record",
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task2-execution.md",
+      "locator": "literal commands, preflight, formal stdout/exit/UTC, byte-only audit, table self-review, controller Task1 gate",
+      "human_verification": "pending",
+      "self_hash": "not embedded; controller retains report after final commit",
+      "original_input_path": "D:/矿业/worktrees/teacher-feedback-v1/.superpowers/sdd/2026-10-13-roof-mechanics-fresh-cohort/task-2-report.md"
+    },
+    {
+      "evidence_id": "E13",
+      "kind": "frozen_local_methods",
+      "locators": [
+        "tools/roof_mechanics/dataset.py: supervised_rows/generate_dataset",
+        "tools/roof_mechanics/known_limits.py: eligible_rows/evaluate_events",
+        "tools/roof_mechanics/uncertainty_study.py: _summary/_independent_sample",
+        "tools/roof_mechanics/limits_sensitivity.py: _score/_csv_row",
+        "tools/roof_mechanics/train.py: evaluate"
+      ],
+      "binding": "analysis_code_sha256_before and after",
+      "human_verification": "pending"
+    },
+    {
+      "evidence_id": "E14",
+      "kind": "task2_independent_review_record",
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task2-review.md",
+      "sha256": "0fb97256c660a323b5d7f5b1524bcfbe209fbd1c1fbe5dcd818f322bb3075d72",
+      "bytes": 2373,
+      "locator": "line 3: reviewer/range/Spec compliant/Quality Approved/no findings; lines 5-15: scope, checks, limits and controller follow-through",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E15",
+      "kind": "final_whole_phase_initial_review_record",
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-final-review.md",
+      "sha256": "6982f8df1fb0862d59613cc0f9b390319bb5b11a9c6c4c79bb14b96f0ea20a02",
+      "bytes": 2391,
+      "locator": "lines 3-10: scope, initial verdict and two Minor findings; lines 12-18: checks, pending human gates and separate scoped re-review requirement",
+      "programmatic_validation": "passed",
+      "human_verification": "pending",
+      "confidentiality": "local_only"
+    },
+    {
+      "evidence_id": "E16",
+      "kind": "final_corrective_wave_scoped_review_record",
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-scoped-review.md",
+      "sha256": "aa5de0a9a68ecfabe03d0431a5159f873c93f3dadf323b077ae888a1a2bba6ae",
+      "bytes": 2301,
+      "locator": "line 3: scope/spec/quality; lines 7-9: findings addressed and zero new breakage; lines 13-17: independent checks and boundaries",
+      "programmatic_validation": "passed",
+      "human_verification": "pending"
+    }
+  ],
+  "claims_registry": [
+    {
+      "claim_id": "C001",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 3,
+      "claim_text_sha256": "545c6dc10215a0a21ef7536ad7fe9f460b6b383a69b643ab4b38682ca6b42e02",
+      "evidence_ids": [
+        "E09",
+        "E12",
+        "E15",
+        "E16"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C002",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 5,
+      "claim_text_sha256": "4c847dc1b4e59a9f90b83c3f6083e52453e8bb393c0dfb61c756ac1604ce5dff",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C003",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 9,
+      "claim_text_sha256": "57c9d3f98ed2b0050a933a9f034a2362a7a6a2b8813f404a4599afc8d9ff3ec4",
+      "evidence_ids": [
+        "E01",
+        "E05"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C004",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 11,
+      "claim_text_sha256": "75b64ca3a04c0daead20a1a1e45e2dd2d5e0d8e8cb584180e45c135b6378dcc6",
+      "evidence_ids": [
+        "E01",
+        "E06A",
+        "E06B"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C005",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 13,
+      "claim_text_sha256": "8326568dd23bf019b294c2618bf632d99b7fe633108706cb7f720d13957178a9",
+      "evidence_ids": [
+        "E01",
+        "E06A",
+        "E06B",
+        "E13"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C006",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 15,
+      "claim_text_sha256": "6857f016a75ecca3e99eb4052b70ac92bb00751b07241a905860e97f42ef342c",
+      "evidence_ids": [
+        "E01",
+        "E13"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C007",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 17,
+      "claim_text_sha256": "2fa295723a0024841438436981b17090bc9c42bd77352bb733dd6f9db62f173f",
+      "evidence_ids": [
+        "E01",
+        "E02",
+        "E04"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C008",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 19,
+      "claim_text_sha256": "551e641b2539a8e51696f11ee97f56aba4f892d695e4cd2952742790a9c7d806",
+      "evidence_ids": [
+        "E01",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C009",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 25,
+      "claim_text_sha256": "b59653e6ba47df9196bc5c517740cebc425bcf7477cc3f39539c26378cd1a904",
+      "evidence_ids": [
+        "E04",
+        "E08",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C010",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 27,
+      "claim_text_sha256": "021ad897d0e47e50de14e80e4e934a38ce5c9bc8adae7a624c57710e7fcbfe87",
+      "evidence_ids": [
+        "E07"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C011",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 29,
+      "claim_text_sha256": "2a566887a0e2188eb82a3217739cded438fe73749a7d53661efce61eff7b9878",
+      "evidence_ids": [
+        "E04",
+        "E06A",
+        "E06B"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C012",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 33,
+      "claim_text_sha256": "23d901e2cde24acb4512b58a864dfdb99cf09eecc265d4c6a486427eca80197e",
+      "evidence_ids": [
+        "E02",
+        "E03",
+        "E13"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C013",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 37,
+      "claim_text_sha256": "281d282f8d9e595810b61145fac5cb4cfb11a2900eb14f30dbcff8ece93441d1",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C014",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 38,
+      "claim_text_sha256": "72578dc5320840cf119668f6858246d636a92dda4a7f1604eeadcd5eb4bef97f",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C015",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 39,
+      "claim_text_sha256": "0a3b4bd14d113d1c8c8563858b4c399e567952c8da6ead7b21ac8cec07c69f68",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C016",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 40,
+      "claim_text_sha256": "30a7851583f044ee3a7fad655e77f8b05628727e9222dcd3daff6d10508253a8",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C017",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 41,
+      "claim_text_sha256": "8a0d566ea047e2c8db2f2e6e0faeeb7484ccabce280ca531505e3a32204d981d",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C018",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 42,
+      "claim_text_sha256": "77f0ce320ee0295b04f4dba6c1b5cc4ab0cef3138d77615451aeb788987c16c8",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C019",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 43,
+      "claim_text_sha256": "e2f02c78580cb868f363857071018a2883057167595c7be19a8240d04fb4dbd0",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C020",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 44,
+      "claim_text_sha256": "6e1bbaea71d1ba0fb798fd87b445c56b2c3f7b6d890ba8ca2c30fa91a31ab9e1",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C021",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 46,
+      "claim_text_sha256": "2a145111f60cb7b4452f6796db0b2813e005006d2510c9f3b14be39eb9825ccf",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C022",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 50,
+      "claim_text_sha256": "64c6e1ce24e5f9662e17d28819af3a5a039a583cb30b0ff59ab6fd3479aa68ff",
+      "evidence_ids": [
+        "E01",
+        "E02",
+        "E13"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C023",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 54,
+      "claim_text_sha256": "16f4be62dde6b07a365969174b310a0dd4d9750265f79ff9b81396ea59326d5a",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C024",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 55,
+      "claim_text_sha256": "7434e633c03cec3796e5bab3e7c105c9e0172ef78b81c34e260fbbe8b3f62813",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C025",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 56,
+      "claim_text_sha256": "3e6d26b032084b8bf9dc21ca6507b1c0c23268ea03bfeaba93385ac0ac56ee96",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C026",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 57,
+      "claim_text_sha256": "70a2644255b90e88fd9c0d7b723a1569ba8ad04874a7a92b614de2bced3c61fc",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C027",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 58,
+      "claim_text_sha256": "55f9c49dcb36385e2e42a556f286de626411e9c31c15d4dcbd2ae7b0e7a95143",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C028",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 59,
+      "claim_text_sha256": "f639ef8c73c7eddae1577e4f11c5d5145f4c068308f9099c0ffa9e0ce2db4ca1",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C029",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 60,
+      "claim_text_sha256": "be24dc7ecd4878c4eb82c98261e5a4814b1d59a967ba82d9245d6d5e72cfa9ab",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C030",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 61,
+      "claim_text_sha256": "a64e5da489c1413cf3c3965cc4914bd3e3156da8de208f506f48219ddd975a63",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C031",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 63,
+      "claim_text_sha256": "0f93a6fc8fe9e23429469cde485ab4dbbac4bbac4203463e89ba96104d8d8e45",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C032",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 67,
+      "claim_text_sha256": "a9ca2b0d9c8fa1b7036f03c468c7255748b1c0011c280cc963fc7002c28bfb1a",
+      "evidence_ids": [
+        "E02",
+        "E03",
+        "E13"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C033",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 71,
+      "claim_text_sha256": "da82bd519826c2f37bea328d4da547ff08e8a70674f1a8e06cd2dc375c76b8cd",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C034",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 72,
+      "claim_text_sha256": "28e5dc62aa9c55e3e61ef425831f39b449c67e1bf2bca1a0b22463b53e51a34f",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C035",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 73,
+      "claim_text_sha256": "1b0a1d2986632c0cb744a342a0774113fdd1719ac17376a5371eeeb08abcabe5",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C036",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 74,
+      "claim_text_sha256": "554bdf88280acfd521b8f9d721b08d3fcf5d870a2c7b57c2323a8283b67c3582",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C037",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 75,
+      "claim_text_sha256": "1a32a8caa13808be9bb1fe0bae652fbcacdf3ec71f2051eeb5f7c98e6d985ec4",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C038",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 76,
+      "claim_text_sha256": "6605db34f48361e7f4e7cfd090ce6d7deb97d98fb81971a1962c7e5313596c47",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C039",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 77,
+      "claim_text_sha256": "db4f9fd8350f35fef9d3e3acb6e37fa511074cc6a6c13e120f2858b1bb437279",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C040",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 78,
+      "claim_text_sha256": "750ba16e2c8332d882579c451b0d08e1100910cb3152325597bd7c95b1adc2b4",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C041",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 80,
+      "claim_text_sha256": "d6b54ea042710d1d9c0946b3d20b14c9acd2d17aebfcf5fd81f4bfe08de4885b",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C042",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 82,
+      "claim_text_sha256": "89587e5c69713ee7694ba37d01c903c478403617c556565f5206ca9d2b6e362f",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C043",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 86,
+      "claim_text_sha256": "645c21bb539c8e715289567e16764b8ddef74f9e5ced2ce685da119ab757d178",
+      "evidence_ids": [
+        "E01",
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C044",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 90,
+      "claim_text_sha256": "c7c2e2a464ddd90bd8b97c8b4e1e06bb1840c301962985958ded16f642a1a3e1",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C045",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 91,
+      "claim_text_sha256": "158eb37991d21942270de0aaa01b07f14253c45bec27a2cf8fc6dbb964ca6058",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C046",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 92,
+      "claim_text_sha256": "4ccad1cc40b9f3e17ffcdf2f4a657684696b549cea4722bf8f2604ef1bdd2e3e",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C047",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 93,
+      "claim_text_sha256": "3cd0a18b762b0afbcdae4c9502a85020c9b0f91713dfcaaea0ab20cab29c3f3a",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C048",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 95,
+      "claim_text_sha256": "56639194bb33baacf2cfa595a504e74102bb9ae07b1af24bb888e71326b0b2f8",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C049",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 99,
+      "claim_text_sha256": "ec7a09962792b5d028192abc5db09d3a9cfd39e591e6720d4313867c88a9e264",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C050",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 100,
+      "claim_text_sha256": "d790cd22876305e689617f7740160bfbc2d4d049e408d8309826256e97d0f19d",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C051",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 101,
+      "claim_text_sha256": "0e5295d9babd4c7376302acc18dff8ff6a9cbc5863de5107b9a0ad476b217ea4",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C052",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 102,
+      "claim_text_sha256": "57265012caf1bb07115b338f1f7dc06fd01fabec81d6d9e7a48e0b3e15163d20",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C053",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 103,
+      "claim_text_sha256": "e25c387069c719519e0924b678fc9c36c3d79ceaf742f35c6848af386448bc0e",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C054",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 104,
+      "claim_text_sha256": "a25232393cbf95a5c58751c17e955ab92fa56514257505c31744dd13f67a8a2b",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C055",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 105,
+      "claim_text_sha256": "7615abd0ca313cd916921325bfe5ca73885cbc3397bce217fa63c1d348dc9e51",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C056",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 106,
+      "claim_text_sha256": "28b8662ee4436fc6f8b66cebdfae5eb843a5df9e436b9e587c1ac4c3ea0ae9ec",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C057",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 107,
+      "claim_text_sha256": "9d87af716107eb7d4b35a3ace0528678d085a927af48a23415e34c4bca58ddec",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C058",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 108,
+      "claim_text_sha256": "15387be412c48332be81d56a0a41d1b39a453c518dd09530e69c21fec0032a88",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C059",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 109,
+      "claim_text_sha256": "4c6e099cdc16b9a1114299d891c7ec91a78725d4a44f03fc8015f55bceb857fb",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C060",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 110,
+      "claim_text_sha256": "3182ba0e50ba6774de387ca372c23bb657e4adecd6ed6be09ab4917f3109c719",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C061",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 111,
+      "claim_text_sha256": "ce2801a931a3e8d6027016e21a952e868086fdfb3e33dd39bc0f155652cb43b9",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C062",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 112,
+      "claim_text_sha256": "23330420e3015385622d051ce29666d6b455da6e2ba7d4a3a53c1ee721f4db07",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C063",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 113,
+      "claim_text_sha256": "f3b4d4834a517886f9d2ecdb9b723bdf01839fdd149f9455da0c626fef84ca96",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C064",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 114,
+      "claim_text_sha256": "4f10342e393da9285379bea90281a2a52651e6ad783d6e25d62faf69ff5916e9",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C065",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 115,
+      "claim_text_sha256": "ac7b6893c1cd6561bae4a5cdaca96c16ebaab3975ace132caae3cd6ced263505",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C066",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 116,
+      "claim_text_sha256": "e78b26e1f35729cbad464ed048581bd9c368cb54a5c0f0c7dbb144ae30cca483",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C067",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 117,
+      "claim_text_sha256": "d5c7c9df7c31a88dab6faca4fa083f7e3e3392ebf23f4b6658b33f0440beeb45",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C068",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 118,
+      "claim_text_sha256": "d9116411dc90653b014fb31a7465fcb62be926311de4c3e0e12ec4a41bfd1654",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C069",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 119,
+      "claim_text_sha256": "4403aa986d54d69d27cbc946d584c7a49eb69a596d3fc6d8e45c1f4bd0c7240c",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C070",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 120,
+      "claim_text_sha256": "4477584330ed81b2b9f3720529345d6a7d88cf1a16f7681712d7407fda87f59c",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C071",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 121,
+      "claim_text_sha256": "1cb29f5ff33217f945b90205f680b2f82d4c3dc267da39f4b00ead0c303073c8",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C072",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 122,
+      "claim_text_sha256": "8322e79bf4b0953c6ecd77a77d33b9efc1577ad09cab61b32abbaaf31d23830b",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C073",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 123,
+      "claim_text_sha256": "d8fcabd39daa2393fdb45ad3953b98818d6b5e3c42d7d4c317dd38fb264b1c08",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C074",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 124,
+      "claim_text_sha256": "caac634a116dcd9e425570913629386211bf08e0ba833ff440309c751f0fef33",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C075",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 125,
+      "claim_text_sha256": "af1d07b230702bf6232f74826b2f76a4b3cd3028410ad53d0382228c480f2df4",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C076",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 126,
+      "claim_text_sha256": "fc826243e43e02d1804309a35ea23d1059b241f65e2a3f8adf0ce5b3913ed954",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C077",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 127,
+      "claim_text_sha256": "1f829420755a13d07630371e483cf6facef2d44949791b494f89a352b0aec735",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C078",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 128,
+      "claim_text_sha256": "5c2986a66bcc7427cc09fd82677d4a2a022e8eb1da2b27e4e131f6fdd1b17011",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C079",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 129,
+      "claim_text_sha256": "2680191ffe109327a73c5700712de74b2ee4a8b0c5fbc23751ea5fa9956bcd8f",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C080",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 130,
+      "claim_text_sha256": "c8ddb786e1ef9fef1f2ff4d10535027ab5b8c024a2d415806a2b4cb4c1e1249c",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C081",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 134,
+      "claim_text_sha256": "f0154aa6f4d66fca3ce5bc7a73d94a59dbb4b55e0d80d12374d0c39134158e02",
+      "evidence_ids": [
+        "E01",
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C082",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 138,
+      "claim_text_sha256": "afe7a1611948f968ac415ecc68b7ee31d6a4366b8a03314af8485f069e858a26",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C083",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 139,
+      "claim_text_sha256": "3a129cfadf960336d5f2f3e6a9bb78d41604a914169009cef4a653a95e36d5ee",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C084",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 140,
+      "claim_text_sha256": "bde5205666424bd8419f327dd7df7fdabe89a5c45eda8c711eab9a12c73a3958",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C085",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 141,
+      "claim_text_sha256": "9da70ae159ce0062a7601d21df1e719cf749701ab561849ac60b581f9a88de8f",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C086",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 142,
+      "claim_text_sha256": "f8b3a6d8e9a511bf8b79eeb0e69e56eb6f832397cce4b9294a9a30ad87e85266",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C087",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 143,
+      "claim_text_sha256": "360edae2a2194a014a296282eb072762ad786c5557d67979bb15c9f6f54eaa62",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C088",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 144,
+      "claim_text_sha256": "866044d00890dac2edad9703851ab9d97b2fbee5fa11bcd7f6bc141ef309eca4",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C089",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 145,
+      "claim_text_sha256": "6fba8d3a210bdae6cb13307b4a8811bc6f7644a2f8fef4e41216981a21e64f4b",
+      "evidence_ids": [
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C090",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 149,
+      "claim_text_sha256": "ceb7d1a01a2761b0e1e345b4b656e9d9f8185a137d916261aa732ba6cd453dc9",
+      "evidence_ids": [
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05",
+        "E06A",
+        "E06B",
+        "E07",
+        "E08"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C091",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 151,
+      "claim_text_sha256": "211f1f261d6da8b3e91078dbc130474fbd91951deb025193cc9c12689a4f45bd",
+      "evidence_ids": [
+        "E01",
+        "E06A",
+        "E06B"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C092",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 153,
+      "claim_text_sha256": "c3ce3cb09e3ecadfffb00ec5391a4e20b27ba463a012b368e0869add7cfc1ba2",
+      "evidence_ids": [
+        "E01",
+        "E02",
+        "E04",
+        "E07",
+        "E12",
+        "E16"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C093",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-results.md",
+      "line": 155,
+      "claim_text_sha256": "f55449b87ddc73549602419dae454bf648d995481800b6b78c3a75ec35f3f4a2",
+      "evidence_ids": [
+        "E10"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C094",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 3,
+      "claim_text_sha256": "0a1e7b1d18196b3219dc6e096eef1925c750836dafa2bb876336a74bdaac3514",
+      "evidence_ids": [
+        "E09",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C095",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 11,
+      "claim_text_sha256": "c55d5b28e65882fed451e28db386f0cbd6659d3c08a581d438af332ee8695125",
+      "evidence_ids": [
+        "E09"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C096",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 17,
+      "claim_text_sha256": "0d5cb8490db72505cd3fa32f1628c232e0dee9c5236ec69d0054389e0e84eef5",
+      "evidence_ids": [
+        "E09"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C097",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 19,
+      "claim_text_sha256": "f10e7613de0124ccf62bc16321e3fd207fdc11646cd7eb2b6dd07ee03a3b2cc2",
+      "evidence_ids": [
+        "E09"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C098",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 27,
+      "claim_text_sha256": "de80518356f45d72163fd471857413e775afe4e50cf33ff26429fdd60cf23cb2",
+      "evidence_ids": [
+        "E01",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C099",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 29,
+      "claim_text_sha256": "ba1c8c28f72290800058cf9d5e34f504e5754f8362f09bf8915694a5709e7d55",
+      "evidence_ids": [
+        "E01",
+        "E03",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C100",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 31,
+      "claim_text_sha256": "c90fd5b23c39c6baedd689fc6bc2f4885eb86355cee2e25dfe52be7523f55264",
+      "evidence_ids": [
+        "E04",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C101",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 33,
+      "claim_text_sha256": "adfe1a116c8021641303c4d8d95e1473bfa122c0ce711ec1b7637c2c89ce8024",
+      "evidence_ids": [
+        "E01",
+        "E05",
+        "E08",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C102",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 35,
+      "claim_text_sha256": "53158259efb5cd097d295fa03bd7b2dc59d01917e3d97ae55730c2367e9fcb20",
+      "evidence_ids": [
+        "E01",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C103",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 37,
+      "claim_text_sha256": "a6532900a5d07d9d63efe2d53f0a90de777a8b355bacc05731748ae78c09c9fe",
+      "evidence_ids": [
+        "E03",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C104",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 39,
+      "claim_text_sha256": "182b13e6b2c466ee11c2a9463e453a90b393b03937383e1f91e69eb75686e922",
+      "evidence_ids": [
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C105",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-tests.md",
+      "line": 41,
+      "claim_text_sha256": "1b1ae980d394ec2b2137db21f09bd93f539b3985ec081c42e7849af39b0bf8f9",
+      "evidence_ids": [
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C106",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 3,
+      "claim_text_sha256": "889e33741963cb1f741ca2a1423dbacefc3f2ba9455f57fe2c6cdb27ca50862e",
+      "evidence_ids": [
+        "E09",
+        "E12",
+        "E14",
+        "E15",
+        "E16"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C107",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 5,
+      "claim_text_sha256": "82cfd1ec776212f0ec412b796ed18db3674cac68bb397003a74a37159b82f30b",
+      "evidence_ids": [
+        "E01",
+        "E10",
+        "E12",
+        "E16"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C108",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 9,
+      "claim_text_sha256": "4af6f1a890ef385ccc7a599fa2ee5fe8706a9c5bc75bf14b57b10dfeb0e2a287",
+      "evidence_ids": [
+        "E04",
+        "E05",
+        "E07",
+        "E08",
+        "E12"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C109",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 11,
+      "claim_text_sha256": "42ae23ff0400d4fbdb07a7a7b7cdb5c35812480d4c2dcf8d338d391af35ae8c2",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C110",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 13,
+      "claim_text_sha256": "2c95cdb8b9560fe171214fa5e8effc642acbbc5785fdcea45a90ffaeeb22065d",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C111",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 15,
+      "claim_text_sha256": "e829fa724076314079995d0ea2c7fae6160a04e38939a5e52bd10e63a29065e5",
+      "evidence_ids": [
+        "E02",
+        "E03"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C112",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 17,
+      "claim_text_sha256": "543ce6c26f3a34dbe73fa976850efaf4393888d066aa26475d7d88856d2d4e39",
+      "evidence_ids": [
+        "E02",
+        "E03",
+        "E11"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C113",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 21,
+      "claim_text_sha256": "cf02f986abad65bfe4fda8db4408c27678bad6407d75a9a9b63889e0efbce35e",
+      "evidence_ids": [
+        "E01",
+        "E04",
+        "E06A",
+        "E06B",
+        "E07"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C114",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 23,
+      "claim_text_sha256": "bc1f5bac3640bdf7d84be6859bbc2f3acceb3b9a1651af5cf9a9b1690dc237da",
+      "evidence_ids": [
+        "E01",
+        "E09",
+        "E12",
+        "E14",
+        "E15",
+        "E16"
+      ],
+      "human_verification": "pending"
+    },
+    {
+      "claim_id": "C115",
+      "document": "docs/qa/2026-10-13-roof-mechanics-fresh-cohort-review.md",
+      "line": 25,
+      "claim_text_sha256": "89c291ec3f4ef1694e946c9f30513ee5677aa0171238b96f6813986b0330f414",
+      "evidence_ids": [
+        "E10",
+        "E12"
+      ],
+      "human_verification": "pending"
+    }
+  ],
+  "verification_boundaries": {
+    "all_claims_bound_to_local_evidence": true,
+    "programmatic_and_AI_review_only": true,
+    "human_numeric_and_scientific_review": "pending",
+    "human_reference_review": "pending",
+    "new_seed_nonduplication_is_independent_physical_validation": false,
+    "review_required_is_human_correction": false,
+    "finite_grid_has_continuous_guarantee": false,
+    "confidence_bound": false,
+    "field_calibrated": false,
+    "measured_human_cost": false,
+    "performance_acceptance_threshold": null,
+    "no_significance_or_causal_improvement_or_pooling": true
+  },
+  "input_execution_records": {
+    "task-1-report.md": {
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task1-execution.md",
+      "sha256": "dd4570dcf4d36f0c0f31d23fb352e48cee1248d7bad88c30686e86112bc146c3",
+      "original_input_path": "D:\\矿业\\worktrees\\teacher-feedback-v1\\.superpowers\\sdd\\2026-10-13-roof-mechanics-fresh-cohort\\task-1-report.md"
+    },
+    "task-2-brief.md": {
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task2-requirements.md",
+      "sha256": "f430b7920b59ea3a6bc97159edc92838688ad0cb769062de47ba35bb1633eafc",
+      "original_input_path": "D:\\矿业\\worktrees\\teacher-feedback-v1\\.superpowers\\sdd\\2026-10-13-roof-mechanics-fresh-cohort\\task-2-brief.md"
+    },
+    "task-2-constraints.md": {
+      "path": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task2-constraints.md",
+      "sha256": "e344dfce27fe160f0fa80059703497a6952632a470abe4071f7092924ab81cd1",
+      "original_input_path": "D:\\矿业\\worktrees\\teacher-feedback-v1\\.superpowers\\sdd\\2026-10-13-roof-mechanics-fresh-cohort\\task-2-constraints.md"
+    }
+  },
+  "adverse_findings": [
+    "Exact A fresh_in_domain upper class3 under1/201 with alert3 timely67/67; row and event denominators differ",
+    "Strength+20 A fresh_in_domain upper class3 under4/201 and alert3 timely66/67",
+    "Strength+20 upper under4/201,2/207,5/198,3/189",
+    "Joint upper worst8/201,3/207,7/198,7/189 with complete ties",
+    "A fresh_in_domain joint PMP and PPP each unmarked center under1/201",
+    "Exact upper low false positives282/592,284/606,273/601,275/639 and high non-limit alerts",
+    "Exact/strength review flags cover100/100scenarios in every group; human resource time not measured",
+    "Sampling range/set coverage gaps retained"
+  ],
+  "task2_independent_review_record": "D:/矿业/worktrees/teacher-feedback-v1/docs/qa/2026-10-13-roof-mechanics-fresh-cohort-task2-review.md"
+}

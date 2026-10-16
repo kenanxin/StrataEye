@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-13",
+  "source_kind": "mechanics_simulation",
+  "analysis_kind": "post_hoc_frozen_model_limit_error_stress",
+  "source_dir": "D:/矿业/outputs/roof-mechanics-known-limits/2026-10-13",
+  "output_dir": "D:/矿业/outputs/roof-mechanics-limits-sensitivity/2026-10-13",
+  "source_manifest_sha256_before_after": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+  "teacher_csv_sha256_before_after": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+  "formal_protocol_sha256": "23c0a6b35f12b52aff1d5d72d04f4b4aad00b5df27fea7f16a59cd08d2ccaf72",
+  "formal_manifest_sha256": "ee78b6e789f7344461e58c9e6e94bcdd93a92cff5f281622b09677a1e29c35bf",
+  "comparison_csv_sha256": "b49a1afa22463fcd4a5b2656babf3739ac0292655197531e5eb75248549940bf",
+  "source_manifest_files": 26,
+  "new_manifest_files": 6,
+  "cases": 19,
+  "affected_score_cells": 152,
+  "raw_reference_score_cells": 4,
+  "comparison_rows": 156,
+  "readback": {
+    "passed": true,
+    "cells_checked": 156,
+    "predictions_checked": 156,
+    "csv_rows_checked": 156,
+    "source_readback_passed": true,
+    "source_manifest_unchanged": true,
+    "teacher_csv_unchanged": true,
+    "independent_denominator_reconstruction": true
+  },
+  "original_validation_selected_model": {
+    "replicate-a": {"raw4": "xgboost", "known_limits4": "xgboost"},
+    "replicate-b": {"raw4": "xgboost", "known_limits4": "xgboost"}
+  },
+  "row_denominators": {
+    "replicate-a/test": {"rows": 2533, "scenarios": 100, "class_3": 198, "class_0": 601, "true_limit_events": 66, "non_limit_scenarios": 34},
+    "replicate-a/ood": {"rows": 2530, "scenarios": 100, "class_3": 207, "class_0": 641, "true_limit_events": 69, "non_limit_scenarios": 31},
+    "replicate-b/test": {"rows": 2514, "scenarios": 100, "class_3": 225, "class_0": 621, "true_limit_events": 75, "non_limit_scenarios": 25},
+    "replicate-b/ood": {"rows": 2555, "scenarios": 100, "class_3": 207, "class_0": 622, "true_limit_events": 69, "non_limit_scenarios": 31}
+  },
+  "error_grid_distribution": "hypothetical; no measured field distribution",
+  "human_scientific_review": "pending",
+  "provenance_deviation": "The frozen formal protocol omitted pre-scoring hashes of the new analysis and test code. A later code snapshot cannot serve as a pre-scoring commitment.",
+  "original_design_pre_scoring_code_hash_requirement_met": false,
+  "post_run_code_snapshot": {
+    "status": "post_run_snapshot_before_provenance_fix; not pre_run_capture",
+    "captured_utc": "2026-10-13T05:06:49.0702950Z",
+    "formal_protocol_sha256": "23c0a6b35f12b52aff1d5d72d04f4b4aad00b5df27fea7f16a59cd08d2ccaf72",
+    "code_sha256": {
+      "tools/roof_mechanics/limits_sensitivity.py": "54b56065ee983f5157245234708e337fa06a28fd94ccc3b1482283b71676d6a1",
+      "tests/roof_mechanics/test_limits_sensitivity.py": "ce0c4eccdc2982e5929b7038984467aa4d96e0d11660e022e9c52bf6611b3a67",
+      "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab",
+      "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+      "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+      "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+      "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52"
+    }
+  },
+  "provenance_verification": {
+    "status": "separately dated same-source same-model technical reproduction; not an independent sample",
+    "output_dir": "D:/矿业/outputs/roof-mechanics-limits-sensitivity/2026-10-13-provenance-verification",
+    "actual_invocation": "& 'D:\\矿业\\smart-mine-v2-balanced\\.venv-data\\Scripts\\python.exe' -B -m tools.roof_mechanics.limits_sensitivity --output-dir 'D:\\矿业\\outputs\\roof-mechanics-limits-sensitivity\\2026-10-13-provenance-verification'",
+    "protocol_command_field": "reproducible_command; explicit equivalent command, not a verbatim execution log",
+    "protocol_sha256": "1a826f836c01dee4aaecc1d4c8bdb3d22f560f135fbdaed6b24e58bad23a75cf",
+    "manifest_sha256": "2ac52ca42730ae8223d4bed8fbeffd07ed34f738fa96b11e38eb1f47b7be8eba",
+    "source_manifest_sha256_before_after": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "teacher_csv_sha256_before_after": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+    "manifest_checked_files": 6,
+    "readback": {
+      "passed": true,
+      "cells_checked": 156,
+      "predictions_checked": 156,
+      "csv_rows_checked": 156,
+      "source_readback_passed": true,
+      "source_manifest_unchanged": true,
+      "teacher_csv_unchanged": true,
+      "independent_denominator_reconstruction": true,
+      "analysis_code_provenance": "pre_scoring_code_hashes_verified"
+    },
+    "pre_scoring_code_sha256": {
+      "tools/roof_mechanics/limits_sensitivity.py": "e7b88d314d767cb71abd68cee64944e65892bf71d7afecd7ba57e066e3aeb4e8",
+      "tests/roof_mechanics/test_limits_sensitivity.py": "cfbefb10e45942ea875d250b101674b15c20fac35f77dd2eeeb8790a13a494bc",
+      "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab",
+      "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+      "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+      "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+      "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52"
+    },
+    "pre_scoring_code_hashes_match_current_files": true,
+    "complete_content_comparison": {
+      "results.json": {"equal": true, "original_sha256": "d912406dcc7e2f1f0abfd60d3373b47a8b4bae1eaa2a0c0f100a1d9fd3f9a81e", "verification_sha256": "d912406dcc7e2f1f0abfd60d3373b47a8b4bae1eaa2a0c0f100a1d9fd3f9a81e"},
+      "predictions.json": {"equal": true, "original_sha256": "91993399030beaf352368509ea1bb78b939aedb3e845fb929c27186e6910f3d4", "verification_sha256": "91993399030beaf352368509ea1bb78b939aedb3e845fb929c27186e6910f3d4"},
+      "comparison.csv": {"equal": true, "original_sha256": "b49a1afa22463fcd4a5b2656babf3739ac0292655197531e5eb75248549940bf", "verification_sha256": "b49a1afa22463fcd4a5b2656babf3739ac0292655197531e5eb75248549940bf"}
+    },
+    "all_complete_contents_equal": true
+  },
+  "focused_fix_test": "python -B -m unittest discover -s tests/roof_mechanics -p test_limits_sensitivity.py -v: 3 tests passed"
+}

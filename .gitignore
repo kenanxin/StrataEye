@@ -9,3 +9,6 @@ tools/.generated/
 .runtime/
 .env
 .env.local
+.venv-research/
+research-evidence/
+reruns/

@@ -1,0 +1,67 @@
+{
+  "experiment": "roof-mechanics-v1",
+  "date": "2026-10-12",
+  "stage": "offline simulator protocol; human scientific review pending",
+  "source_kind": "mechanics_simulation",
+  "created_utc": "2026-10-12T11:11:27.695651+00:00",
+  "working_directory": "D:/矿业/worktrees/teacher-feedback-v1",
+  "output_directory": "D:/矿业/outputs/roof-mechanics-v1/2026-10-12",
+  "command": "& 'D:\\矿业\\smart-mine-v2-balanced\\.venv-data\\Scripts\\python.exe' -B -m tools.roof_mechanics.run_experiment --output-dir 'D:\\矿业\\outputs\\roof-mechanics-v1\\2026-10-12'",
+  "feature_names": ["max_deflection_mm", "deflection_increment_mm_per_step", "max_support_force_kn", "max_bending_stress_mpa"],
+  "target": "highest extreme-limit class in next 3 observed loading steps; not physical minutes",
+  "selection": {"split": "validation", "metric": "macro_f1", "tie_break": "xgboost", "selected_model": "random_forest", "frozen_before_test_and_ood": true},
+  "split_seed": 2718,
+  "split_counts": {
+    "train": {"scenarios": 300, "rows": 7914, "class_distribution": [2173, 3281, 1827, 633]},
+    "validation": {"scenarios": 100, "rows": 2660, "class_distribution": [718, 1132, 609, 201]},
+    "test": {"scenarios": 100, "rows": 2595, "class_distribution": [689, 1097, 596, 213]},
+    "ood": {"scenarios": 100, "rows": 2622, "class_distribution": [706, 1070, 630, 216]}
+  },
+  "metrics_evidence_id": "E1",
+  "high_fn_semantics": "row-level future_class==3 and prediction<3 undergrading fraction; prediction2 may still warn at a lower level; no event-level alert strategy is defined",
+  "metric_summaries": {
+    "random_forest": {
+      "validation_macro_f1": 0.5582140575393421,
+      "test": {"macro_f1": 0.5578406539283014, "accuracy": 0.6250481695568401, "high_fn": {"count": 156, "denominator": 213, "fraction": 0.7323943661971831}, "low_fp": {"count": 122, "denominator": 689, "fraction": 0.17706821480406387}},
+      "ood": {"macro_f1": 0.607452514805456, "accuracy": 0.6716247139588101, "high_fn": {"count": 144, "denominator": 216, "fraction": 0.6666666666666666}, "low_fp": {"count": 99, "denominator": 706, "fraction": 0.14022662889518414}}
+    },
+    "xgboost": {
+      "validation_macro_f1": 0.5555594884081179,
+      "test": {"macro_f1": 0.5627821833494662, "accuracy": 0.628131021194605, "high_fn": {"count": 146, "denominator": 213, "fraction": 0.6854460093896714}, "low_fp": {"count": 97, "denominator": 689, "fraction": 0.14078374455732948}},
+      "ood": {"macro_f1": 0.6131100980640403, "accuracy": 0.6700991609458429, "high_fn": {"count": 126, "denominator": 216, "fraction": 0.5833333333333334}, "low_fp": {"count": 67, "denominator": 706, "fraction": 0.09490084985835694}}
+    },
+    "shallow_tree": {"validation_macro_f1": 0.47193336476251996, "test_macro_f1": 0.4391082774078325, "ood_macro_f1": 0.4755863780630685},
+    "majority": {"training_class": 1, "validation_macro_f1": 0.14926160337552744, "test_macro_f1": 0.14856446370530876, "ood_macro_f1": 0.14490790899241604},
+    "current_class": {"information": "privileged material strength/capacity/span limit; cannot predict future class 3 from pre-limit observations", "validation_macro_f1": 0.5346254761460802, "test_macro_f1": 0.5274314201084711, "ood_macro_f1": 0.5283484161472433, "test_accuracy": 0.6928709055876686, "test_high_fn": {"count": 213, "denominator": 213, "fraction": 1.0}}
+  },
+  "readback_evidence_id": "E2",
+  "readback": {"passed": true, "scenario_count": 600, "row_count": 15791, "split_overlap_count": 0, "ood_scenarios": 100, "future_and_causal_checked_rows": 15791, "xgboost_json_feature_count": 4, "xgboost_json_class_count": 4, "native_json_prediction_roundtrip": true, "final_finite_json_count": 9, "manifest_verified_files": 11, "teacher_csv_unchanged": true, "no_pickle_loaded": true},
+  "solver_verification_evidence_id": "E3",
+  "solver_verification": {"passed": true, "grids": [12, 24, 48], "max_analytic_conservation_error": 6.628403141929229e-10, "refined_simply_supported_stress_error": 0.0002893518214885926, "refined_cantilever_stress_error": 0.00007233801845873966},
+  "source_evidence_id": "E4",
+  "software_versions": {"python": "3.10.10", "numpy": "1.26.4", "sklearn": "1.7.2", "xgboost": "3.2.0", "joblib": "1.6.0"},
+  "source_hashes": {"train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf", "run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67", "complete_source_manifest": "source-manifest.json"},
+  "artifact_sha256": {
+    "manifest.json": "0ddd0fcf0dedaa3609ba7741b3387985f9b239f1c5bbb0f557811b92a3c82580",
+    "observations.csv": "9ae444175dd710054c05270ce17aa2010b7d765fc7a218507d615d4e0a79137b",
+    "metrics.json": "52a65bc6df31c811358054191ae1471470c5b3a16819d1212d8f86f408f2d658",
+    "scenarios.json": "ac9cfad1799b3f4bb5547c13e70f2bc655293396ef5f6a514457938f35558f9d",
+    "splits.json": "7bbe1afc47afa17b10c9d152a4141dbcbc048e68ab15533f40189e11829d7da7",
+    "models/random_forest.joblib": "0c709240fbdd1392cd219849b365ef886629455cd2270bef264d37901a62eaec",
+    "models/xgboost.json": "073748e29828fea21ec1257f85e76daf5e87791109054cd7a69885d8416c773d"
+  },
+  "teacher_csv_sha256_before_and_after": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+  "xgboost_best_iteration_zero_based": 224,
+  "elapsed_seconds_until_readback_record": 99.84884960000636,
+  "elapsed_training_evaluation_seconds": 2.317721300001722,
+  "tests": {"python": "26/26 pass; unittest discover -s tests/roof_mechanics -p test_*.py -v; 4.509 s", "node": "228/228 pass; node --test; 6.819 s"},
+  "limits": ["unvalidated field parameter calibration", "unvalidated sensor noise/missing-data robustness", "unvalidated dynamic collapse", "no production connection", "variable material strength/capacity latent to four observations", "q_crit-relative ramps construct class distribution, not field incidence", "single fixed-seed experiment; no uncertainty estimate", "row metrics weight longer trajectories more", "span-only OOD stress test", "class3 undergrading is not an event-level warning miss rate", "future limit-aware features/alert policy require independent preregistered experiment and new test data"],
+  "evidence_sources": {
+    "E1": {"artifact": "metrics.json", "locators": ["/selection", "/split_counts", "/evaluation", "/xgboost_best_iteration"]},
+    "E2": {"artifact": "readback.json", "final_check": "strictly parsed all 9 saved JSON files and verify_manifest checked 11 files after run"},
+    "E3": {"artifact": "verification.json", "locator": "/analytic_cases"},
+    "E4": {"artifact": "source-manifest.json", "locators": ["/files", "/teacher_csv", "/software_versions", "/reproducible_command"]},
+    "E5": {"local_audit": "docs/qa/2026-10-12-delivered-algorithm-agent-audit.md", "original_root": "D:/矿业/算法Agent总代码交付/algorithm/揭榜挂帅", "locators": ["preprocess_data.py:163,167,172,177,200,206", "train_model.py:204,316,341", "generate data.py:7", "metrics.json:2,86"], "interpretation": "20,000-row teacher/algorithm-team pointwise CSV provenance not field-validated; original 99.325% not comparable to simulator future-target protocol"},
+    "E6": {"public_sources_opened": "2026-10-12 by Codex", "human_scientific_verification": "pending", "urls": ["https://teachbooks.tudelft.nl/computational-modelling/structural_linear/euler_bernouilli.html", "https://scikit-learn.org/stable/modules/cross_validation.html", "https://xgboost.readthedocs.io/en/stable/python/python_api.html", "https://arxiv.org/abs/2609.00065"]}
+  }
+}

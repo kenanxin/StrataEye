@@ -1,0 +1,94 @@
+{
+  "document_id": "2026-10-13-roof-mechanics-uncertainty",
+  "analysis_intent": "post_hoc_descriptive_exploratory_same_source",
+  "human_scientific_approval": "pending",
+  "final_whole_delta_review": "approved_offline_handoff_only",
+  "final_review_commit_range": "2e66721..e25d150",
+  "final_reviewer": "/root/uncertainty_final_review",
+  "final_review_findings": {"critical": 0, "important": 0, "definite_minor": 0},
+  "offline_handoff_ready": true,
+  "submission_ready": false,
+  "verification_kind": "programmatic_archive_readback_and_independent_whole_delta_agent_review; human_scientific_verification_pending",
+  "base_code_commit": "9d8f89f",
+  "formal_invocation_count": 1,
+  "formal_exit_code": 0,
+  "cwd": "D:/矿业/worktrees/teacher-feedback-v1",
+  "actual_command": ["D:/矿业/smart-mine-v2-balanced/.venv-data/Scripts/python.exe", "-B", "-m", "tools.roof_mechanics.uncertainty_study", "--output-dir", "D:/矿业/outputs/roof-mechanics-uncertainty/2026-10-13"],
+  "created_utc_raw_protocol": "2026-10-13T12:19:47.243483+00:00",
+  "total_execution_seconds": null,
+  "total_execution_seconds_status": "not_separately_collected",
+  "source_dir": "D:/矿业/outputs/roof-mechanics-known-limits/2026-10-13",
+  "source_manifest_sha256": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+  "output_dir": "D:/矿业/outputs/roof-mechanics-uncertainty/2026-10-13",
+  "output_files": {
+    "comparison.csv": {"sha256": "22fa5bd6e66e8f0d30a0f2e39d65088fbecd4e700939a4608093f196249ca649", "bytes": 111516},
+    "manifest.json": {"sha256": "f377f7c385ef2e26926818f76b797baf9b31c494a0b9ccf9c6b3f0744a7fef46", "bytes": 905},
+    "predictions.json": {"sha256": "658113cd8101bb5279898da7835b4649fb7b67ef73b3168d49375adee86ddaa7", "bytes": 30455671},
+    "protocol.json": {"sha256": "8bccaf140a58818362d1da776a5b81604b9ae376543431818effeed8a10897d3", "bytes": 18810},
+    "readback.json": {"sha256": "a7c0e9bdb60e163f8fcaa2cad93d29ea1894eda9e1152710e9608f342f0c4870", "bytes": 350},
+    "results.json": {"sha256": "e4933d519417117301a3372a52283c4e163d7c7804428de7b669bd9042ea50ca", "bytes": 1911600},
+    "source-check.json": {"sha256": "cc57f64bfa6e815469bd2fdc1610c5dac16281c551a47bb72604d318526cef45", "bytes": 420}
+  },
+  "source_check": {
+    "source_manifest_before": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "source_manifest_after": "031e0801d980caf09893eecbf15139ce0b3d0bd541d76289a2139df73e7d4537",
+    "teacher_before": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+    "teacher_after": "86d4c2fb192721b2745f00076aeb00cf351c654ed936ddb098bfa6217e30ac6a",
+    "source_readback_passed": true,
+    "equal": true
+  },
+  "readback": {
+    "passed": true, "cells_checked": 324, "summaries_checked": 108,
+    "predictions_checked": 108, "csv_rows_checked": 324,
+    "source_readback_passed": true, "source_manifest_unchanged": true,
+    "teacher_csv_unchanged": true, "independent_denominator_reconstruction": true,
+    "analysis_code_provenance": "pre_scoring_code_hashes_verified"
+  },
+  "software_versions": {"python": "3.10.10", "numpy": "1.26.4", "sklearn": "1.7.2", "xgboost": "3.2.0", "joblib": "1.6.0", "platform": "Windows-10-10.0.26200-SP0"},
+  "models": {
+    "replicate-a": {"protocol": "known_limits4", "model": "xgboost", "sha256": "29d2c3a7f23a90740367b889282f1c7de2b80bee8ae52777954e784d54fd507f"},
+    "replicate-b": {"protocol": "known_limits4", "model": "xgboost", "sha256": "196bd0cdfb9b4e4173051340931cacace13eb1a3e3bd7a0d01c0303edea6132d"}
+  },
+  "analysis_code_sha256": {
+    "tools/roof_mechanics/uncertainty_study.py": "b6dbba0e0315b8bf7d30db94ce2c8c20dff153d21274884a83158779c3d5bb95",
+    "tests/roof_mechanics/test_uncertainty_study.py": "9fc548c84edf920c39b62ad6eae024ae4b88a2c9f119845d4f3723d3942034e4",
+    "tools/roof_mechanics/limit_uncertainty.py": "82354615767571138b389ec49212debefc3afed30f9706e6a90d4c2acd115a83",
+    "tests/roof_mechanics/test_limit_uncertainty.py": "993b78760ecee242dc46a0e1fc29ff8313805810b8da3ee52a501f3846ce7b10",
+    "tools/roof_mechanics/limits_sensitivity.py": "e7b88d314d767cb71abd68cee64944e65892bf71d7afecd7ba57e066e3aeb4e8",
+    "tests/roof_mechanics/test_limits_sensitivity.py": "cfbefb10e45942ea875d250b101674b15c20fac35f77dd2eeeb8790a13a494bc",
+    "tools/roof_mechanics/known_limits_study.py": "23800e8c40b837748ec55c27d48916cfc9ceb117c89b66bf8a6b3c2eb7bfaf52",
+    "tools/roof_mechanics/run_experiment.py": "386302114a84941b5c0b73a88b9c1a4b1bc0aa1a56386612a68b69aea7437f67",
+    "tools/roof_mechanics/train.py": "5fb54c0e8a65521e30f69408d6cb89e63ec1197bd2aba283de708d9eb25c94cf",
+    "tools/roof_mechanics/known_limits.py": "166101176c19ef997d4ce4fa9f9e65265c20cc8ee0dafe3d8c19f3a321d6885e",
+    "tools/roof_mechanics/dataset.py": "d95e520123f3b0a5c878c46b7652387017e512a27c124836d768776c3d3800ab"
+  },
+  "evidence_sources": [
+    {"id": "E01", "file": "protocol.json", "locator": "scope,cases,grid,saved_models,original_selections,analysis_code_sha256,reproducible_command", "human_verified": false},
+    {"id": "E02", "file": "results.json", "locator": "cells and summaries selected by replicate,split,case_id; complete 324 cells/108 summaries", "human_verified": false},
+    {"id": "E03", "file": "comparison.csv", "locator": "all 324 rows; candidate/center_bias and row/event/review metrics", "human_verified": false},
+    {"id": "E04", "file": "readback.json", "locator": "entire record; manifest.json coverage also checked", "human_verified": false},
+    {"id": "E05", "file": "source-check.json", "locator": "entire record and source protocol/manifest hashes", "human_verified": false},
+    {"id": "E06", "file": "2026-10-13-roof-mechanics-uncertainty-tests.md", "locator": "actual captured commands, exit codes, RED/GREEN footers; original implementation report commit9d8f89f", "human_verified": false},
+    {"id": "E07", "url": "https://arxiv.org/abs/2609.00065", "title": "Scientific Agent Skills: A Library of Procedural Knowledge for Research Agents", "authors": ["Timothy Kassis", "Vinayak Agarwal", "Yuhuan He", "Darshil Patel", "Aubrey M. Brueckner"], "year": 2026, "doi": "10.48550/arXiv.2609.00065", "record_access_date": "2026-10-13", "locator": "title/authors/submission history; current record v2", "role": "writing workflow only", "human_verified": false},
+    {"id": "E08", "file": "2026-10-13-roof-mechanics-uncertainty-review.md", "locator": "final independent technical review of 2e66721..e25d150; offline handoff approved, no blocking findings; limitations retained", "human_verified": false}
+  ],
+  "claim_groups": [
+    {"id": "C01", "locator": "results.md 来源、固定方法和执行", "evidence_ids": ["E01", "E04", "E05", "E06"]},
+    {"id": "C02", "locator": "results.md 精确/strength+20 row and review summary tables", "evidence_ids": ["E02", "E03"]},
+    {"id": "C03", "locator": "results.md event table", "evidence_ids": ["E02", "E03"]},
+    {"id": "C04", "locator": "results.md joint worst-case table and all ties", "evidence_ids": ["E01", "E02", "E03"]},
+    {"id": "C05", "locator": "results.md method limitations and writing workflow", "evidence_ids": ["E01", "E02", "E07"]}
+  ],
+  "joint_summary_definition": "For each original replicate/split, maximize each fixed descriptive metric independently across the eight predeclared joint centers; preserve all ties. No reselection or inference on continuous domain.",
+  "relative_error_definition": "Lhat=Ltrue*(1+e); abs(e)<=0.20 implies Ltrue in [Lhat/1.2,Lhat/0.8]. Fixed candidate errors are -0.20,0,+0.20; this is not a symmetric interval around Lhat.",
+  "target_definition": "Highest assumed limit-state class in the next three observed quasi-static loading steps; utilization thresholds 0.5,0.8,1.0, class3 reaches the assumed limit. Original first-crossing stop/tail-window rules retained. Different semantics from teacher CSV risk grade; no real-time mapping.",
+  "joint_worst": [
+    {"replicate": "replicate-a", "split": "test", "center_underestimate": {"count": 198, "denominator": 198, "cases": ["joint_minus20_minus20_plus20", "joint_minus20_plus20_plus20", "joint_plus20_minus20_plus20", "joint_plus20_plus20_plus20"]}, "upper_underestimate": {"count": 3, "denominator": 198, "cases": ["joint_minus20_minus20_plus20", "joint_minus20_plus20_plus20"]}, "upper_low_false_positive": {"count": 459, "denominator": 601, "cases": ["joint_minus20_plus20_minus20"]}, "review_rows": {"count": 2080, "denominator": 2533, "cases": ["joint_minus20_minus20_minus20"]}, "maximum_unmarked_center_class3_underestimates": 0},
+    {"replicate": "replicate-a", "split": "ood", "center_underestimate": {"count": 207, "denominator": 207, "cases": ["joint_plus20_minus20_plus20", "joint_plus20_plus20_plus20"]}, "upper_underestimate": {"count": 6, "denominator": 207, "cases": ["joint_plus20_minus20_plus20"]}, "upper_low_false_positive": {"count": 469, "denominator": 641, "cases": ["joint_minus20_minus20_minus20"]}, "review_rows": {"count": 2053, "denominator": 2530, "cases": ["joint_plus20_plus20_minus20"]}, "maximum_unmarked_center_class3_underestimates": 0},
+    {"replicate": "replicate-b", "split": "test", "center_underestimate": {"count": 225, "denominator": 225, "cases": ["joint_plus20_minus20_plus20", "joint_plus20_plus20_plus20"]}, "upper_underestimate": {"count": 8, "denominator": 225, "cases": ["joint_plus20_minus20_plus20"]}, "upper_low_false_positive": {"count": 444, "denominator": 621, "cases": ["joint_minus20_minus20_minus20", "joint_minus20_plus20_minus20"]}, "review_rows": {"count": 2008, "denominator": 2514, "cases": ["joint_minus20_minus20_minus20"]}, "maximum_unmarked_center_class3_underestimates": 0},
+    {"replicate": "replicate-b", "split": "ood", "center_underestimate": {"count": 206, "denominator": 207, "cases": ["joint_plus20_minus20_plus20", "joint_plus20_plus20_plus20"]}, "upper_underestimate": {"count": 6, "denominator": 207, "cases": ["joint_plus20_plus20_plus20"]}, "upper_low_false_positive": {"count": 486, "denominator": 622, "cases": ["joint_minus20_minus20_minus20", "joint_minus20_plus20_minus20"]}, "review_rows": {"count": 2104, "denominator": 2555, "cases": ["joint_minus20_plus20_minus20"]}, "maximum_unmarked_center_class3_underestimates": 0}
+  ],
+  "interpretation_limits": ["hypothetical_width_0.20", "finite_sampling_only", "no_continuous_domain_guarantee", "no_confidence_bound", "no_field_calibration", "same_source_post_hoc", "no_live_integration", "human_scientific_approval_pending"],
+  "reporting_guideline_status": "local exploratory mechanics/software QA; no formal manuscript guideline adherence claimed",
+  "ai_use": "Codex implemented offline analysis and drafted evidence-bound local QA; accountable human scientific approval pending"
+}
