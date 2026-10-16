@@ -8,3 +8,11 @@ assets/hdri/quarry_02_4k.hdr -filter -diff -merge -text
 assets/textures/** -filter -diff -merge -text
 assets/models/quarry-conveyor-system-kit/scene.optimized.glb -filter -diff -merge -text
 assets/models/weathered-cctv-camera/scene.optimized.glb -filter -diff -merge -text
+
+# Preserve research source/artifact hashes across Windows and Unix checkouts.
+tools/roof_mechanics/** text eol=lf
+tests/roof_mechanics/** text eol=lf
+tools/export-support-simulation.py text eol=lf
+tools/export-support-deformation.py text eol=lf
+data/support-simulation-v1.json text eol=lf
+data/support-deformation-v1.json text eol=lf
