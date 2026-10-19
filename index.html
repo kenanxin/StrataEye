@@ -808,6 +808,26 @@
   <footer class="support-lab-foot"><span id="supportSource">来源待核验</span><p>简化线弹性、准静态模型，未经现场校准；加载步不对应实际时间。无真实裂隙、离层或垮落动力学。</p></footer>
 </section>
 
+<section class="support-lab" id="layeredRoofLab" aria-labelledby="layeredRoofTitle">
+  <header class="support-lab-head"><div><span class="support-lab-kicker">巷道顶板 · 分层力学研究</span><h2 id="layeredRoofTitle">把离层与锚固受力放在一起看</h2><p>双层岩梁 · 受压接触 · 受拉连接 · 四组预设工况对照</p></div><span class="support-lab-badge">SIM-ROADWAY-LAYERS-01</span></header>
+  <div class="support-lab-grid">
+    <div class="support-lab-controls">
+      <label for="layeredCase">研究工况</label><select id="layeredCase" disabled></select>
+      <label for="layeredStep">加载步 <output id="layeredStepLabel">--</output></label><input id="layeredStep" type="range" min="0" max="20" step="1" value="0" disabled>
+      <div class="support-lab-values"><div><span>层间张开峰值</span><b id="layeredOpening">--</b><small>mm · 节点采样</small></div><div><span>锚固连接总拉力</span><b id="layeredForce">--</b><small>kN</small></div></div>
+      <p id="layeredParameters">正在读取分层顶板工况…</p>
+      <small>两层分别简支，条带宽1 m、跨度8 m。连接采用零预紧受拉弹簧；参数为演示设定，现场使用需校准。</small>
+    </div>
+    <div class="support-lab-analysis">
+      <div id="layeredProfile" class="layered-profile"></div><p id="layeredComparison" class="support-lab-comparison"></p>
+      <div id="layeredTable" class="layered-table"></div>
+      <div class="support-lab-advice-head"><h3>力学证据与知识增强解释</h3><button type="button" id="layeredExplain" disabled>检索资料并解释当前工况</button></div>
+      <p id="layeredStatus" role="status">正在加载工况…</p><div id="layeredAdvice"></div><div id="layeredKnowledge"></div>
+    </div>
+  </div>
+  <footer class="support-lab-foot"><span id="layeredSource">来源待加载</span><p>小变形、线弹性、准静态；接触采用有限刚度罚法，弹性重叠单独报告。工况对照用于机理研究，异常来源识别和现场有效性待验证。</p></footer>
+</section>
+
 <!-- ============ 底部信息栏 ============ -->
 <footer class="footer">
   <div class="footer-info">

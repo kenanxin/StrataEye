@@ -1,4 +1,11 @@
 .support-lab { flex: 0 0 auto; margin: 22px 24px; color: #e8f1f5; background: #10191e; border: 1px solid #2c424b; border-top: 3px solid #32c7d9; border-radius: 6px; overflow: hidden; }
+.layered-profile svg { width:100%; max-height:300px; font-family:"Microsoft YaHei UI",sans-serif; }
+.layered-table { overflow-x:auto; margin-bottom:24px; }
+.layered-table table { width:100%; border-collapse:collapse; font-size:12px; line-height:1.7; color:inherit; }
+.layered-table caption { text-align:left; padding:10px 0; color:#a7b7c0; }
+.layered-table th,.layered-table td { padding:10px; text-align:left; border-bottom:1px solid #35505c; }
+.layered-table tr[aria-current=true] { background:#173039; color:#75d8e4; }
+#layeredStatus { font-size:12px; color:#a7b7c0; line-height:1.8; }
 .support-lab[hidden] { display: none; }
 .support-lab-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; padding: 25px 28px; background: #152229; border-bottom: 1px solid #2c424b; }
 .support-lab-kicker { color: #32c7d9; font-size: 12px; letter-spacing: .12em; }
