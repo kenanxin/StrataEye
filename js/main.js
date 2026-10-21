@@ -13,6 +13,7 @@ import { createReplayController } from './roof-risk-replay-controller.mjs';
 import { destroyWarningDemo, getWarningDemoAdviceContext, refreshWarningDemoRisk, setupWarningDemo } from './warning-demo-ui.mjs';
 import { setupMultiAgentWorkflow } from './multi-agent-workflow-ui.mjs';
 import { setupSupportSimulation } from './support-simulation-ui.mjs';
+import { setupLayeredRoof } from './layered-roof-ui.mjs';
 import { renderKnowledgeEvidence } from './knowledge-evidence.mjs';
 import { adviceSourceLabel, adviceNotice, requestAdvice } from './advice-presentation.mjs';
 import { createWorkflowClient, createWorkflowCoordinator, projectWorkflowClosedLoop } from './workflow-client.mjs';
@@ -23,6 +24,7 @@ let multiAgentController = null;
 let workflowUnsubscribe = null;
 let workflowRole = null;
 let supportSimulationController = null;
+let layeredRoofController = null;
 
 function hasWorkflowAuthority() {
   const snapshot = workflowCoordinator?.getSnapshot();
@@ -1618,6 +1620,8 @@ async function initApp(authenticatedUser) {
   setupDisasterPanel();
   setupEquipmentFocus();
   supportSimulationController?.destroy();
+  layeredRoofController?.destroy();
+  layeredRoofController = setupLayeredRoof({ authFetch, role: authenticatedUser.role });
   supportSimulationController = setupSupportSimulation({ authFetch, role: authenticatedUser.role,
     onFrame: frame => setSupportSimulationFrame(frame), onFocus: frame => setSupportSimulationFrame(frame, { focus: true }),
     renderChart: updateSupportSimulationChart, disposeChart: disposeSupportSimulationChart });
@@ -1643,6 +1647,7 @@ async function initApp(authenticatedUser) {
     destroyWarningDemo();
     multiAgentController?.destroy();
     supportSimulationController?.destroy();
+    layeredRoofController?.destroy();
     workflowUnsubscribe?.();
     workflowCoordinator?.destroy();
     disposeCharts();

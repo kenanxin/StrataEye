@@ -1,0 +1,16 @@
+test_cantilever_analytic (test_solver.SolverTests.test_cantilever_analytic) ... ok
+test_invalid_inputs_and_immutable_config (test_solver.SolverTests.test_invalid_inputs_and_immutable_config) ... ok
+test_overflow_fails_closed (test_solver.SolverTests.test_overflow_fails_closed) ... ok
+test_simply_supported_analytic_units_and_checks (test_solver.SolverTests.test_simply_supported_analytic_units_and_checks) ... ok
+test_single_center_spring_against_analytic_solution (test_solver.SolverTests.test_single_center_spring_against_analytic_solution) ... ok
+test_stress_refines_on_both_boundaries (test_solver.SolverTests.test_stress_refines_on_both_boundaries) ... ok
+test_symmetry_linear_response_and_springs (test_solver.SolverTests.test_symmetry_linear_response_and_springs) ... ok
+test_verification (test_solver.SolverTests.test_verification) ... ok
+test_verification_rejects_center_spring_drift (test_solver.SolverTests.test_verification_rejects_center_spring_drift) ... ok
+test_verification_rejects_nonfinite_measurements (test_solver.SolverTests.test_verification_rejects_nonfinite_measurements) ... ok
+test_zero_load (test_solver.SolverTests.test_zero_load) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.157s
+
+OK

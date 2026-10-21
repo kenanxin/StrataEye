@@ -20,6 +20,7 @@ const { createSupabaseAuthService } = require('./server/supabase-auth-service.js
 const { createExpertAdviceService } = require('./server/expert-advice-service.js');
 const { createAgentCollaborationService } = require('./server/agent-collaboration-service.js');
 const { createSupportSimulationService } = require('./server/support-simulation-service.js');
+const { createLayeredRoofService } = require('./server/layered-roof-service.js');
 const { createKnowledgeRetrievalService } = require('./server/knowledge-retrieval-service.js');
 const { WorkflowStoreError, createFileWorkflowStore, createSupabaseWorkflowStore } = require('./server/workflow-store.js');
 
@@ -198,6 +199,7 @@ function createAppServer(options = {}) {
     : createAuthService());
   const expertAdviceService = options.expertAdviceService || createExpertAdviceService({ cacheDirectory: process.env.DEEPSEEK_CACHE_DIR || path.join(root, '.runtime', 'expert-advice-cache') });
   const supportSimulation = createSupportSimulationService({ adviceService: expertAdviceService });
+  const layeredRoof = createLayeredRoofService({ adviceService: expertAdviceService });
   const knowledgeService = createKnowledgeRetrievalService();
   const storageProvider = options.workflowStoreProvider || process.env.WORKFLOW_STORE_PROVIDER || (authService.provider === 'supabase' || process.env.AUTH_PROVIDER === 'supabase' ? 'supabase' : 'file');
   let workflowStore = options.workflowStore;
@@ -357,6 +359,30 @@ function createAppServer(options = {}) {
 
       if (pathname === '/' && req.method === 'GET' && requestUrl.search === '') {
         redirect(res, portalUrl(session.user.role));
+        return;
+      }
+
+      if (pathname === '/api/roof-risk/layered-roof') {
+        assertMethod(req, ['GET']);
+        sendJson(res, layeredRoof.catalog());
+        return;
+      }
+      if (pathname === '/api/roof-risk/layered-roof/explain') {
+        assertMethod(req, ['POST']);
+        if (!['enterprise', 'expert', 'super_admin'].includes(session.user.role)) {
+          sendApiError(res, 403, 'FORBIDDEN', '仅企业、智库和管理员可发起分层顶板解释');
+          return;
+        }
+        const body = await readJsonBody(req);
+        if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(key => !['case_id', 'step'].includes(key))) {
+          throw new RoofRiskRepositoryError('INVALID_LAYERED_INPUT', 'Only case_id and step are accepted', 400);
+        }
+        try { sendJson(res, await layeredRoof.explain({ caseId: body.case_id, step: body.step })); }
+        catch (error) {
+          if (error instanceof TypeError) throw new RoofRiskRepositoryError('INVALID_LAYERED_INPUT', error.message, 400);
+          if (error.code === 'SIMULATION_ADVICE_BUSY') throw new RoofRiskRepositoryError(error.code, error.message, 429);
+          throw error;
+        }
         return;
       }
 
