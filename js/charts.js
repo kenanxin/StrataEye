@@ -28,7 +28,7 @@ function registerTheme() {
   echarts.registerTheme('smartMineIndustrial', {
     color: SERIES_COLORS,
     backgroundColor: 'transparent',
-    textStyle: { color: '#a7b7c0', fontFamily: 'Segoe UI, Microsoft YaHei, sans-serif' },
+    textStyle: { color: '#b2c3d7', fontFamily: 'Strata Sans, Segoe UI, Microsoft YaHei, sans-serif' },
     title: { textStyle: { color: '#e8f1f5' } },
     legend: { textStyle: { color: '#9db0ba' } },
     categoryAxis: {

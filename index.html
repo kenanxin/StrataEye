@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#10191e">
-<title>智慧矿山数字孪生综合管控平台</title>
+<title>灵瞳勘顶 StrataEye · 顶板风险研判工作台</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/support-simulation.css">
+<link rel="stylesheet" href="css/strata-theme.css">
+<link rel="preload" href="assets/fonts/strata-sans-sc.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" type="image/svg+xml" href="images/strataeye-mark.svg">
 <!-- ECharts -->
 <script src="./js/vendor/echarts.min.js"></script>
 </head>
@@ -17,10 +20,10 @@
 <!-- ============ 顶部标题栏 ============ -->
 <header class="header">
   <div class="header-left">
-    <img src="images/logo.jpg" alt="系统标志" class="header-logo" width="38" height="38" onerror="this.style.display='none'">
+    <img src="images/strataeye-mark.svg" alt="灵瞳勘顶" class="header-logo" width="44" height="44">
     <div class="header-title-group">
-      <h1 class="header-title">煤矿顶板灾变智能预警与可视化决策系统</h1>
-      <span class="header-subtitle">Digital Twin Roof Disaster Early Warning & Decision Platform</span>
+      <h1 class="header-title">灵瞳勘顶 <span class="brand-english">StrataEye</span></h1>
+      <span class="header-subtitle">煤矿顶板灾变智能预警与协同决策</span>
     </div>
   </div>
   <div class="header-center">
@@ -358,7 +361,7 @@
         <span class="chart-loading-state">正在读取当前模型判定</span>
       </div>
     </div>
-    <div class="simulation-note" id="simulationNote">正在读取老师提供的真实监测数据</div>
+    <div class="simulation-note" id="simulationNote">正在读取教师提供的模拟监测数据</div>
   </div>
 </section>
 
@@ -536,7 +539,7 @@
 
   <section class="expert-research-console" aria-label="智库端科研分析大屏">
     <nav class="expert-research-nav" id="expertResearchNav" aria-label="科研分析导航">
-      <span class="research-nav-brand">ROOF LAB <em>01</em></span>
+      <span class="research-nav-brand">研判工作台</span>
       <a href="#expertResearchSummary">数据概览</a>
       <a href="#multiAgentWorkbench">智能体研判</a>
       <a href="#expertMechanismHeatmap">机理关联</a>
@@ -550,14 +553,14 @@
         <div>
           <span class="research-eyebrow">RESEARCH CONSOLE · ROOF DISASTER MECHANISM</span>
           <h3>煤矿顶板灾变智库端风险机理分析平台</h3>
-          <p>基于老师真实监测数据的模型解释、风险机理关联与专家研判工作台</p>
+          <p>基于教师提供的模拟监测数据，关联模型证据、风险指标与专家研判。</p>
         </div>
         <div class="research-live-status"><i></i><span id="expertResearchMode">本地专家规则</span><b id="expertResearchUpdated">--</b></div>
       </div>
       <div class="expert-research-summary" id="expertResearchSummary">
         <div class="research-stat risk-stat"><span>当前风险等级</span><b id="researchRiskLevel">--</b><em id="researchRiskScore">综合风险 --</em></div>
         <div class="research-stat"><span>模型置信度</span><b id="researchConfidence">--</b><em id="researchModelName">XGBoost</em></div>
-        <div class="research-stat"><span>真实样本量</span><b id="researchSampleCount">--</b><em id="researchSourceName">teacher_roof_monitoring.csv</em></div>
+        <div class="research-stat"><span>接入样本量</span><b id="researchSampleCount">--</b><em id="researchSourceName">teacher_roof_monitoring.csv</em></div>
         <div class="research-stat"><span>异常证据项</span><b id="researchEvidenceCount">--</b><em>当前记录标准化偏离</em></div>
         <div class="research-stat"><span>交付随机测试准确率</span><b id="researchAccuracy">--</b><em id="researchF1">Macro-F1 --</em></div>
       </div>
@@ -566,7 +569,7 @@
           <div>
             <span class="research-eyebrow">XGBOOST WARNING × SIX-AGENT ORCHESTRATION</span>
             <h4 id="multiAgentTitle">算法预警 × 多智能体协同研判</h4>
-            <p>真实CSV与XGBoost负责风险识别，六智能体负责知识检索、方案、资源、协同和反思流转。</p>
+            <p>XGBoost 输出风险分类证据，智能体结合监测记录开展知识检索、方案评估与协同复核。</p>
           </div>
           <div class="multi-agent-actions">
             <span id="multiAgentSource">等待读取接入状态</span>
@@ -690,7 +693,7 @@
       </div>
       <div class="api-status-grid">
         <p><span>接口版本</span><b id="apiVersion">RoofRisk API v1</b></p>
-        <p><span>数据源</span><b id="apiDataSource">老师提供的真实监测数据</b></p>
+        <p><span>数据源</span><b id="apiDataSource">教师提供的模拟监测数据</b></p>
         <p><span>当前事件</span><b id="apiEventId">--</b></p>
         <p><span>当前设备</span><b id="apiFaceId">--</b></p>
         <p><span>真实记录</span><b id="apiRecordId">--</b></p>

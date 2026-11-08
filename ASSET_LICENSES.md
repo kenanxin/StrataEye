@@ -1,5 +1,11 @@
 # Asset Licenses
 
+## UI typography and identity (2026-10-17)
+
+`assets/fonts/strata-sans-sc.woff2` is a character subset of the variable [Noto Sans SC](https://github.com/google/fonts/tree/main/ofl/notosanssc) font, licensed under the SIL Open Font License 1.1. The complete license accompanies it at `assets/fonts/OFL.txt`. CSS refers to this font using the local family alias `Strata Sans`. `tools/build-ui-font.py` reproduces the subset from the upstream TTF, using characters in the project's HTML, JavaScript and data. Regenerate when new interface characters are added; system fonts cover characters outside the subset. Fonts load locally without an external font service.
+
+`images/strataeye-mark.svg` is original project geometry: a stylized eye framed by rock strata. It has no third-party image dependency.
+
 This project uses only assets with traceable licenses. Model archives must be downloaded through their official download controls. Sketchfab preview/cache files are not acceptable substitutes for official archives.
 
 ## Poly Haven Textures

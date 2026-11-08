@@ -24,6 +24,10 @@ const { createKnowledgeRetrievalService } = require('./server/knowledge-retrieva
 const { WorkflowStoreError, createFileWorkflowStore, createSupabaseWorkflowStore } = require('./server/workflow-store.js');
 
 const ROOT = __dirname;
+// Node 20.12+ loads this git-ignored local configuration; injected env wins.
+if (require.main === module && typeof process.loadEnvFile === 'function' && fs.existsSync(path.join(ROOT, '.env'))) {
+  process.loadEnvFile(path.join(ROOT, '.env'));
+}
 const DEFAULT_ARTIFACT_PATH = path.join(ROOT, 'data', 'roof-risk-dataset.json');
 const MAX_JSON_BODY_BYTES = 1024 * 1024;
 
@@ -38,6 +42,7 @@ const MIME = {
   '.png': 'image/png',
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
+  '.woff2': 'font/woff2',
   '.ico': 'image/x-icon',
   '.glb': 'model/gltf-binary',
   '.gltf': 'model/gltf+json',

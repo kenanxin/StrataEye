@@ -39,8 +39,11 @@
 
 ## 本地运行
 
+2026-10-17 本地界面优化：登录、三端业务页面、只读端共用布局、管理后台及支护分析采用统一的 StrataEye 深蓝主题与本地中文字体。设计、字体来源和检查说明见 [界面设计说明](docs/FRONTEND_DESIGN.md)。
+
 ```powershell
-cd D:\矿业\smart-mine-v2-balanced
+# 在克隆后的 StrataEye 目录中执行
+npm ci
 $env:PORT="8092"
 npm start
 ```

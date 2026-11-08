@@ -5,28 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#10191e">
-  <title>系统登录 | 煤矿顶板灾变智能预警</title>
+  <title>登录 · 灵瞳勘顶 StrataEye</title>
   <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/strata-theme.css">
+  <link rel="preload" href="assets/fonts/strata-sans-sc.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" type="image/svg+xml" href="images/strataeye-mark.svg">
 </head>
-<body>
+<body class="login-page">
   <main class="login-shell">
     <section class="mine-identity" aria-labelledby="systemTitle">
       <div class="brand-mark">
-        <img src="images/logo.jpg" alt="" aria-hidden="true" width="38" height="38">
-        <span>RoofRisk</span>
+        <img src="images/strataeye-mark.svg" alt="" aria-hidden="true" width="44" height="44">
+        <span>StrataEye<small>顶板风险研判与协同决策</small></span>
       </div>
       <div class="title-block">
-        <p class="title-kicker"><span></span> 智慧矿山安全管控</p>
+        <p class="title-kicker"><span></span> 让风险可见，让决策有据</p>
         <h1 id="systemTitle">
-          <span class="title-main">煤矿顶板灾变</span>
-          <span class="title-sub">智能预警与可视化决策系统</span>
+          <span class="title-main">灵瞳勘顶</span>
+          <span class="title-sub">煤矿顶板灾变智能预警<br>与多智能体协同决策系统</span>
         </h1>
-        <p class="title-en">Digital Twin Roof Disaster Early Warning &amp; Decision Platform</p>
+        <p class="title-en">连接井下空间、监测证据与现场处置，<br>在同一工作台完成风险研判与协同复核。</p>
       </div>
       <div class="scene-caption" aria-hidden="true">
-        <span>井下工作面</span>
+        <span>三维空间感知</span>
         <i></i>
-        <span>多源监测在线</span>
+        <span>模型风险识别</span><i></i><span>三端协同复核</span>
       </div>
     </section>
 
@@ -35,6 +38,7 @@
       <div class="access-heading">
         <p>统一访问入口</p>
         <h2 id="loginTitle">登录系统</h2>
+        <div class="access-description">使用工作账号登录，进入对应的业务工作台。</div>
       </div>
 
       <form id="loginForm" novalidate>
@@ -67,7 +71,7 @@
       </form>
 
       <footer class="access-footer">
-        <span>RoofRisk API v1</span>
+        <span>灵瞳勘顶 StrataEye</span>
         <span>会话受安全保护</span>
       </footer>
     </section>

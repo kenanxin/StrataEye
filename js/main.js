@@ -1078,7 +1078,7 @@ function setupRoofFieldControls() {
 
 function normalizeDataSourceLabel(source) {
   const labels = {
-    teacher_real_csv_xgboost: '老师提供的真实监测数据 · XGBoost',
+    teacher_real_csv_xgboost: '教师提供的模拟监测数据 · XGBoost',
     standardized_simulated_multisource: '标准化模拟多源数据',
     database: '数据库实时数据',
     hardware_gateway: '井下网关实时数据',
@@ -1585,6 +1585,10 @@ async function initApp(authenticatedUser) {
   // 仅企业值守端需要三维场景；监管和智库端避免后台加载大型模型。
   if (authenticatedUser.role === 'enterprise') initScene('threeContainer');
 
+  // Canvas labels must measure the same local typeface as the surrounding UI.
+  if (document.fonts?.load) {
+    await document.fonts.load('400 12px "Strata Sans"').catch(() => {});
+  }
   // 图表在角色门户可见且真实 API 数据就绪后初始化。
   initPortalCharts();
 
