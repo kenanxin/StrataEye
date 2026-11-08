@@ -1,0 +1,13 @@
+test_center_contact_matches_independent_closed_form (test_layered_solver.LayeredSolverTests.test_center_contact_matches_independent_closed_form) ... ok
+test_center_tie_matches_independent_closed_form (test_layered_solver.LayeredSolverTests.test_center_tie_matches_independent_closed_form) ... ok
+test_conservation_symmetry_and_zero_load (test_layered_solver.LayeredSolverTests.test_conservation_symmetry_and_zero_load) ... ok
+test_contact_cannot_carry_tension_and_ties_cannot_carry_compression (test_layered_solver.LayeredSolverTests.test_contact_cannot_carry_tension_and_ties_cannot_carry_compression) ... ok
+test_contact_mesh_converges_with_distributed_stiffness (test_layered_solver.LayeredSolverTests.test_contact_mesh_converges_with_distributed_stiffness) ... ok
+test_invalid_inputs_and_iteration_failure (test_layered_solver.LayeredSolverTests.test_invalid_inputs_and_iteration_failure) ... ok
+test_uncoupled_layers_match_existing_analytic_solver (test_layered_solver.LayeredSolverTests.test_uncoupled_layers_match_existing_analytic_solver) ... ok
+test_weaker_tie_increases_opening_and_reduces_tie_force (test_layered_solver.LayeredSolverTests.test_weaker_tie_increases_opening_and_reduces_tie_force) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.313s
+
+OK

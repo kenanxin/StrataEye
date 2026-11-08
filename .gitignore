@@ -12,3 +12,5 @@ tools/.generated/
 .venv-research/
 research-evidence/
 reruns/
+agents/.venv/
+agents/runs/

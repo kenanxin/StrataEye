@@ -1,0 +1,1768 @@
+
+> test
+> node --test
+
+TAP version 13
+# Subtest: viewer sessions reuse the expert portal without gaining an expert role
+ok 1 - viewer sessions reuse the expert portal without gaining an expert role
+  ---
+  duration_ms: 0.489
+  type: 'test'
+  ...
+# Subtest: super administrator cannot demote or disable the current account
+ok 2 - super administrator cannot demote or disable the current account
+  ---
+  duration_ms: 0.4959
+  type: 'test'
+  ...
+# Subtest: unchanged self state and ordinary-account updates remain allowed
+ok 3 - unchanged self state and ordinary-account updates remain allowed
+  ---
+  duration_ms: 0.2022
+  type: 'test'
+  ...
+# Subtest: admin API marks the current account and rejects self-demotion before mutation
+ok 4 - admin API marks the current account and rejects self-demotion before mutation
+  ---
+  duration_ms: 392.5263
+  type: 'test'
+  ...
+# Subtest: live, exact-evidence history and fallback have distinct truthful labels
+ok 5 - live, exact-evidence history and fallback have distinct truthful labels
+  ---
+  duration_ms: 15.1797
+  type: 'test'
+  ...
+# Subtest: advice deadline also bounds stalled body reads without an automatic retry
+ok 6 - advice deadline also bounds stalled body reads without an automatic retry
+  ---
+  duration_ms: 36.2737
+  type: 'test'
+  ...
+# Subtest: advice helper returns validated server result and preserves HTTP errors
+ok 7 - advice helper returns validated server result and preserves HTTP errors
+  ---
+  duration_ms: 1.5684
+  type: 'test'
+  ...
+# Subtest: HTTP derives trusted actor, rejects fake runs and supports persisted reads/actions
+ok 8 - HTTP derives trusted actor, rejects fake runs and supports persisted reads/actions
+  ---
+  duration_ms: 532.6651
+  type: 'test'
+  ...
+# Subtest: backend static files and encoded dot paths are protected while browser assets work
+ok 9 - backend static files and encoded dot paths are protected while browser assets work
+  ---
+  duration_ms: 390.8532
+  type: 'test'
+  ...
+# Subtest: session lookup failure is caught and sanitized
+ok 10 - session lookup failure is caught and sanitized
+  ---
+  duration_ms: 366.9929
+  type: 'test'
+  ...
+# Subtest: Supabase auth never silently selects local file workflow persistence
+ok 11 - Supabase auth never silently selects local file workflow persistence
+  ---
+  duration_ms: 295.7176
+  type: 'test'
+  ...
+# Subtest: configured but unavailable database is visible in status and mutations
+ok 12 - configured but unavailable database is visible in status and mutations
+  ---
+  duration_ms: 259.0081
+  type: 'test'
+  ...
+# Subtest: Render environment cannot claim default file storage is durable
+ok 13 - Render environment cannot claim default file storage is durable
+  ---
+  duration_ms: 270.5326
+  type: 'test'
+  ...
+# Subtest: saved start is idempotent, traceable, restartable and read-only roles cannot sign
+ok 14 - saved start is idempotent, traceable, restartable and read-only roles cannot sign
+  ---
+  duration_ms: 530.5431
+  type: 'test'
+  ...
+# Subtest: actions use saved revision, deduplicate before phase validation and preserve evidence
+ok 15 - actions use saved revision, deduplicate before phase validation and preserve evidence
+  ---
+  duration_ms: 461.0756
+  type: 'test'
+  ...
+# Subtest: resource and worsening branches require confirmation and bound new plan versions
+ok 16 - resource and worsening branches require confirmation and bound new plan versions
+  ---
+  duration_ms: 422.6811
+  type: 'test'
+  ...
+# Subtest: low risk preserves finish without manufacturing warning or downstream advice
+ok 17 - low risk preserves finish without manufacturing warning or downstream advice
+  ---
+  duration_ms: 181.9023
+  type: 'test'
+  ...
+# Subtest: confirmed reprocess saves new manual feedback before choosing a return path
+ok 18 - confirmed reprocess saves new manual feedback before choosing a return path
+  ---
+  duration_ms: 412.9989
+  type: 'test'
+  ...
+# Subtest: incremental resources retain saved zero fields and A4 follows the current A3 proposal
+ok 19 - incremental resources retain saved zero fields and A4 follows the current A3 proposal
+  ---
+  duration_ms: 204.0243
+  type: 'test'
+  ...
+# Subtest: consumed historical resource feedback cannot prevent a completed new version closing
+ok 20 - consumed historical resource feedback cannot prevent a completed new version closing
+  ---
+  duration_ms: 264.7928
+  type: 'test'
+  ...
+# Subtest: resource reevaluation uses the existing AI candidate tasks in A4
+ok 21 - resource reevaluation uses the existing AI candidate tasks in A4
+  ---
+  duration_ms: 189.7513
+  type: 'test'
+  ...
+# Subtest: confirming feasible updated resources consumes their pending feedback without erasing history
+ok 22 - confirming feasible updated resources consumes their pending feedback without erasing history
+  ---
+  duration_ms: 210.3158
+  type: 'test'
+  ...
+# Subtest: photo metadata preserves distinct opaque IDs and submission history without cloud claims
+ok 23 - photo metadata preserves distinct opaque IDs and submission history without cloud claims
+  ---
+  duration_ms: 202.3708
+  type: 'test'
+  ...
+# Subtest: each plan persists reviewed workflow context with distinct citations and immutable review snapshots
+ok 24 - each plan persists reviewed workflow context with distinct citations and immutable review snapshots
+  ---
+  duration_ms: 637.1059
+  type: 'test'
+  ...
+# Subtest: A4 projects current human approval, invalidation and closure without external dispatch
+ok 25 - A4 projects current human approval, invalidation and closure without external dispatch
+  ---
+  duration_ms: 275.8572
+  type: 'test'
+  ...
+# Subtest: reviewed retrieval limits snapshots to twenty and distinguishes stored review versions
+ok 26 - reviewed retrieval limits snapshots to twenty and distinguishes stored review versions
+  ---
+  duration_ms: 336.0374
+  type: 'test'
+  ...
+# Subtest: login form is labeled, accessible, and does not ask users to choose a role
+ok 27 - login form is labeled, accessible, and does not ask users to choose a role
+  ---
+  duration_ms: 1.5836
+  type: 'test'
+  ...
+# Subtest: login script posts credentials and maps actionable error states
+ok 28 - login script posts credentials and maps actionable error states
+  ---
+  duration_ms: 0.571
+  type: 'test'
+  ...
+# Subtest: login script allows super administrators to use the backend admin portal URL
+ok 29 - login script allows super administrators to use the backend admin portal URL
+  ---
+  duration_ms: 0.351
+  type: 'test'
+  ...
+# Subtest: login and portal clients accept viewer as a read-only expert-layout role
+ok 30 - login and portal clients accept viewer as a read-only expert-layout role
+  ---
+  duration_ms: 6.8817
+  type: 'test'
+  ...
+# Subtest: login background is a local non-empty raster asset
+ok 31 - login background is a local non-empty raster asset
+  ---
+  duration_ms: 1.5445
+  type: 'test'
+  ...
+# Subtest: application header exposes identity and logout instead of a portal switch
+ok 32 - application header exposes identity and logout instead of a portal switch
+  ---
+  duration_ms: 0.4748
+  type: 'test'
+  ...
+# Subtest: final dashboard exposes only the underground digital twin
+ok 33 - final dashboard exposes only the underground digital twin
+  ---
+  duration_ms: 1.4319
+  type: 'test'
+  ...
+# Subtest: dashboard self-hosts the patched ECharts release consistently
+ok 34 - dashboard self-hosts the patched ECharts release consistently
+  ---
+  duration_ms: 0.4931
+  type: 'test'
+  ...
+# Subtest: application bootstraps from the session before initializing protected features
+ok 35 - application bootstraps from the session before initializing protected features
+  ---
+  duration_ms: 0.7285
+  type: 'test'
+  ...
+# Subtest: auth client owns role URLs, unauthorized redirects, logout, and action visibility
+ok 36 - auth client owns role URLs, unauthorized redirects, logout, and action visibility
+  ---
+  duration_ms: 0.4674
+  type: 'test'
+  ...
+# Subtest: main application initializes the warning demo after authentication
+ok 37 - main application initializes the warning demo after authentication
+  ---
+  duration_ms: 0.4704
+  type: 'test'
+  ...
+# Subtest: admin page protects the current super administrator and supports password reset
+ok 38 - admin page protects the current super administrator and supports password reset
+  ---
+  duration_ms: 0.3502
+  type: 'test'
+  ...
+# Subtest: seeded users authenticate and expose only public identity fields
+ok 39 - seeded users authenticate and expose only public identity fields
+  ---
+  duration_ms: 52.6915
+  type: 'test'
+  ...
+# Subtest: sessions expire absolutely after eight hours and logout invalidates immediately
+ok 40 - sessions expire absolutely after eight hours and logout invalidates immediately
+  ---
+  duration_ms: 94.1671
+  type: 'test'
+  ...
+# Subtest: five failed attempts throttle the username and client pair for 15 minutes
+ok 41 - five failed attempts throttle the username and client pair for 15 minutes
+  ---
+  duration_ms: 276.4099
+  type: 'test'
+  ...
+# Subtest: successful login clears failures and buckets are isolated by client
+ok 42 - successful login clears failures and buckets are isolated by client
+  ---
+  duration_ms: 199.1485
+  type: 'test'
+  ...
+# Subtest: deployment environment can override a seeded password hash
+ok 43 - deployment environment can override a seeded password hash
+  ---
+  duration_ms: 101.277
+  type: 'test'
+  ...
+# Subtest: cookies include the required security attributes
+ok 44 - cookies include the required security attributes
+  ---
+  duration_ms: 0.641
+  type: 'test'
+  ...
+# Subtest: role policy matches the approved closed-loop matrix
+ok 45 - role policy matches the approved closed-loop matrix
+  ---
+  duration_ms: 0.4464
+  type: 'test'
+  ...
+# Subtest: malformed deployment hash fails service initialization
+ok 46 - malformed deployment hash fails service initialization
+  ---
+  duration_ms: 0.3366
+  type: 'test'
+  ...
+# Subtest: charts use a shared theme, rich-text tooltips, time axes, and container resize observation
+ok 47 - charts use a shared theme, rich-text tooltips, time axes, and container resize observation
+  ---
+  duration_ms: 1.751
+  type: 'test'
+  ...
+# Subtest: charts expose the four role-focused containers and contain no legacy simulated fixtures
+ok 48 - charts expose the four role-focused containers and contain no legacy simulated fixtures
+  ---
+  duration_ms: 0.3554
+  type: 'test'
+  ...
+# Subtest: chart data updates are built from the RoofRisk chart model
+ok 49 - chart data updates are built from the RoofRisk chart model
+  ---
+  duration_ms: 0.3064
+  type: 'test'
+  ...
+# Subtest: statistical reference trend is not presented as a safety or model threshold
+ok 50 - statistical reference trend is not presented as a safety or model threshold
+  ---
+  duration_ms: 0.2521
+  type: 'test'
+  ...
+# Subtest: current DeepSeek models use bounded non-thinking generation in both advice paths
+ok 51 - current DeepSeek models use bounded non-thinking generation in both advice paths
+  ---
+  duration_ms: 7.942
+  type: 'test'
+  ...
+# Subtest: A3 sends retrieved text and sources, accepts exact knowledge citation and locks model risk
+ok 52 - A3 sends retrieved text and sources, accepts exact knowledge citation and locks model risk
+  ---
+  duration_ms: 0.649
+  type: 'test'
+  ...
+# Subtest: unretrieved citations are rejected and rule fallback does not pretend to have cited RAG
+ok 53 - unretrieved citations are rejected and rule fallback does not pretend to have cited RAG
+  ---
+  duration_ms: 0.708
+  type: 'test'
+  ...
+# Subtest: saved A2 snapshot feeds actual A3 citations and survives reprocess and storage reload
+ok 54 - saved A2 snapshot feeds actual A3 citations and survives reprocess and storage reload
+  ---
+  duration_ms: 319.1778
+  type: 'test'
+  ...
+# Subtest: expert suggestion endpoint uses server record evidence and returns attributed RAG
+ok 55 - expert suggestion endpoint uses server record evidence and returns attributed RAG
+  ---
+  duration_ms: 467.3056
+  type: 'test'
+  ...
+# Subtest: transport bounds both header and body waits even if a provider ignores abort
+ok 56 - transport bounds both header and body waits even if a provider ignores abort
+  ---
+  duration_ms: 37.1787
+  type: 'test'
+  ...
+# Subtest: transport observes blank keepalives, rejects oversized bodies, and sanitizes HTTP errors
+ok 57 - transport observes blank keepalives, rejects oversized bodies, and sanitizes HTTP errors
+  ---
+  duration_ms: 18.9923
+  type: 'test'
+  ...
+# Subtest: cache detaches values, expires, survives local restart and has a bounded entry count
+ok 58 - cache detaches values, expires, survives local restart and has a bounded entry count
+  ---
+  duration_ms: 37.6716
+  type: 'test'
+  ...
+# Subtest: workflow defaults to bounded text-channel JSON and explicit JSON mode remains configurable
+ok 59 - workflow defaults to bounded text-channel JSON and explicit JSON mode remains configurable
+  ---
+  duration_ms: 5.9294
+  type: 'test'
+  ...
+# Subtest: only valid advice is cached against exact evidence; same-key in-flight requests coalesce
+ok 60 - only valid advice is cached against exact evidence; same-key in-flight requests coalesce
+  ---
+  duration_ms: 0.964
+  type: 'test'
+  ...
+# Subtest: invalid output is never cached and diagnostics never contain provider text
+ok 61 - invalid output is never cached and diagnostics never contain provider text
+  ---
+  duration_ms: 0.6708
+  type: 'test'
+  ...
+# Subtest: internal project notes and source locators never leave the advice service
+ok 62 - internal project notes and source locators never leave the advice service
+  ---
+  duration_ms: 1.0294
+  type: 'test'
+  ...
+# Subtest: file-backed advice survives service restart with its original generation timestamp
+ok 63 - file-backed advice survives service restart with its original generation timestamp
+  ---
+  duration_ms: 8.9806
+  type: 'test'
+  ...
+# Subtest: invalid cached advice is revalidated and never displayed; timeout configuration stays bounded
+ok 64 - invalid cached advice is revalidated and never displayed; timeout configuration stays bounded
+  ---
+  duration_ms: 0.6252
+  type: 'test'
+  ...
+# Subtest: corrupt cache files are ignored and unwritable cache paths cannot suppress valid advice
+ok 65 - corrupt cache files are ignored and unwritable cache paths cannot suppress valid advice
+  ---
+  duration_ms: 4.4195
+  type: 'test'
+  ...
+# Subtest: truncated or filtered generations are never accepted or cached even with valid JSON
+ok 66 - truncated or filtered generations are never accepted or cached even with valid JSON
+  ---
+  duration_ms: 0.4216
+  type: 'test'
+  ...
+# Subtest: local advice is deterministic and contains traceable evidence
+ok 67 - local advice is deterministic and contains traceable evidence
+  ---
+  duration_ms: 2.2529
+  type: 'test'
+  ...
+# Subtest: successful DeepSeek response is normalized
+ok 68 - successful DeepSeek response is normalized
+  ---
+  duration_ms: 1.5513
+  type: 'test'
+  ...
+# Subtest: DeepSeek failure falls back to local advice
+ok 69 - DeepSeek failure falls back to local advice
+  ---
+  duration_ms: 0.3418
+  type: 'test'
+  ...
+# Subtest: provider failure retains safe HTTP evidence without leaking response or key
+ok 70 - provider failure retains safe HTTP evidence without leaking response or key
+  ---
+  duration_ms: 0.2565
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: summary 进一步复核证据
+ok 71 - workflow qualitative terms preserve provider text: summary 进一步复核证据
+  ---
+  duration_ms: 2.7649
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: recommendations 进一步复核证据
+ok 72 - workflow qualitative terms preserve provider text: recommendations 进一步复核证据
+  ---
+  duration_ms: 0.4267
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: summary 复核证据的一致性
+ok 73 - workflow qualitative terms preserve provider text: summary 复核证据的一致性
+  ---
+  duration_ms: 0.3072
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: recommendations 复核证据的一致性
+ok 74 - workflow qualitative terms preserve provider text: recommendations 复核证据的一致性
+  ---
+  duration_ms: 0.2956
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: summary 统一安排复测
+ok 75 - workflow qualitative terms preserve provider text: summary 统一安排复测
+  ---
+  duration_ms: 0.937
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: recommendations 统一安排复测
+ok 76 - workflow qualitative terms preserve provider text: recommendations 统一安排复测
+  ---
+  duration_ms: 0.9276
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: summary 一旦发现异常应复核
+ok 77 - workflow qualitative terms preserve provider text: summary 一旦发现异常应复核
+  ---
+  duration_ms: 0.6437
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: recommendations 一旦发现异常应复核
+ok 78 - workflow qualitative terms preserve provider text: recommendations 一旦发现异常应复核
+  ---
+  duration_ms: 0.4924
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: summary 一般风险应持续观察
+ok 79 - workflow qualitative terms preserve provider text: summary 一般风险应持续观察
+  ---
+  duration_ms: 0.6151
+  type: 'test'
+  ...
+# Subtest: workflow qualitative terms preserve provider text: recommendations 一般风险应持续观察
+ok 80 - workflow qualitative terms preserve provider text: recommendations 一般风险应持续观察
+  ---
+  duration_ms: 0.4029
+  type: 'test'
+  ...
+# Subtest: workflow qualitative masking still rejects adjacent numeric instructions in every proposal field
+ok 81 - workflow qualitative masking still rejects adjacent numeric instructions in every proposal field
+  ---
+  duration_ms: 2.2365
+  type: 'test'
+  ...
+# Subtest: workflow validation reports fixed diagnostics for malformed fields and citations
+ok 82 - workflow validation reports fixed diagnostics for malformed fields and citations
+  ---
+  duration_ms: 2.2801
+  type: 'test'
+  ...
+# Subtest: workflow accepts exact text and array limits with original proposal wording
+ok 83 - workflow accepts exact text and array limits with original proposal wording
+  ---
+  duration_ms: 0.6157
+  type: 'test'
+  ...
+# Subtest: workflow validation diagnostics are bounded and never contain provider content or credentials
+ok 84 - workflow validation diagnostics are bounded and never contain provider content or credentials
+  ---
+  duration_ms: 0.8129
+  type: 'test'
+  ...
+# Subtest: workflow prompt states exact limits and includes a valid example using this request evidence
+ok 85 - workflow prompt states exact limits and includes a valid example using this request evidence
+  ---
+  duration_ms: 1.2299
+  type: 'test'
+  ...
+# Subtest: workflow transport and JSON failures keep their existing reason without validation diagnostics
+ok 86 - workflow transport and JSON failures keep their existing reason without validation diagnostics
+  ---
+  duration_ms: 1.1201
+  type: 'test'
+  ...
+# Subtest: workflow advice uses constrained prompt, known evidence and immutable authoritative risk
+ok 87 - workflow advice uses constrained prompt, known evidence and immutable authoritative risk
+  ---
+  duration_ms: 0.7006
+  type: 'test'
+  ...
+# Subtest: workflow advice validates citations, JSON, arrays and numeric engineering instructions
+ok 88 - workflow advice validates citations, JSON, arrays and numeric engineering instructions
+  ---
+  duration_ms: 1.3098
+  type: 'test'
+  ...
+# Subtest: workflow provider HTTP failure and timeout remain truthful and sanitized
+ok 89 - workflow provider HTTP failure and timeout remain truthful and sanitized
+  ---
+  duration_ms: 11.0656
+  type: 'test'
+  ...
+# Subtest: all displayed provider advice rejects new numeric thresholds in percentages, time and Chinese quantities
+ok 90 - all displayed provider advice rejects new numeric thresholds in percentages, time and Chinese quantities
+  ---
+  duration_ms: 2.2338
+  type: 'test'
+  ...
+# Subtest: reviewed case freeform names, phones and emails never enter the provider prompt
+ok 91 - reviewed case freeform names, phones and emails never enter the provider prompt
+  ---
+  duration_ms: 0.5315
+  type: 'test'
+  ...
+# Subtest: reviewed workflow citations distinguish shared CSV and review versions without private prompt fields
+ok 92 - reviewed workflow citations distinguish shared CSV and review versions without private prompt fields
+  ---
+  duration_ms: 1.109
+  type: 'test'
+  ...
+# Subtest: deviation ranking uses full numeric metric evidence and omits unavailable values
+ok 93 - deviation ranking uses full numeric metric evidence and omits unavailable values
+  ---
+  duration_ms: 2.2853
+  type: 'test'
+  ...
+# Subtest: builds deterministic real-data research datasets
+ok 94 - builds deterministic real-data research datasets
+  ---
+  duration_ms: 0.5071
+  type: 'test'
+  ...
+# Subtest: returns empty chart datasets when history is unavailable
+ok 95 - returns empty chart datasets when history is unavailable
+  ---
+  duration_ms: 0.1733
+  type: 'test'
+  ...
+# Subtest: retrieval is deterministic, versioned, attributed and spans matching domains
+ok 96 - retrieval is deterministic, versioned, attributed and spans matching domains
+  ---
+  duration_ms: 5.4552
+  type: 'test'
+  ...
+# Subtest: no match stays empty, query budgets and invalid limits are handled explicitly
+ok 97 - no match stays empty, query budgets and invalid limits are handled explicitly
+  ---
+  duration_ms: 2.6002
+  type: 'test'
+  ...
+# Subtest: exact corpus is frozen and calls cannot mutate subsequent retrievals
+ok 98 - exact corpus is frozen and calls cannot mutate subsequent retrievals
+  ---
+  duration_ms: 0.8475
+  type: 'test'
+  ...
+# Subtest: all published frames conserve load and retain source hashes across line endings
+ok 99 - all published frames conserve load and retain source hashes across line endings
+  ---
+  duration_ms: 21.1498
+  type: 'test'
+  ...
+# Subtest: tampered gap, tie force, contact and conservation data fail closed
+ok 100 - tampered gap, tie force, contact and conservation data fail closed
+  ---
+  duration_ms: 26.7652
+  type: 'test'
+  ...
+# Subtest: advice receives computed opening and reference evidence, with an explicit fallback
+ok 101 - advice receives computed opening and reference evidence, with an explicit fallback
+  ---
+  duration_ms: 12.5599
+  type: 'test'
+  ...
+# Subtest: layered API checks auth, role and server-owned inputs without changing warning events
+ok 102 - layered API checks auth, role and server-owned inputs without changing warning events
+  ---
+  duration_ms: 647.2615
+  type: 'test'
+  ...
+# Subtest: UI clears stale explanations on scenario change and ignores late replies
+ok 103 - UI clears stale explanations on scenario change and ignores late replies
+  ---
+  duration_ms: 4.0627
+  type: 'test'
+  ...
+# (node:88824) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/%E5%A4%A7%E4%B8%89%E4%B8%8A%E6%B4%BB%E5%8A%A8/%E7%81%B5%E7%9E%B3%E5%8B%98%E9%A1%B6/.worktrees/layered-roof/js/scene/asset-registry.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to E:\\大三上活动\\灵瞳勘顶\\.worktrees\\layered-roof\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: roof-sensor count excludes people and cameras
+ok 104 - roof-sensor count excludes people and cameras
+  ---
+  duration_ms: 1.1933
+  type: 'test'
+  ...
+# Subtest: every monitor anchor has its complete topology and threshold contract
+ok 105 - every monitor anchor has its complete topology and threshold contract
+  ---
+  duration_ms: 0.3019
+  type: 'test'
+  ...
+# Subtest: overview label tier never exceeds ten anchors
+ok 106 - overview label tier never exceeds ten anchors
+  ---
+  duration_ms: 0.234
+  type: 'test'
+  ...
+# Subtest: underground label tier stays local to the active roadway
+ok 107 - underground label tier stays local to the active roadway
+  ---
+  duration_ms: 0.8688
+  type: 'test'
+  ...
+# Subtest: threshold monitor state colors follow current metric values
+ok 108 - threshold monitor state colors follow current metric values
+  ---
+  duration_ms: 0.5484
+  type: 'test'
+  ...
+# Subtest: working-face label tier is limited to key nearby anchors
+ok 109 - working-face label tier is limited to key nearby anchors
+  ---
+  duration_ms: 0.1908
+  type: 'test'
+  ...
+# Subtest: same seed produces the same initial state and smooth updates
+ok 110 - same seed produces the same initial state and smooth updates
+  ---
+  duration_ms: 1.3798
+  type: 'test'
+  ...
+# Subtest: approved topology has no missing endpoints and all horizons are reachable
+ok 111 - approved topology has no missing endpoints and all horizons are reachable
+  ---
+  duration_ms: 0.548
+  type: 'test'
+  ...
+# Subtest: validator rejects a disconnected edge
+ok 112 - validator rejects a disconnected edge
+  ---
+  duration_ms: 0.5811
+  type: 'test'
+  ...
+# Subtest: mine v2 descriptor exposes only underground-related inspection modes
+ok 113 - mine v2 descriptor exposes only underground-related inspection modes
+  ---
+  duration_ms: 0.5484
+  type: 'test'
+  ...
+# Subtest: mine atlas has exactly three enterable roadway zones
+ok 114 - mine atlas has exactly three enterable roadway zones
+  ---
+  duration_ms: 0.274
+  type: 'test'
+  ...
+# Subtest: mine uses the approved meter-scale dimensions
+ok 115 - mine uses the approved meter-scale dimensions
+  ---
+  duration_ms: 0.2159
+  type: 'test'
+  ...
+# Subtest: working-face role contract includes every disaster dependency
+ok 116 - working-face role contract includes every disaster dependency
+  ---
+  duration_ms: 0.1358
+  type: 'test'
+  ...
+# Subtest: all competition equipment rows have a V2 focus route and scene role
+ok 117 - all competition equipment rows have a V2 focus route and scene role
+  ---
+  duration_ms: 0.224
+  type: 'test'
+  ...
+# Subtest: focused longwall contract exposes physical roadway and monitoring roles
+ok 118 - focused longwall contract exposes physical roadway and monitoring roles
+  ---
+  duration_ms: 0.1147
+  type: 'test'
+  ...
+# Subtest: main incline reaches all three production horizons
+ok 119 - main incline reaches all three production horizons
+  ---
+  duration_ms: 0.2498
+  type: 'test'
+  ...
+# Subtest: main levels remain on their assigned production horizons
+ok 120 - main levels remain on their assigned production horizons
+  ---
+  duration_ms: 0.9456
+  type: 'test'
+  ...
+# Subtest: atlas exposes only selected roadway sections
+ok 121 - atlas exposes only selected roadway sections
+  ---
+  duration_ms: 0.1884
+  type: 'test'
+  ...
+# Subtest: roadway widths stay within practical underground dimensions
+ok 122 - roadway widths stay within practical underground dimensions
+  ---
+  duration_ms: 0.1999
+  type: 'test'
+  ...
+# Subtest: edge sampling returns exact endpoints
+ok 123 - edge sampling returns exact endpoints
+  ---
+  duration_ms: 0.1907
+  type: 'test'
+  ...
+# Subtest: installed licensed models point to optimized local GLB files
+ok 124 - installed licensed models point to optimized local GLB files
+  ---
+  duration_ms: 1.6113
+  type: 'test'
+  ...
+# Subtest: underground licensed assets have fixed engineering placements
+ok 125 - underground licensed assets have fixed engineering placements
+  ---
+  duration_ms: 0.2886
+  type: 'test'
+  ...
+# Subtest: underground assets map to atlas zones
+ok 126 - underground assets map to atlas zones
+  ---
+  duration_ms: 0.1193
+  type: 'test'
+  ...
+# Subtest: expert portal contains an explicit server-backed six-agent workflow panel
+ok 127 - expert portal contains an explicit server-backed six-agent workflow panel
+  ---
+  duration_ms: 1.6045
+  type: 'test'
+  ...
+# Subtest: workflow UI calls the authenticated server API and exposes failure honestly
+ok 128 - workflow UI calls the authenticated server API and exposes failure honestly
+  ---
+  duration_ms: 0.2364
+  type: 'test'
+  ...
+# Subtest: real expert widget refreshes shared saved run without starting and retains selected node
+ok 129 - real expert widget refreshes shared saved run without starting and retains selected node
+  ---
+  duration_ms: 3.338
+  type: 'test'
+  ...
+# Subtest: repeated setup removes listeners and empty selection clears old rail/details
+ok 130 - repeated setup removes listeners and empty selection clears old rail/details
+  ---
+  duration_ms: 1.1671
+  type: 'test'
+  ...
+# Subtest: A2 node shows reviewed workflow references separately from similar CSV and escapes source IDs
+ok 131 - A2 node shows reviewed workflow references separately from similar CSV and escapes source IDs
+  ---
+  duration_ms: 0.729
+  type: 'test'
+  ...
+# Subtest: workflow panel has responsive non-overlapping grid rules
+ok 132 - workflow panel has responsive non-overlapping grid rules
+  ---
+  duration_ms: 0.4028
+  type: 'test'
+  ...
+# Subtest: main coordinator owns saved closed-loop authority and legacy actions reuse material validation forms
+ok 133 - main coordinator owns saved closed-loop authority and legacy actions reuse material validation forms
+  ---
+  duration_ms: 0.5461
+  type: 'test'
+  ...
+# Subtest: major-risk XGBoost record executes the delivered six-agent order
+ok 134 - major-risk XGBoost record executes the delivered six-agent order
+  ---
+  duration_ms: 22.599
+  type: 'test'
+  ...
+# Subtest: pending feedback is not reported as completed reflection
+ok 135 - pending feedback is not reported as completed reflection
+  ---
+  duration_ms: 9.3971
+  type: 'test'
+  ...
+# Subtest: malformed resources cannot bypass the feasibility check
+ok 136 - malformed resources cannot bypass the feasibility check
+  ---
+  duration_ms: 0.568
+  type: 'test'
+  ...
+# Subtest: low-risk record stops after A1 and marks downstream nodes skipped
+ok 137 - low-risk record stops after A1 and marks downstream nodes skipped
+  ---
+  duration_ms: 0.6389
+  type: 'test'
+  ...
+# Subtest: resource shortage stops at A5 and never creates a control draft
+ok 138 - resource shortage stops at A5 and never creates a control draft
+  ---
+  duration_ms: 5.8479
+  type: 'test'
+  ...
+# Subtest: reflection recommends a human-confirmed return without executing a loop
+ok 139 - reflection recommends a human-confirmed return without executing a loop
+  ---
+  duration_ms: 9.9589
+  type: 'test'
+  ...
+# (node:84256) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/%E5%A4%A7%E4%B8%89%E4%B8%8A%E6%B4%BB%E5%8A%A8/%E7%81%B5%E7%9E%B3%E5%8B%98%E9%A1%B6/.worktrees/layered-roof/js/scene/asset-registry.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to E:\\大三上活动\\灵瞳勘顶\\.worktrees\\layered-roof\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production publishes the complete local-quality runtime asset set outside Git LFS
+ok 140 - production publishes the complete local-quality runtime asset set outside Git LFS
+  ---
+  duration_ms: 1.1026
+  type: 'test'
+  ...
+# Subtest: production runtime assets retain their original binary signatures and size
+ok 141 - production runtime assets retain their original binary signatures and size
+  ---
+  duration_ms: 42.7968
+  type: 'test'
+  ...
+# Subtest: all entry pages use offline-safe typography and dark browser chrome
+ok 142 - all entry pages use offline-safe typography and dark browser chrome
+  ---
+  duration_ms: 1.5413
+  type: 'test'
+  ...
+# (node:89816) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/%E5%A4%A7%E4%B8%89%E4%B8%8A%E6%B4%BB%E5%8A%A8/%E7%81%B5%E7%9E%B3%E5%8B%98%E9%A1%B6/.worktrees/layered-roof/js/scene/mine-v2/focused-longwall.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to E:\\大三上活动\\灵瞳勘顶\\.worktrees\\layered-roof\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: project roadway figure data uses live topology and the approved eight monitors
+ok 143 - project roadway figure data uses live topology and the approved eight monitors
+  ---
+  duration_ms: 2.0825
+  type: 'test'
+  ...
+# Subtest: capture script isolates the real Three.js canvas at 1600 by 1000
+ok 144 - capture script isolates the real Three.js canvas at 1600 by 1000
+  ---
+  duration_ms: 0.911
+  type: 'test'
+  ...
+# Subtest: project roadway final figures have the approved dimensions
+ok 145 - project roadway final figures have the approved dimensions
+  ---
+  duration_ms: 23.0081
+  type: 'test'
+  ...
+# Subtest: health check exposes deployment identity without credentials
+ok 146 - health check exposes deployment identity without credentials
+  ---
+  duration_ms: 487.1925
+  type: 'test'
+  ...
+# Subtest: current endpoint exposes real source, eight metrics, and XGBoost output
+ok 147 - current endpoint exposes real source, eight metrics, and XGBoost output
+  ---
+  duration_ms: 367.5756
+  type: 'test'
+  ...
+# Subtest: expert advice endpoint exposes transparent DeepSeek configuration state
+ok 148 - expert advice endpoint exposes transparent DeepSeek configuration state
+  ---
+  duration_ms: 326.2276
+  type: 'test'
+  ...
+# Subtest: portal query URL serves the application without redirecting to itself
+ok 149 - portal query URL serves the application without redirecting to itself
+  ---
+  duration_ms: 315.3351
+  type: 'test'
+  ...
+# Subtest: event selection updates current, history, and explanation together
+ok 150 - event selection updates current, history, and explanation together
+  ---
+  duration_ms: 322.191
+  type: 'test'
+  ...
+# Subtest: record evaluation returns precomputed model output and rejects unknown ids
+ok 151 - record evaluation returns precomputed model output and rejects unknown ids
+  ---
+  duration_ms: 287.213
+  type: 'test'
+  ...
+# Subtest: similar-case endpoint returns authenticated real-data matches and validates ids
+ok 152 - similar-case endpoint returns authenticated real-data matches and validates ids
+  ---
+  duration_ms: 283.8983
+  type: 'test'
+  ...
+# Subtest: closed-loop advancement cannot change source measurements
+ok 153 - closed-loop advancement cannot change source measurements
+  ---
+  duration_ms: 273.8096
+  type: 'test'
+  ...
+# Subtest: invalid JSON and unsupported actions return structured errors
+ok 154 - invalid JSON and unsupported actions return structured errors
+  ---
+  duration_ms: 252.6618
+  type: 'test'
+  ...
+# Subtest: unauthenticated application and RoofRisk requests are blocked
+ok 155 - unauthenticated application and RoofRisk requests are blocked
+  ---
+  duration_ms: 229.9708
+  type: 'test'
+  ...
+# Subtest: health check is public and identifies the deployed data source
+ok 156 - health check is public and identifies the deployed data source
+  ---
+  duration_ms: 239.2414
+  type: 'test'
+  ...
+# Subtest: session endpoint exposes identity and logout invalidates the cookie
+ok 157 - session endpoint exposes identity and logout invalidates the cookie
+  ---
+  duration_ms: 261.2621
+  type: 'test'
+  ...
+# Subtest: HTTPS proxy requests receive a Secure session cookie
+ok 158 - HTTPS proxy requests receive a Secure session cookie
+  ---
+  duration_ms: 261.15
+  type: 'test'
+  ...
+# Subtest: invalid credentials are generic and repeated failures are rate limited
+ok 159 - invalid credentials are generic and repeated failures are rate limited
+  ---
+  duration_ms: 400.0655
+  type: 'test'
+  ...
+# Subtest: closed-loop mutations enforce the approved role matrix
+ok 160 - closed-loop mutations enforce the approved role matrix
+  ---
+  duration_ms: 327.0984
+  type: 'test'
+  ...
+# Subtest: authenticated replay endpoints expose metadata and a traceable frame
+ok 161 - authenticated replay endpoints expose metadata and a traceable frame
+  ---
+  duration_ms: 244.7438
+  type: 'test'
+  ...
+# Subtest: replay endpoints reject unauthenticated and invalid index requests
+ok 162 - replay endpoints reject unauthenticated and invalid index requests
+  ---
+  duration_ms: 256.6031
+  type: 'test'
+  ...
+# Subtest: multi-agent API runs the six-agent graph from a traceable XGBoost record
+ok 163 - multi-agent API runs the six-agent graph from a traceable XGBoost record
+  ---
+  duration_ms: 262.8441
+  type: 'test'
+  ...
+# Subtest: multi-agent API authenticates requests and validates record input
+ok 164 - multi-agent API authenticates requests and validates record input
+  ---
+  duration_ms: 256.6054
+  type: 'test'
+  ...
+# Subtest: builds direction-aware statistical reference trends with raw evidence
+ok 165 - builds direction-aware statistical reference trends with raw evidence
+  ---
+  duration_ms: 3.0586
+  type: 'test'
+  ...
+# Subtest: omits metrics whose statistical reference range is unavailable
+ok 166 - omits metrics whose statistical reference range is unavailable
+  ---
+  duration_ms: 0.2805
+  type: 'test'
+  ...
+# Subtest: falls back to truthful risk-score history when an older API omits metric history
+ok 167 - falls back to truthful risk-score history when an older API omits metric history
+  ---
+  duration_ms: 0.2761
+  type: 'test'
+  ...
+# Subtest: orders four-class probabilities from low to severe without rounding away detail
+ok 168 - orders four-class probabilities from low to severe without rounding away detail
+  ---
+  duration_ms: 0.2573
+  type: 'test'
+  ...
+# Subtest: labels evidence as standardized deviation rather than feature contribution
+ok 169 - labels evidence as standardized deviation rather than feature contribution
+  ---
+  duration_ms: 0.2591
+  type: 'test'
+  ...
+# Subtest: counts regulator risk levels in the fixed operational order
+ok 170 - counts regulator risk levels in the fixed operational order
+  ---
+  duration_ms: 0.2059
+  type: 'test'
+  ...
+# Subtest: maps all eight real inputs with their actual labels and units
+ok 171 - maps all eight real inputs with their actual labels and units
+  ---
+  duration_ms: 1.1736
+  type: 'test'
+  ...
+# Subtest: keeps metrics in fixed business order and marks low-side statistical deviation
+ok 172 - keeps metrics in fixed business order and marks low-side statistical deviation
+  ---
+  duration_ms: 0.8921
+  type: 'test'
+  ...
+# Subtest: marks only metrics returned by XGBoost feature evidence as model evidence
+ok 173 - marks only metrics returned by XGBoost feature evidence as model evidence
+  ---
+  duration_ms: 0.2454
+  type: 'test'
+  ...
+# Subtest: maps model probabilities in the fixed low-to-severe order
+ok 174 - maps model probabilities in the fixed low-to-severe order
+  ---
+  duration_ms: 0.1694
+  type: 'test'
+  ...
+# Subtest: maps audit agreement and traceable provenance
+ok 175 - maps audit agreement and traceable provenance
+  ---
+  duration_ms: 0.1268
+  type: 'test'
+  ...
+# Subtest: unavailable state contains no simulated numeric fallback
+ok 176 - unavailable state contains no simulated numeric fallback
+  ---
+  duration_ms: 0.1178
+  type: 'test'
+  ...
+# Subtest: replay controller seeks real frame indexes and pauses on manual navigation
+ok 177 - replay controller seeks real frame indexes and pauses on manual navigation
+  ---
+  duration_ms: 1.4133
+  type: 'test'
+  ...
+# Subtest: replay controller accepts exact speeds and stops at the final record
+ok 178 - replay controller accepts exact speeds and stops at the final record
+  ---
+  duration_ms: 39.8028
+  type: 'test'
+  ...
+# Subtest: replay controller wraps only when looping and exposes load errors
+ok 179 - replay controller wraps only when looping and exposes load errors
+  ---
+  duration_ms: 29.0989
+  type: 'test'
+  ...
+# Subtest: defaults to the severe real-data representative
+ok 180 - defaults to the severe real-data representative
+  ---
+  duration_ms: 272.5623
+  type: 'test'
+  ...
+# Subtest: exposes exactly one selectable event for each risk class
+ok 181 - exposes exactly one selectable event for each risk class
+  ---
+  duration_ms: 196.2369
+  type: 'test'
+  ...
+# Subtest: selection changes measurements but closed-loop changes do not
+ok 182 - selection changes measurements but closed-loop changes do not
+  ---
+  duration_ms: 184.6604
+  type: 'test'
+  ...
+# Subtest: history is chronological and belongs to the selected record window
+ok 183 - history is chronological and belongs to the selected record window
+  ---
+  duration_ms: 173.7017
+  type: 'test'
+  ...
+# Subtest: explanation reports probabilities, label agreement, and feature evidence
+ok 184 - explanation reports probabilities, label agreement, and feature evidence
+  ---
+  duration_ms: 174.0957
+  type: 'test'
+  ...
+# Subtest: rejects unknown events, records, and closed-loop actions
+ok 185 - rejects unknown events, records, and closed-loop actions
+  ---
+  duration_ms: 175.4417
+  type: 'test'
+  ...
+# Subtest: rejects an artifact with untrusted provenance
+ok 186 - rejects an artifact with untrusted provenance
+  ---
+  duration_ms: 61.6647
+  type: 'test'
+  ...
+# Subtest: replay metadata exposes all real records and stable risk markers
+ok 187 - replay metadata exposes all real records and stable risk markers
+  ---
+  duration_ms: 162.1377
+  type: 'test'
+  ...
+# Subtest: replay frame is bounded, chronological, traceable, and immutable
+ok 188 - replay frame is bounded, chronological, traceable, and immutable
+  ---
+  duration_ms: 160.0334
+  type: 'test'
+  ...
+# Subtest: replay frame rejects invalid indexes and clamps its history window
+ok 189 - replay frame rejects invalid indexes and clamps its history window
+  ---
+  duration_ms: 160.7098
+  type: 'test'
+  ...
+# Subtest: similar-case search returns nearest traceable real records deterministically
+ok 190 - similar-case search returns nearest traceable real records deterministically
+  ---
+  duration_ms: 177.2718
+  type: 'test'
+  ...
+# Subtest: similar-case search rejects unknown ids and clamps result limits
+ok 191 - similar-case search rejects unknown ids and clamps result limits
+  ---
+  duration_ms: 163.037
+  type: 'test'
+  ...
+# Subtest: an unavailable HDR environment cannot abort mine scene construction
+ok 192 - an unavailable HDR environment cannot abort mine scene construction
+  ---
+  duration_ms: 0.9905
+  type: 'test'
+  ...
+# Subtest: underground view has a dark background fallback when the HDR is unavailable
+ok 193 - underground view has a dark background fallback when the HDR is unavailable
+  ---
+  duration_ms: 0.9909
+  type: 'test'
+  ...
+# Subtest: inspectCsv reports data rows, columns, and uppercase SHA-256
+ok 194 - inspectCsv reports data rows, columns, and uppercase SHA-256
+  ---
+  duration_ms: 10.4873
+  type: 'test'
+  ...
+# Subtest: public-text scan accepts placeholders but rejects credential-shaped values
+ok 195 - public-text scan accepts placeholders but rejects credential-shaped values
+  ---
+  duration_ms: 1.6594
+  type: 'test'
+  ...
+# Subtest: Supabase login maps profile role and keeps token server-side
+ok 196 - Supabase login maps profile role and keeps token server-side
+  ---
+  duration_ms: 1.9498
+  type: 'test'
+  ...
+# Subtest: Supabase admin user creation uses service role and validates role
+ok 197 - Supabase admin user creation uses service role and validates role
+  ---
+  duration_ms: 0.9435
+  type: 'test'
+  ...
+# Subtest: Supabase invalid password is reported as invalid credentials
+ok 198 - Supabase invalid password is reported as invalid credentials
+  ---
+  duration_ms: 0.2423
+  type: 'test'
+  ...
+# Subtest: Supabase transport errors are unavailable, never invalid credentials or provider detail
+ok 199 - Supabase transport errors are unavailable, never invalid credentials or provider detail
+  ---
+  duration_ms: 0.4236
+  type: 'test'
+  ...
+# Subtest: all63 FEM profiles retain simple supports and same center response
+ok 200 - all63 FEM profiles retain simple supports and same center response
+  ---
+  duration_ms: 3.5404
+  type: 'test'
+  ...
+# Subtest: display gain changes geometry only; stiffness comparison keeps a common scale
+ok 201 - display gain changes geometry only; stiffness comparison keeps a common scale
+  ---
+  duration_ms: 0.3573
+  type: 'test'
+  ...
+# Subtest: invalid profiles or unsupported magnification fail instead of rendering fiction
+ok 202 - invalid profiles or unsupported magnification fail instead of rendering fiction
+  ---
+  duration_ms: 0.3694
+  type: 'test'
+  ...
+# Subtest: overlay updates one isolated geometry and releases resources idempotently
+ok 203 - overlay updates one isolated geometry and releases resources idempotently
+  ---
+  duration_ms: 14.8666
+  type: 'test'
+  ...
+# Subtest: RAG receives selected and same-load reference evidence, with actual domain citations
+ok 204 - RAG receives selected and same-load reference evidence, with actual domain citations
+  ---
+  duration_ms: 8.2784
+  type: 'test'
+  ...
+# Subtest: simulation API is authenticated, server-owned, role-checked and isolated from teacher events
+ok 205 - simulation API is authenticated, server-owned, role-checked and isolated from teacher events
+  ---
+  duration_ms: 542.9246
+  type: 'test'
+  ...
+# Subtest: support UI keeps units, only focuses on click, and clears stale advice on frame change
+ok 206 - support UI keeps units, only focuses on click, and clears stale advice on frame change
+  ---
+  duration_ms: 4.2496
+  type: 'test'
+  ...
+# Subtest: a late advice response cannot overwrite the newly selected loading step
+ok 207 - a late advice response cannot overwrite the newly selected loading step
+  ---
+  duration_ms: 3.1661
+  type: 'test'
+  ...
+# Subtest: regulator is read-only for new simulation advice and missing catalog does not display fake values
+ok 208 - regulator is read-only for new simulation advice and missing catalog does not display fake values
+  ---
+  duration_ms: 0.8205
+  type: 'test'
+  ...
+# Subtest: cached real advice is visibly historical and retains original generation time
+ok 209 - cached real advice is visibly historical and retains original generation time
+  ---
+  duration_ms: 19.6516
+  type: 'test'
+  ...
+# Subtest: chart binds real precomputed frames to units and loading steps without animation
+ok 210 - chart binds real precomputed frames to units and loading steps without animation
+  ---
+  duration_ms: 0.5068
+  type: 'test'
+  ...
+# Subtest: knowledge cards escape all text and do not turn unknown URL schemes into links
+ok 211 - knowledge cards escape all text and do not turn unknown URL schemes into links
+  ---
+  duration_ms: 0.6351
+  type: 'test'
+  ...
+# Subtest: three-dimensional simulation uses a distinct whole-support role and only explicit focus moves camera
+ok 212 - three-dimensional simulation uses a distinct whole-support role and only explicit focus moves camera
+  ---
+  duration_ms: 7.1807
+  type: 'test'
+  ...
+# Subtest: scene controls synchronize physical selection; magnification preserves generated advice; closing stops playback
+ok 213 - scene controls synchronize physical selection; magnification preserves generated advice; closing stops playback
+  ---
+  duration_ms: 3.8486
+  type: 'test'
+  ...
+# Subtest: retrieved domain and actual cited domain coverage stay distinct
+ok 214 - retrieved domain and actual cited domain coverage stay distinct
+  ---
+  duration_ms: 0.36
+  type: 'test'
+  ...
+# (node:89224) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: support presets retain physical units, balance and F=k*w without teacher risk fields
+ok 215 - support presets retain physical units, balance and F=k*w without teacher risk fields
+  ---
+  duration_ms: 6.7152
+  type: 'test'
+  ...
+# Subtest: support service rejects arbitrary scenarios and out-of-range steps
+ok 216 - support service rejects arbitrary scenarios and out-of-range steps
+  ---
+  duration_ms: 5.1546
+  type: 'test'
+  ...
+# Subtest: simulation advice uses server-owned frame, RAG evidence and truthful offline fallback
+ok 217 - simulation advice uses server-owned frame, RAG evidence and truthful offline fallback
+  ---
+  duration_ms: 4.2303
+  type: 'test'
+  ...
+# Subtest: export provenance points to the current exporter and the distinct simulation device role
+ok 218 - export provenance points to the current exporter and the distinct simulation device role
+  ---
+  duration_ms: 10.1071
+  type: 'test'
+  ...
+# Subtest: QA capture waits for the expected invocation despite delayed and stale IPC delivery
+ok 219 - QA capture waits for the expected invocation despite delayed and stale IPC delivery
+  ---
+  duration_ms: 43.2004
+  type: 'test'
+  ...
+# Subtest: enterprise portal exposes the current diagnosis rail, model probability chart, and provenance strip
+ok 220 - enterprise portal exposes the current diagnosis rail, model probability chart, and provenance strip
+  ---
+  duration_ms: 1.2708
+  type: 'test'
+  ...
+# Subtest: regulator and expert portals expose role-specific chart work surfaces
+ok 221 - regulator and expert portals expose role-specific chart work surfaces
+  ---
+  duration_ms: 0.2565
+  type: 'test'
+  ...
+# Subtest: regulator dashboard rows grow with content instead of overlapping in Chrome
+ok 222 - regulator dashboard rows grow with content instead of overlapping in Chrome
+  ---
+  duration_ms: 0.3222
+  type: 'test'
+  ...
+# Subtest: UI uses industrial tokens without CSS gradients and defines responsive stable chart sizes
+ok 223 - UI uses industrial tokens without CSS gradients and defines responsive stable chart sizes
+  ---
+  duration_ms: 0.5691
+  type: 'test'
+  ...
+# Subtest: main controller fetches current history and events then updates charts from API payloads
+ok 224 - main controller fetches current history and events then updates charts from API payloads
+  ---
+  duration_ms: 1.0432
+  type: 'test'
+  ...
+# Subtest: enterprise portal exposes an explicit real-history replay workbench
+ok 225 - enterprise portal exposes an explicit real-history replay workbench
+  ---
+  duration_ms: 0.4967
+  type: 'test'
+  ...
+# Subtest: current diagnosis and historical replay have distinct jobs without duplicate metric grids
+ok 226 - current diagnosis and historical replay have distinct jobs without duplicate metric grids
+  ---
+  duration_ms: 0.2741
+  type: 'test'
+  ...
+# Subtest: enterprise main controller owns one replay controller and authenticated replay calls
+ok 227 - enterprise main controller owns one replay controller and authenticated replay calls
+  ---
+  duration_ms: 0.3597
+  type: 'test'
+  ...
+# Subtest: replay summary risk color follows the active real record level
+ok 228 - replay summary risk color follows the active real record level
+  ---
+  duration_ms: 0.4021
+  type: 'test'
+  ...
+# Subtest: replay frame updates do not refocus the Three.js camera
+ok 229 - replay frame updates do not refocus the Three.js camera
+  ---
+  duration_ms: 0.5363
+  type: 'test'
+  ...
+# Subtest: enterprise core monitoring is a full-width section below the main scene
+ok 230 - enterprise core monitoring is a full-width section below the main scene
+  ---
+  duration_ms: 0.2928
+  type: 'test'
+  ...
+# Subtest: enterprise keeps P05 and P95 inside metric references and historical replay
+ok 231 - enterprise keeps P05 and P95 inside metric references and historical replay
+  ---
+  duration_ms: 0.1625
+  type: 'test'
+  ...
+# Subtest: enterprise command surface has one primary risk score and stable evidence landmarks
+ok 232 - enterprise command surface has one primary risk score and stable evidence landmarks
+  ---
+  duration_ms: 0.225
+  type: 'test'
+  ...
+# Subtest: enterprise attention summary distinguishes model evidence from statistical deviation
+ok 233 - enterprise attention summary distinguishes model evidence from statistical deviation
+  ---
+  duration_ms: 0.1188
+  type: 'test'
+  ...
+# Subtest: core monitoring uses a dense rail layout rather than a grid of metric cards
+ok 234 - core monitoring uses a dense rail layout rather than a grid of metric cards
+  ---
+  duration_ms: 0.251
+  type: 'test'
+  ...
+# Subtest: orange warning demo exposes accessible role-specific workflow surfaces
+ok 235 - orange warning demo exposes accessible role-specific workflow surfaces
+  ---
+  duration_ms: 0.3781
+  type: 'test'
+  ...
+# Subtest: warning demo forms provide stable names, autofill policy, and bounded dialogs
+ok 236 - warning demo forms provide stable names, autofill policy, and bounded dialogs
+  ---
+  duration_ms: 0.3311
+  type: 'test'
+  ...
+# Subtest: warning demo layout is bounded, in-flow for analysis, and does not resize Three.js
+ok 237 - warning demo layout is bounded, in-flow for analysis, and does not resize Three.js
+  ---
+  duration_ms: 0.6494
+  type: 'test'
+  ...
+# Subtest: underground SVG contains the approved topology, equipment, and instruments
+ok 238 - underground SVG contains the approved topology, equipment, and instruments
+  ---
+  duration_ms: 2.062
+  type: 'test'
+  ...
+# Subtest: underground PNG is a 1600 by 1000 image
+ok 239 - underground PNG is a 1600 by 1000 image
+  ---
+  duration_ms: 0.9871
+  type: 'test'
+  ...
+# Subtest: accepts one to four supported image files within five megabytes
+ok 240 - accepts one to four supported image files within five megabytes
+  ---
+  duration_ms: 1.0539
+  type: 'test'
+  ...
+# Subtest: rejects missing, excessive, unsupported, and oversized evidence
+ok 241 - rejects missing, excessive, unsupported, and oversized evidence
+  ---
+  duration_ms: 0.9594
+  type: 'test'
+  ...
+# Subtest: media store reports IndexedDB unavailability explicitly
+ok 242 - media store reports IndexedDB unavailability explicitly
+  ---
+  duration_ms: 0.6863
+  type: 'test'
+  ...
+# Subtest: persisted workflow identity survives START and RESET without demo substitution
+ok 243 - persisted workflow identity survives START and RESET without demo substitution
+  ---
+  duration_ms: 3.8223
+  type: 'test'
+  ...
+# Subtest: orange warning demo follows the complete happy path
+ok 244 - orange warning demo follows the complete happy path
+  ---
+  duration_ms: 0.8093
+  type: 'test'
+  ...
+# Subtest: regulator can reject and enterprise can resubmit
+ok 245 - regulator can reject and enterprise can resubmit
+  ---
+  duration_ms: 0.6573
+  type: 'test'
+  ...
+# Subtest: workflow rejects actions by the wrong role or in the wrong state
+ok 246 - workflow rejects actions by the wrong role or in the wrong state
+  ---
+  duration_ms: 0.6721
+  type: 'test'
+  ...
+# Subtest: enterprise submission requires complete work order and photo evidence
+ok 247 - enterprise submission requires complete work order and photo evidence
+  ---
+  duration_ms: 0.2776
+  type: 'test'
+  ...
+# Subtest: store restores valid state and recovers corrupt persisted JSON
+ok 248 - store restores valid state and recovers corrupt persisted JSON
+  ---
+  duration_ms: 0.4222
+  type: 'test'
+  ...
+# Subtest: reset returns to ready and records a fresh event revision
+ok 249 - reset returns to ready and records a fresh event revision
+  ---
+  duration_ms: 0.3519
+  type: 'test'
+  ...
+# Subtest: demo actions are restricted to their responsible portal
+ok 250 - demo actions are restricted to their responsible portal
+  ---
+  duration_ms: 1.4711
+  type: 'test'
+  ...
+# Subtest: status view exposes stable labels and progress for all seven states
+ok 251 - status view exposes stable labels and progress for all seven states
+  ---
+  duration_ms: 1.1506
+  type: 'test'
+  ...
+# Subtest: disposal draft validation preserves explicit evidence requirements
+ok 252 - disposal draft validation preserves explicit evidence requirements
+  ---
+  duration_ms: 0.2851
+  type: 'test'
+  ...
+# Subtest: actual disposal form awaits authoritative save, preserves failed draft and clears after success
+ok 253 - actual disposal form awaits authoritative save, preserves failed draft and clears after success
+  ---
+  duration_ms: 9.1684
+  type: 'test'
+  ...
+# Subtest: shared run changes clear drafts and stale media cannot leak across selections
+ok 254 - shared run changes clear drafts and stale media cannot leak across selections
+  ---
+  duration_ms: 1.6035
+  type: 'test'
+  ...
+# Subtest: viewer has no signing actions; metadata-only photos explain missing local original
+ok 255 - viewer has no signing actions; metadata-only photos explain missing local original
+  ---
+  duration_ms: 0.5569
+  type: 'test'
+  ...
+# Subtest: both actual widgets project the same selected revision and regulator conflict retains opinion
+ok 256 - both actual widgets project the same selected revision and regulator conflict retains opinion
+  ---
+  duration_ms: 2.2853
+  type: 'test'
+  ...
+# Subtest: resource zero is submitted, standalone reassessment carries only human feedback and signing stays hidden for low risk
+ok 257 - resource zero is submitted, standalone reassessment carries only human feedback and signing stays hidden for low risk
+  ---
+  duration_ms: 1.843
+  type: 'test'
+  ...
+# Subtest: expert explicitly approves reviewed memory after archive and destroys only widget subscriptions
+ok 258 - expert explicitly approves reviewed memory after archive and destroys only widget subscriptions
+  ---
+  duration_ms: 1.435
+  type: 'test'
+  ...
+# Subtest: saved-run picker selects history for all subscribers without starting or erasing evidence
+ok 259 - saved-run picker selects history for all subscribers without starting or erasing evidence
+  ---
+  duration_ms: 1.3536
+  type: 'test'
+  ...
+# Subtest: saved current candidate is visible before confirmation, replaces versions and clears during selection and failed loads
+ok 260 - saved current candidate is visible before confirmation, replaces versions and clears during selection and failed loads
+  ---
+  duration_ms: 20.2362
+  type: 'test'
+  ...
+# Subtest: regulator and expert review the same saved candidate and full bounded action list
+ok 261 - regulator and expert review the same saved candidate and full bounded action list
+  ---
+  duration_ms: 1.068
+  type: 'test'
+  ...
+# Subtest: failed new-run evidence clears displayed risk and comparisons; same-run refresh retries evidence
+ok 262 - failed new-run evidence clears displayed risk and comparisons; same-run refresh retries evidence
+  ---
+  duration_ms: 2.3204
+  type: 'test'
+  ...
+# Subtest: refresh GET success with history-list failure keeps its visible notice until complete success
+ok 263 - refresh GET success with history-list failure keeps its visible notice until complete success
+  ---
+  duration_ms: 1.2296
+  type: 'test'
+  ...
+# Subtest: expert advice context contains the local demo workflow without replacing model data
+ok 264 - expert advice context contains the local demo workflow without replacing model data
+  ---
+  duration_ms: 1.0293
+  type: 'test'
+  ...
+# Subtest: warning demo controller is isolated from Three.js lifecycle calls
+ok 265 - warning demo controller is isolated from Three.js lifecycle calls
+  ---
+  duration_ms: 0.7257
+  type: 'test'
+  ...
+# Subtest: action envelope preserves zero revision and command ID across a network retry
+ok 266 - action envelope preserves zero revision and command ID across a network retry
+  ---
+  duration_ms: 2.3392
+  type: 'test'
+  ...
+# Subtest: typed HTTP errors never retry a human conflict
+ok 267 - typed HTTP errors never retry a human conflict
+  ---
+  duration_ms: 0.4695
+  type: 'test'
+  ...
+# Subtest: shared selection publishes authoritative state, refreshes conflicts and reset retains old evidence
+ok 268 - shared selection publishes authoritative state, refreshes conflicts and reset retains old evidence
+  ---
+  duration_ms: 1.4184
+  type: 'test'
+  ...
+# Subtest: late refresh cannot overwrite a mutation or new selection
+ok 269 - late refresh cannot overwrite a mutation or new selection
+  ---
+  duration_ms: 0.3138
+  type: 'test'
+  ...
+# Subtest: closed-loop projection shares event/revision and low risk keeps ready/finish
+ok 270 - closed-loop projection shares event/revision and low risk keeps ready/finish
+  ---
+  duration_ms: 0.3048
+  type: 'test'
+  ...
+# Subtest: historical idempotent action snapshot never downgrades selected revision
+ok 271 - historical idempotent action snapshot never downgrades selected revision
+  ---
+  duration_ms: 0.8522
+  type: 'test'
+  ...
+# Subtest: one pending mutation guard prevents concurrent human submissions
+ok 272 - one pending mutation guard prevents concurrent human submissions
+  ---
+  duration_ms: 0.2484
+  type: 'test'
+  ...
+# Subtest: file store survives restart with full state and command results
+ok 273 - file store survives restart with full state and command results
+  ---
+  duration_ms: 52.6193
+  type: 'test'
+  ...
+# Subtest: stale revisions and independent create commands conflict
+ok 274 - stale revisions and independent create commands conflict
+  ---
+  duration_ms: 25.1897
+  type: 'test'
+  ...
+# Subtest: durable duplicate lookup precedes new state, revision and event validation
+ok 275 - durable duplicate lookup precedes new state, revision and event validation
+  ---
+  duration_ms: 34.0238
+  type: 'test'
+  ...
+# Subtest: competing fresh file store instances allow only one new revision
+ok 276 - competing fresh file store instances allow only one new revision
+  ---
+  duration_ms: 160.0502
+  type: 'test'
+  ...
+# Subtest: separate Node processes serialize file writes and preserve durable idempotency
+ok 277 - separate Node processes serialize file writes and preserve durable idempotency
+  ---
+  duration_ms: 300.8126
+  type: 'test'
+  ...
+# Subtest: concurrent duplicate commands append one event only
+ok 278 - concurrent duplicate commands append one event only
+  ---
+  duration_ms: 100.8069
+  type: 'test'
+  ...
+# Subtest: missing runs return 404 and list defaults to bounded newest state with record filtering
+ok 279 - missing runs return 404 and list defaults to bounded newest state with record filtering
+  ---
+  duration_ms: 219.0483
+  type: 'test'
+  ...
+# Subtest: strict IDs, complete JSON state, revisions, commands and events reject invalid inputs
+ok 280 - strict IDs, complete JSON state, revisions, commands and events reject invalid inputs
+  ---
+  duration_ms: 46.9001
+  type: 'test'
+  ...
+# Subtest: sparse arrays with enumerable properties reject before any run is committed
+ok 281 - sparse arrays with enumerable properties reject before any run is committed
+  ---
+  duration_ms: 20.9166
+  type: 'test'
+  ...
+# Subtest: save retains creation identity and rejects rewritten event history
+ok 282 - save retains creation identity and rejects rewritten event history
+  ---
+  duration_ms: 28.907
+  type: 'test'
+  ...
+# Subtest: file input and result objects are detached from durable state
+ok 283 - file input and result objects are detached from durable state
+  ---
+  duration_ms: 12.9969
+  type: 'test'
+  ...
+# Subtest: corrupt JSON, corrupt command ledger and oversized data fail without overwrite
+ok 284 - corrupt JSON, corrupt command ledger and oversized data fail without overwrite
+  ---
+  duration_ms: 45.0756
+  type: 'test'
+  ...
+# Subtest: abandoned per-run locks fail visibly without eviction or state overwrite
+ok 285 - abandoned per-run locks fail visibly without eviction or state overwrite
+  ---
+  duration_ms: 5021.4675
+  type: 'test'
+  ...
+# Subtest: filesystem failures are surfaced as storage unavailable
+ok 286 - filesystem failures are surfaced as storage unavailable
+  ---
+  duration_ms: 3.4672
+  type: 'test'
+  ...
+# Subtest: supabase writes use service-role RPC methods, arguments and validated response
+ok 287 - supabase writes use service-role RPC methods, arguments and validated response
+  ---
+  duration_ms: 0.9943
+  type: 'test'
+  ...
+# Subtest: supabase get/list issue bounded escaped reads with service authentication
+ok 288 - supabase get/list issue bounded escaped reads with service authentication
+  ---
+  duration_ms: 0.942
+  type: 'test'
+  ...
+# Subtest: supabase errors remain visible with stable codes and never expose provider secrets
+ok 289 - supabase errors remain visible with stable codes and never expose provider secrets
+  ---
+  duration_ms: 1.4426
+  type: 'test'
+  ...
+# Subtest: migration contract is additive, row-locking, command-deduplicated and service-role only
+ok 290 - migration contract is additive, row-locking, command-deduplicated and service-role only
+  ---
+  duration_ms: 1.8022
+  type: 'test'
+  ...
+1..290
+# tests 290
+# suites 0
+# pass 290
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7722.0729

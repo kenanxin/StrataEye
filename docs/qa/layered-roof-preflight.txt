@@ -1,0 +1,6 @@
+
+> preflight:offline
+> node tools/submission-preflight.mjs --offline
+
+真实数据：20000 行，11 列，SHA-256 86D4C2FB192721B2745F00076AEB00CF351C654ED936DDB098BFA6217E30AC6A
+预检通过。

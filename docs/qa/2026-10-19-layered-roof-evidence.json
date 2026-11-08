@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-19",
+  "version": "layered-roof-v1-20261019",
+  "scope": "巷道顶板单位宽度双层条带；参数为演示设定，待现场校准。",
+  "source_hashes": {
+    "source_hash_convention": "sha256_utf8_lf",
+    "sources": {
+      "tools/roof_mechanics/solver.py": "87ce0b08aee703becd4fbcba28a99a3c68981a071931fb4fd76cfda9e3073544",
+      "tools/roof_mechanics/layered_solver.py": "cc6217f0160d516e0bfc7829413b60a7ccbe49c7665c4f9f74918c7dac271f6e",
+      "tools/export_layered_roof.py": "55551fda3a3ed084703c3bf9ea11302e6540bd16616ad22aaadcdd2d997fba06"
+    }
+  },
+  "artifact_sha256": "f43dcaae4eb6f2a9ba88f827388ec62dc7db5aecea24bbaa9948d829bc3d42de",
+  "cases": 4,
+  "frames": 84,
+  "maximum_errors": {
+    "equilibrium_relative_error": 3.1746624677869854e-12,
+    "residual_relative_error": 1.0045689852430837e-11,
+    "energy_relative_error": 5.00377010614591e-12
+  },
+  "step20": [
+    {
+      "case_id": "reference",
+      "label": "参考锚固",
+      "max_opening_mm": 2.0822673908745504,
+      "total_anchor_force_kn": 44.61763400249693,
+      "max_contact_overlap_mm": 0.0,
+      "applied_load_kn": 96.0
+    },
+    {
+      "case_id": "load-increase",
+      "label": "载荷增加",
+      "max_opening_mm": 3.1234010863118247,
+      "total_anchor_force_kn": 66.92645100374534,
+      "max_contact_overlap_mm": 0.0,
+      "applied_load_kn": 144.0
+    },
+    {
+      "case_id": "anchor-weakening",
+      "label": "锚固连接刚度降低",
+      "max_opening_mm": 5.992164564947682,
+      "total_anchor_force_kn": 30.650106168392572,
+      "max_contact_overlap_mm": 0.0,
+      "applied_load_kn": 96.0
+    },
+    {
+      "case_id": "upper-loading",
+      "label": "上层受载与层间接触",
+      "max_opening_mm": 0.0,
+      "total_anchor_force_kn": 0.0,
+      "max_contact_overlap_mm": 0.03776634125087289,
+      "applied_load_kn": 648.0
+    }
+  ],
+  "tests": {
+    "node": {
+      "pass": 290,
+      "fail": 0,
+      "log": "layered-roof-node-tests.txt"
+    },
+    "python_layered": {
+      "pass": 8,
+      "fail": 0
+    },
+    "python_original": {
+      "pass": 11,
+      "fail": 0
+    },
+    "offline_preflight": "passed"
+  },
+  "interpretation_kind": "known_preset_comparison",
+  "field_calibrated": false,
+  "diagnostic_accuracy_measured": false,
+  "live_deepseek_tested": false,
+  "browser": {
+    "page_errors": [],
+    "module_overflow_mobile": false,
+    "role": "enterprise",
+    "provider": "local-rule / not configured",
+    "opening_mm": 5.992,
+    "anchor_force_kn": 30.65,
+    "contact_opening_mm": 0,
+    "stale_advice_cleared": true
+  }
+}
