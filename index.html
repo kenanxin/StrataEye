@@ -595,6 +595,27 @@
         </div>
         <p class="multi-agent-boundary" id="multiAgentBoundary">真实性边界：A1使用现有XGBoost结果；A2检索的是数据相似记录；A3—A6属于规则辅助研判，不代表生产级自动控制。</p>
       </section>
+      <section class="multi-agent-workbench" id="agentLlmWorkbench" aria-labelledby="agentLlmTitle">
+        <header class="multi-agent-head">
+          <div>
+            <span class="research-eyebrow">CAMEL × DEEPSEEK × REACT TOOL CALLING</span>
+            <h4 id="agentLlmTitle">LLM 六智能体研判（实验通道）</h4>
+            <p>对当前监测记录运行 CAMEL 编排的六智能体管线：A1/A2/A3 真实调用工具（预警查询、微震多参量、知识检索、力学解算），全过程留痕可审计。</p>
+          </div>
+          <div class="multi-agent-actions">
+            <span id="agentLlmSource">智能体服务状态读取中</span>
+            <button id="runAgentLlmWorkflow" type="button">运行 LLM 六智能体研判</button>
+          </div>
+        </header>
+        <div class="multi-agent-provenance">
+          <span>编排框架 <b>camel-ai</b></span>
+          <span>节点顺序 <b>A1 → A2 → A3 → A5 → A4 → A6</b></span>
+          <span>控制边界 <b>仅出建议不控设备 · 人工审批</b></span>
+        </div>
+        <div id="agentLlmResult">
+          <p>点击上方按钮对当前监测记录运行 LLM 六智能体研判（约 1–2 分钟）。需先启动 agents/ 智能体服务（端口 8093）。</p>
+        </div>
+      </section>
       <div class="expert-research-grid">
         <section class="research-panel panel-distribution"><header><strong>风险等级分布</strong><span>全量真实样本</span></header><div class="research-chart" id="expertDistributionChart" role="img" aria-label="老师真实数据风险等级分布"></div></section>
         <section class="research-panel panel-contribution"><header><strong>标准化偏离排序</strong><span>统计证据 · 非模型归因</span></header><div class="research-chart" id="expertContributionChart" role="img" aria-label="当前记录标准化偏离证据排序，不代表模型归因"></div></section>

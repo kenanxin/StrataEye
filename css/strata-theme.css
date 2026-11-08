@@ -326,3 +326,20 @@ body.admin-page::before { display: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* LLM 六智能体研判（agents FastAPI 通道） */
+.agent-llm-summary { color: #9db4cf; font-size: 12px; margin: 6px 0; }
+.agent-llm-node { border: 1px solid #21364d; border-radius: 8px; padding: 10px 12px; margin: 8px 0; background: #0e1d30; }
+.agent-llm-node[data-status="success"] { border-left: 3px solid #3fae6f; }
+.agent-llm-node[data-status="failed"] { border-left: 3px solid #d2564d; }
+.agent-llm-node header { display: flex; gap: 10px; align-items: baseline; }
+.agent-llm-node header b { color: #72adf5; font-family: 'Bahnschrift', 'Segoe UI', sans-serif; }
+.agent-llm-node header span { color: #c8d8ea; }
+.agent-llm-node header em { margin-left: auto; font-style: normal; color: #3fae6f; }
+.agent-llm-node[data-status="failed"] header em { color: #d2564d; }
+.agent-llm-node header i { color: #7d93ad; font-style: normal; font-family: 'Bahnschrift', 'Segoe UI', sans-serif; font-size: 11px; }
+.agent-llm-node > p { color: #b7c8db; font-size: 12px; margin: 6px 0 0; }
+.agent-llm-tools i { display: inline-block; margin: 4px 6px 0 0; padding: 1px 8px; border-radius: 10px; background: #192e46; border: 1px solid #21364d; color: #78dce7; font-size: 11px; font-style: normal; }
+.agent-llm-node pre { max-height: 220px; overflow: auto; background: #0b1626; border-radius: 6px; padding: 8px; font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 11px; white-space: pre-wrap; color: #c8d8ea; }
+.agent-llm-node details summary { cursor: pointer; color: #72adf5; font-size: 12px; margin-top: 6px; }
+.agent-llm-warn { color: #e0a94d; font-size: 12px; margin: 6px 0; }
