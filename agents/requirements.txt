@@ -1,0 +1,6 @@
+camel-ai>=0.2.90
+fastapi>=0.115
+uvicorn[standard]>=0.32
+python-dotenv>=1.0
+numpy>=1.26
+pydantic>=2.7
