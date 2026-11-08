@@ -355,7 +355,7 @@ function createAppServer(options = {}) {
 
       const isApplicationShell = pathname === '/' || pathname === '/index.html';
       const isRoofRiskApi = pathname.startsWith('/api/roof-risk/');
-      const isMultiAgentApi = pathname.startsWith('/api/multi-agent/');
+      const isMultiAgentApi = pathname.startsWith('/api/multi-agent/') || pathname.startsWith('/api/agent-llm/');
       if ((isApplicationShell || isRoofRiskApi || isMultiAgentApi) && !session) {
         if (isRoofRiskApi || isMultiAgentApi) sendApiError(res, 401, 'AUTH_REQUIRED', '请先登录');
         else redirect(res, '/login');
@@ -471,6 +471,63 @@ function createAppServer(options = {}) {
           throw new RoofRiskRepositoryError('WORKFLOW_RUN_REQUIRED', 'run is required', 400);
         }
         sendJson(res, await collaboration.reflect(body.run.workflow_run_id));
+        return;
+      }
+
+      const agentServiceUrl = process.env.AGENT_SERVICE_URL || 'http://127.0.0.1:8093';
+      const agentLlmFetch = async (path, init = {}) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 200000);
+        try {
+          const response = await fetch(agentServiceUrl + path, {
+            ...init,
+            signal: controller.signal,
+            ...(init.body ? { headers: { 'Content-Type': 'application/json' } } : {}),
+          });
+          const text = await response.text();
+          let payload;
+          try { payload = JSON.parse(text); } catch (_) { payload = { detail: text.slice(0, 300) }; }
+          return { status: response.status, payload };
+        } catch (error) {
+          const cause = error?.cause?.code || error?.name || 'unknown';
+          throw new RoofRiskRepositoryError('AGENT_SERVICE_UNAVAILABLE', `智能体服务不可用（${agentServiceUrl}，${cause}）。请先启动 agents/ 下的 FastAPI 服务。`, 503);
+        } finally {
+          clearTimeout(timer);
+        }
+      };
+      const agentLlmRespond = (res2, upstream) => {
+        if (upstream.status >= 200 && upstream.status < 300) { sendJson(res2, upstream.payload); return; }
+        sendApiError(res2, upstream.status, 'AGENT_SERVICE_ERROR', String(upstream.payload?.detail || JSON.stringify(upstream.payload).slice(0, 200)), upstream.payload);
+      };
+
+      if (pathname === '/api/agent-llm/health') {
+        assertMethod(req, ['GET']);
+        agentLlmRespond(res, await agentLlmFetch('/health'));
+        return;
+      }
+
+      if (pathname === '/api/agent-llm/runs') {
+        assertMethod(req, ['POST']);
+        if (!['enterprise', 'expert', 'super_admin'].includes(session.user.role)) {
+          sendApiError(res, 403, 'FORBIDDEN', '仅企业、智库和管理员可运行 LLM 六智能体研判');
+          return;
+        }
+        const body = await readJsonBody(req);
+        if (typeof body?.record_id !== 'string' || !body.record_id) {
+          throw new RoofRiskRepositoryError('RECORD_ID_REQUIRED', 'record_id is required', 400);
+        }
+        const upstream = await agentLlmFetch('/agent/runs', {
+          method: 'POST',
+          body: JSON.stringify({ record_id: body.record_id, ...(body.resource_snapshot ? { resource_snapshot: body.resource_snapshot } : {}) }),
+        });
+        agentLlmRespond(res, upstream);
+        return;
+      }
+
+      const agentLlmRunMatch = pathname.match(/^\/api\/agent-llm\/runs\/([^/]+)$/);
+      if (agentLlmRunMatch) {
+        assertMethod(req, ['GET']);
+        agentLlmRespond(res, await agentLlmFetch(`/agent/runs/${encodeURIComponent(agentLlmRunMatch[1])}`));
         return;
       }
 

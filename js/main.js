@@ -12,6 +12,7 @@ import { authFetch, bootstrapAuthenticatedPortal } from './auth-client.mjs';
 import { createReplayController } from './roof-risk-replay-controller.mjs';
 import { destroyWarningDemo, getWarningDemoAdviceContext, refreshWarningDemoRisk, setupWarningDemo } from './warning-demo-ui.mjs';
 import { setupMultiAgentWorkflow } from './multi-agent-workflow-ui.mjs';
+import { setupAgentLlmWorkflow } from './agent-llm-ui.mjs';
 import { setupSupportSimulation } from './support-simulation-ui.mjs';
 import { setupLayeredRoof } from './layered-roof-ui.mjs';
 import { renderKnowledgeEvidence } from './knowledge-evidence.mjs';
@@ -1607,6 +1608,7 @@ async function initApp(authenticatedUser) {
   setupExpertResearchActions();
   if (authenticatedUser.role === 'expert') {
     multiAgentController=setupMultiAgentWorkflow({ authFetch, client:workflowClient, coordinator:workflowCoordinator, getCurrentRole:()=>authenticatedUser.role, getCurrentPayload: () => latestRoofRiskApiPayload });
+    setupAgentLlmWorkflow({ authFetch, getCurrentRecordId: () => latestRoofRiskApiPayload?.model_output?.record_id || null });
   }
   refreshExpertAdviceStatus();
   warningController=await setupWarningDemo({
